@@ -54,10 +54,10 @@ body {
 
 .a {
     white-space: pre;
-    font-size: 24px;
+    font-size: 8px;
     color: var(--acc-go);
     text-shadow: 0 0 25px rgba(255, 59, 48, 0.6);
-    line-height: 1.2;
+    line-height: 1.15;
     text-align: center;
     margin-bottom: 20px;
 }
