@@ -50,7 +50,7 @@ const mobCmp = document.getElementById('mob-cmp');
 const cntrySrch = document.getElementById('cntry-srch');
 const srchSug = document.getElementById('srch-sug');
 
-let activeId = 'NP';
+let activeId = 'CHG';
 
 m.onclick = () => {
     m.classList.toggle('open');
@@ -70,11 +70,9 @@ gt.onclick = () => {
 art.textContent = thighs;
 
 const CLRS = {
-    'NP': '#ff2d55',
-    'OB': '#007aff',
-    'LB': '#ffcc00',
-    'PX:': '#34c759',
-    'DS': '#af52de'
+    'CHG': '#ff2d55',
+    'CHS': '#007aff',
+    'BBS': '#ffcc00'
 };
 
 async function init() {
@@ -95,7 +93,7 @@ async function init() {
                 activeId = id;
                 ipt.textContent = d.n.toUpperCase();
                 ips.textContent = d.c;
-                ipd.textContent = `Lines of Code: ${d.v}`;
+                ipd.textContent = `Scale: ${d.v}`;
                 
                 const val = parseInt(d.v.replace(/,/g, '')) || 1000;
                 const dmtr = Math.round(Math.pow(val, 1/3) * 3);
@@ -133,7 +131,7 @@ async function init() {
         });
     });
 
-    // Populate Featured Codebases
+    // Populate Codebases
     const sorted = Object.keys(DAT)
         .map(k => ({ code: k, ...DAT[k] }))
         .sort((a, b) => parseInt(b.v.replace(/,/g, '')) - parseInt(a.v.replace(/,/g, '')));
@@ -288,8 +286,8 @@ const initCmpSelectors = () => {
     const opts = list.map(item => `<option value="${item.code}">${item.name}</option>`).join('');
     cmpSel1.innerHTML = opts;
     cmpSel2.innerHTML = opts;
-    cmpSel1.value = activeId || 'NP';
-    cmpSel2.value = 'OB';
+    cmpSel1.value = activeId || 'CHG';
+    cmpSel2.value = 'CHS';
 };
 
 const updateComparison = () => {
@@ -297,12 +295,12 @@ const updateComparison = () => {
     const c2 = DAT[cmpSel2.value];
     if (!c1 || !c2) return;
     
-    cmpBody1.innerHTML = `<p>${c1.n}</p><strong>LOC: ${c1.v}</strong><p>${c1.c}</p>`;
-    cmpBody2.innerHTML = `<p>${c2.n}</p><strong>LOC: ${c2.v}</strong><p>${c2.c}</p>`;
+    cmpBody1.innerHTML = `<p>${c1.n}</p><strong>Scale: ${c1.v}</strong><p>${c1.c}</p>`;
+    cmpBody2.innerHTML = `<p>${c2.n}</p><strong>Scale: ${c2.v}</strong><p>${c2.c}</p>`;
     
     const v1 = parseInt(c1.v.replace(/,/g, '')) || 1000;
     const v2 = parseInt(c2.v.replace(/,/g, '')) || 1000;
-    const maxVal = Math.max(v1, v2, 10000);
+    const maxVal = Math.max(v1, v2, 30000);
     const w1 = (v1 / maxVal) * 100;
     const w2 = (v2 / maxVal) * 100;
     
