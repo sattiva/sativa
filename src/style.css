@@ -21,8 +21,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: url('https://files.catbox.moe/e7tfw0.jpg') no-repeat center center;
-    background-size: cover;
+    background: radial-gradient(circle at 10% 10%, #200508 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #0d0407 0%, var(--bg) 60%);
     color: var(--fg);
 }
 
@@ -42,7 +41,8 @@ body {
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: var(--bg);
+    background: url('https://files.catbox.moe/e7tfw0.jpg') no-repeat center center;
+    background-size: cover;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,6 +50,13 @@ body {
     gap: 24px;
     cursor: pointer;
     transition: opacity 0.5s ease, visibility 0.5s;
+}
+.gt::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
 }
 .gt.h { opacity: 0; visibility: hidden; }
 
@@ -68,11 +75,11 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    background: rgba(12, 10, 14, 0.95);
+    background: rgba(12, 10, 14, 0.5);
     border: 1px solid var(--border);
     padding: 18px 36px;
     border-radius: 8px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
 }
 .gtx { font-size: 0.85rem; letter-spacing: 0.25em; color: #fff; font-weight: 700; }
 .gst { font-size: 0.75rem; color: #555; }

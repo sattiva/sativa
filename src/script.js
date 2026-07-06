@@ -85,7 +85,12 @@ async function init() {
                 mdlVol.textContent = d.v;
                 mdlJig.textContent = 'High Complexity';
                 mdlSoft.textContent = '9.8/10';
-                projectDesc.textContent = d.desc;
+                
+                let descContent = d.desc;
+                if (id === 'BBS') {
+                    descContent += '<br><br><a href="https://boobs.lat" target="_blank" class="b" style="margin-top: 10px; width: 100%; text-align: center; font-weight: bold; background: var(--acc-boobs); color: #000; border: none;">Go to site</a>';
+                }
+                projectDesc.innerHTML = descContent;
                 
                 mdl.style.display = 'flex';
                 setTimeout(() => mdl.classList.add('show'), 10);
