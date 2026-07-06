@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sativa | Software Architect & Systems Security Engineer Portfolio</title>
-    <meta name="description" content="Immersive interactive portfolio displaying production architecture, metrics, and codebase comparisons.">
+    <title>Sativa | Systems Security & Software Architect</title>
+    <meta name="description" content="Senior Systems Security & Software Architect Portfolio">
     <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
@@ -16,22 +16,85 @@
     <div class="gt" id="gt">
         <div class="a" id="gate-art"></div>
         <div class="gui">
-            <div class="gtx">CLICK TO ENTER WORKSPACE</div>
-            <div class="gst">secure connection verified</div>
+            <div class="gtx">DECRYPT WORKSPACE</div>
+            <div class="gst">secure gateway established</div>
         </div>
     </div>
 
-    <!-- Main project selector node diagram (Interactive SVG Layout representing our projects) -->
+    <!-- Main Workspace Dashboard Grid -->
     <div class="mc" id="mc">
-        <div class="svg-container">
-            <svg viewBox="0 0 600 400" id="domain-svg">
-                <!-- Chronicle (Go) -->
-                <path id="CHG" d="M 100 250 L 300 80 L 500 250 Z" />
-                <!-- Chronicle (JS) -->
-                <path id="CHS" d="M 100 250 L 300 250 L 200 350 Z" />
-                <!-- Boobs Map Tracker -->
-                <path id="BBS" d="M 300 250 L 500 250 L 400 350 Z" />
-            </svg>
+        <div class="workspace-layout">
+            <!-- Left Side: Profile & Lanyard Info -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-wrapper">
+                        <img id="discord-avatar" src="" alt="Avatar" style="display:none;">
+                        <div class="status-indicator" id="discord-status-dot"></div>
+                    </div>
+                    <div class="profile-meta">
+                        <h2 id="discord-name">sativa</h2>
+                        <span id="discord-tag">@cresova</span>
+                    </div>
+                </div>
+                <div class="about-section">
+                    <h3>[sys.log] about</h3>
+                    <p>systems security engineer specializing in low-level runtime safety, defensive systems hardening, constant-time validation models, and custom orchestration compiler pipelines.</p>
+                </div>
+                <div class="spotify-card" id="spotify-card">
+                    <div class="spotify-header">
+                        <span class="spotify-logo">🎵 SPOTIFY</span>
+                        <div class="sound-wave" id="spotify-wave">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="spotify-details">
+                        <img id="spotify-art" src="" alt="Album Art">
+                        <div class="spotify-text">
+                            <div class="song-title" id="spotify-song">Track</div>
+                            <div class="song-artist" id="spotify-artist">Artist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Projects Cards Grid -->
+            <div class="projects-deck">
+                <div class="project-card" id="CHG" data-id="CHG">
+                    <div class="card-glow" style="background: var(--acc-go);"></div>
+                    <div class="card-content">
+                        <div class="project-header">
+                            <span class="project-tag">GO / TUI</span>
+                            <span class="project-loc">23K LOC</span>
+                        </div>
+                        <h3>Chronicle (Go)</h3>
+                        <p>Secure, headless-compatible Discord bot manager featuring a custom terminal user interface and isolated Lua sandboxes.</p>
+                    </div>
+                </div>
+
+                <div class="project-card" id="CHS" data-id="CHS">
+                    <div class="card-glow" style="background: var(--acc-js);"></div>
+                    <div class="card-content">
+                        <div class="project-header">
+                            <span class="project-tag">NODEJS</span>
+                            <span class="project-loc">9.8K LOC</span>
+                        </div>
+                        <h3>Chronicle (JS)</h3>
+                        <p>Lightweight asynchronous JavaScript edition of the Chronicle agent pipeline featuring modular event parsing engines.</p>
+                    </div>
+                </div>
+
+                <div class="project-card" id="BBS" data-id="BBS">
+                    <div class="card-glow" style="background: var(--acc-boobs);"></div>
+                    <div class="card-content">
+                        <div class="project-header">
+                            <span class="project-tag">HTML5 / CANVAS</span>
+                            <span class="project-loc">18.8K LOC</span>
+                        </div>
+                        <h3>Boobs Map Tracker</h3>
+                        <p>High-fidelity demographical representation plotting average country cup sizes with fluid dynamic jiggle physics on interactive vectors.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -41,32 +104,28 @@
         <button id="zoom-reset">reset</button>
     </div>
 
-    <div class="ip-open" id="ip-open">open project panel</div>
-
-    <div class="ip" id="ip">
-        <div class="ip-cls" id="ip-cls">&times;</div>
-        <div class="srch-box" style="position: relative; width: 100%; margin-top: 4px;">
-            <input type="text" id="cntry-srch" placeholder="Search project..." style="width: 100%; padding: 8px 16px; border-radius: 99px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; font-size: 0.85rem; outline: none; transition: 0.3s;" autocomplete="off">
-            <div id="srch-sug" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(8, 8, 12, 0.98); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; flex-direction: column; margin-top: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(20px);"></div>
+    <!-- Hidden controls to maintain JS references without throwing errors -->
+    <div style="display:none;">
+        <input type="text" id="cntry-srch">
+        <div id="srch-sug"></div>
+        <button id="cmp-trigger-btn"></button>
+        <span id="ipl-min"></span>
+        <div id="ipl-lst"></div>
+        <div id="ipv">
+            <div class="ipvs"></div>
+            <div class="ipvs"></div>
         </div>
-        <div class="ipt">SELECT PROJECT</div>
-        <div class="ips">--</div>
-        <div class="ipd">Hover vector node to load workspace stats</div>
-        <div class="ipv" id="ipv">
-            <div class="ipvs"><div class="npl"></div></div>
-            <div class="ipvs"><div class="npl"></div></div>
-        </div>
-        <div style="display: flex; gap: 8px; width: 100%;">
-            <button id="cmp-trigger-btn" class="b" style="width: 100%; height: 32px; font-size: 0.8rem; font-weight: 700; border-radius: 8px;">Compare Projects</button>
-        </div>
-        <div class="ipl">
-            <div class="iplt" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <span>FEATURED CODEBASES</span>
-                <span id="ipl-min" style="cursor: pointer; font-size: 0.8rem; color: var(--acc); font-weight: 800; padding: 4px;">[-]</span>
-            </div>
-            <div id="ipl-lst" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-            </div>
-        </div>
+        <div class="ipt"></div>
+        <div class="ips"></div>
+        <div class="ipd"></div>
+        <div id="ip"></div>
+        <div id="ip-cls"></div>
+        <div id="ip-open"></div>
+        <select id="cmp-sel-1"></select>
+        <select id="cmp-sel-2"></select>
+        <div id="cmp-body-1"></div>
+        <div id="cmp-body-2"></div>
+        <div id="cmp-vis"></div>
     </div>
 
     <div class="tt" id="tt"></div>
@@ -118,13 +177,11 @@
             <div class="mdl-h">COMPARE CODEBASES</div>
             <div class="mdl-b" style="display: flex; gap: 20px; flex-direction: column; margin-top: 15px;">
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 0.9rem; cursor: pointer;"></select>
-                        <select id="cmp-sel-1" style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 0.9rem; cursor: pointer;"></select>
+                    <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 0.9rem; cursor: pointer;">
                         <div id="cmp-body-1" style="display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
                     <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
                         <label style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">PROJECT B</label>
-                        <select id="cmp-sel-2" style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 0.9rem; cursor: pointer;"></select>
                         <div id="cmp-body-2" style="display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
                 </div>
