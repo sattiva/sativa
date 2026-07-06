@@ -1,11 +1,12 @@
-import { DAT, NAMES } from './mapData.js?v=1.0.3';
-import { thighs } from './ascii.js';
+import { DAT } from './mapData.js?v=1.0.3';
+import { thighs, sativaText } from './ascii.js';
 
 const mc = document.getElementById('mc');
 const m = document.getElementById('m');
 const nr = document.getElementById('nr');
 const gt = document.getElementById('gt');
 const art = document.getElementById('gate-art');
+const logoArt = document.getElementById('sativa-logo');
 
 const mdl = document.getElementById('mdl');
 const mdlCls = document.getElementById('mdl-cls');
@@ -16,7 +17,6 @@ const mdlJig = document.querySelector('.mdl-jig');
 const mdlSoft = document.querySelector('.mdl-soft');
 const projectDesc = document.getElementById('project-description');
 
-// Lanyard elements
 const avatarImg = document.getElementById('discord-avatar');
 const statusDot = document.getElementById('discord-status-dot');
 const nameText = document.getElementById('discord-name');
@@ -40,6 +40,7 @@ gt.onclick = () => {
 };
 
 art.textContent = thighs;
+logoArt.textContent = sativaText;
 
 async function fetchLanyard() {
     try {
@@ -70,11 +71,10 @@ async function fetchLanyard() {
 }
 
 async function init() {
-    // Bind project links clicks (like in header navigation)
     document.querySelectorAll('.p-link').forEach(link => {
         link.addEventListener('click', (e) => {
             const id = link.getAttribute('data-id');
-            if (!id) return; // Allow normal link routing (like boobs.lat)
+            if (!id) return;
             e.preventDefault();
             const d = DAT[id];
             if (d) {

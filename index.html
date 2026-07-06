@@ -39,7 +39,8 @@
     </header>
 
     <div class="mc" id="mc">
-        <div class="center-focus-layout">
+        <div class="center-focus-layout" style="flex-direction: column; gap: 20px;">
+            <pre id="sativa-logo" class="logo-ascii" style="color: var(--acc-go); font-family: monospace; font-size: 8px; line-height: 1.15; pointer-events: none; text-shadow: 0 0 15px rgba(255,59,48,0.5); text-align: center; white-space: pre; margin-bottom: 10px;"></pre>
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="avatar-wrapper">
@@ -73,8 +74,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Hidden elements to keep JS references clean -->
     <div style="display:none;">
         <input type="text" id="cntry-srch">
         <div id="srch-sug"></div>

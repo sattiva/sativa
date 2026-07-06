@@ -1,4 +1,9 @@
 export const thighs = `
+      /\\_/\\
+     ( o.o )
+      > ^ <
+`;
+export const sativaText = `
                      ...                                                       
               .=*8888x <"?88h.                                                 
              X>  '8888H> '8888                                                 
