@@ -68,6 +68,9 @@ async function fetchLanyard() {
             } else {
                 spotifyCard.style.display = 'none';
             }
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
         }
     } catch (e) {}
 }
@@ -114,5 +117,54 @@ mdlCls.onclick = () => {
 window.onclick = e => {
     if (e.target === mdl) { mdl.classList.remove('show'); setTimeout(() => mdl.style.display = 'none', 300); }
 };
+
+const canvas = document.getElementById('vfx-canvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let pts = [];
+    
+    const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resize);
+    resize();
+    
+    window.addEventListener('mousemove', (e) => {
+        for (let i = 0; i < 3; i++) {
+            pts.push({
+                x: e.clientX,
+                y: e.clientY,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                r: Math.random() * 3 + 1,
+                alpha: 1
+            });
+        }
+    });
+    
+    const loop = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = pts.length - 1; i >= 0; i--) {
+            const p = pts[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.02;
+            if (p.alpha <= 0) {
+                pts.splice(i, 1);
+                continue;
+            }
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = '#ff3b30';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+        requestAnimationFrame(loop);
+    };
+    loop();
+}
 
 init();

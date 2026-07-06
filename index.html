@@ -12,6 +12,7 @@
 
     <div class="glowing-orb orb-1"></div>
     <div class="glowing-orb orb-2"></div>
+    <canvas id="vfx-canvas"></canvas>
 
     <div class="gt" id="gt">
         <div class="a" id="gate-art"></div>
@@ -62,10 +63,10 @@
                 <div class="languages-section" style="margin-top: -10px;">
                     <h3 style="font-size: 0.75rem; letter-spacing: 0.25em; color: #555; margin-bottom: 8px; text-transform: uppercase;"><i data-lucide="code-2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>languages</h3>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <span style="font-size: 0.7rem; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-go);">golang</span>
-                        <span style="font-size: 0.7rem; background: rgba(255, 159, 10, 0.1); border: 1px solid rgba(255, 159, 10, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-boobs);">javascript</span>
-                        <span style="font-size: 0.7rem; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); padding: 4px 8px; border-radius: 4px; color: #007aff;">python</span>
-                        <span style="font-size: 0.7rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 4px 8px; border-radius: 4px; color: #cbd5e1;">java</span>
+                        <span style="font-size: 0.7rem; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-go); display: flex; align-items: center; gap: 4px;"><i data-lucide="binary" style="width: 12px; height: 12px;"></i>golang</span>
+                        <span style="font-size: 0.7rem; background: rgba(255, 159, 10, 0.1); border: 1px solid rgba(255, 159, 10, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-boobs); display: flex; align-items: center; gap: 4px;"><i data-lucide="file-json" style="width: 12px; height: 12px;"></i>javascript</span>
+                        <span style="font-size: 0.7rem; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); padding: 4px 8px; border-radius: 4px; color: #007aff; display: flex; align-items: center; gap: 4px;"><i data-lucide="terminal" style="width: 12px; height: 12px;"></i>python</span>
+                        <span style="font-size: 0.7rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 4px 8px; border-radius: 4px; color: #cbd5e1; display: flex; align-items: center; gap: 4px;"><i data-lucide="coffee" style="width: 12px; height: 12px;"></i>java</span>
                     </div>
                 </div>
                 <div class="spotify-card" id="spotify-card">

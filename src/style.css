@@ -23,6 +23,14 @@ body {
     overflow: hidden;
     background: radial-gradient(circle at 10% 10%, #200508 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #0d0407 0%, var(--bg) 60%);
     color: var(--fg);
+    cursor: crosshair;
+}
+
+canvas#vfx-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
 }
 
 .glowing-orb {
