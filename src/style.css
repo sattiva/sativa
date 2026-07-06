@@ -355,7 +355,35 @@ body {
 
 .mdl-b span { font-weight: 700; color: #fff; }
 
+.m { display: none; }
+
 @media (max-width: 900px) {
+    .m { display: block; }
+    .nr {
+        position: absolute;
+        top: 74px;
+        right: 0;
+        background: rgba(9, 9, 15, 0.95);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(30px);
+        padding: 24px;
+        border-radius: 12px;
+        flex-direction: column;
+        width: 260px;
+        gap: 16px;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        display: flex;
+        z-index: 99;
+    }
+    .nr.show {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .nl .lk, .st { display: none !important; }
     .workspace-layout { grid-template-columns: 1fr; }
     .mc { overflow-y: auto; padding-top: 120px; }
     body { overflow-y: auto; }

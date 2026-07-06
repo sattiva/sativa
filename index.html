@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sativa | Systems Security & Software Architect</title>
-    <meta name="description" content="Senior Systems Security & Software Architect Portfolio">
+    <title>Sativa | Cresova</title>
+    <meta name="description" content="Portfolio">
     <link rel="stylesheet" href="src/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
@@ -17,7 +18,7 @@
         <div class="a" id="gate-art"></div>
         <div class="gui">
             <div class="gtx">CLICK TO ENTER</div>
-            <div class="gst">secure gateway established</div>
+            <div class="gst">sativa the goat</div>
         </div>
     </div>
 
@@ -37,12 +38,12 @@
                     </div>
                 </div>
                 <div class="about-section">
-                    <h3>[sys.log] about</h3>
-                    <p>systems security engineer specializing in low-level runtime safety, defensive systems hardening, constant-time validation models, and custom orchestration compiler pipelines.</p>
+                    <h3><i data-lucide="terminal" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>about</h3>
+                    <p>I build secure, low-level runtime environments, hardended servers, constant-time safety systems, and terminal automation tools.</p>
                 </div>
                 <div class="spotify-card" id="spotify-card">
                     <div class="spotify-header">
-                        <span class="spotify-logo">🎵 SPOTIFY</span>
+                        <span class="spotify-logo"><i data-lucide="music" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>listening</span>
                         <div class="sound-wave" id="spotify-wave">
                             <span></span><span></span><span></span>
                         </div>
@@ -98,11 +99,7 @@
         </div>
     </div>
 
-    <div class="zoom-ctrl">
-        <button id="zoom-in">+</button>
-        <button id="zoom-out">-</button>
-        <button id="zoom-reset">reset</button>
-    </div>
+    <!-- Hidden elements to keep JS references clean -->
     <div style="display:none;">
         <input type="text" id="cntry-srch">
         <div id="srch-sug"></div>
@@ -124,6 +121,9 @@
         <div id="cmp-body-1"></div>
         <div id="cmp-body-2"></div>
         <div id="cmp-vis"></div>
+        <button id="zoom-in"></button>
+        <button id="zoom-out"></button>
+        <button id="zoom-reset"></button>
     </div>
 
     <div class="tt" id="tt"></div>
@@ -131,19 +131,17 @@
     <header class="n">
         <div class="nl">
             <a href="#" class="l">SATIVA</a>
-            <a href="#" class="lk" id="hdr-ldr">all projects</a>
-            <a href="#" class="lk" id="hdr-cmp">compare metrics</a>
+            <a href="#" class="lk" id="hdr-ldr"><i data-lucide="folder-git2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>codebases</a>
+            <a href="#" class="lk" id="hdr-cmp"><i data-lucide="bar-chart-3" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>compare</a>
         </div>
         <div class="m" id="m">
-            <div></div>
-            <div></div>
-            <div></div>
+            <i data-lucide="menu" id="burger-icon" style="width: 24px; height: 24px; color: #fff; cursor: pointer;"></i>
         </div>
         <div class="nr" id="nr">
-            <div class="st"><span class="sh">❤</span> security engineer</div>
-            <a href="#" class="b mob-only" id="mob-ldr">projects</a>
+            <div class="st"><i data-lucide="shield" style="width: 14px; height: 14px; color: var(--acc-go); margin-right: 4px;"></i>security engineer</div>
+            <a href="#" class="b mob-only" id="mob-ldr">codebases</a>
             <a href="#" class="b mob-only" id="mob-cmp">compare</a>
-            <a href="https://github.com/sativacdf" class="b" target="_blank">github</a>
+            <a href="https://github.com/sativacdf" class="b" target="_blank"><i data-lucide="github" style="width: 14px; height: 14px; margin-right: 6px;"></i>github</a>
         </div>
     </header>
 

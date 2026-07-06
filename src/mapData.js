@@ -1,7 +1,7 @@
 export const DAT = {
-    CHG: { n: 'Chronicle (Go)', c: 'Go / TUI / Bubble Tea', v: '23,400 LOC', desc: 'Secure, headless-compatible Discord bot manager featuring a custom terminal user interface, dynamic plugin loader, and isolated lua sandbox engines.' },
-    CHS: { n: 'Chronicle (JS)', c: 'NodeJS / DiscordJS', v: '9,800 LOC', desc: 'Lightweight asynchronous Javascript edition of the Chronicle agent pipeline featuring modular event parsing.' },
-    BBS: { n: 'Boobs Map Tracker', c: 'HTML5 / CSS3 / Vanilla JS', v: '18,800 LOC', desc: 'High-fidelity demographical representation plotting cup sizes, softness metrics, and fluid dynamic jiggle physics on interactive vectors.' }
+    CHG: { n: 'Chronicle (Go)', c: 'Go / Bubble Tea', v: '23,400 LOC', desc: 'Secure, headless-compatible Discord bot manager featuring a custom terminal user interface and isolated Lua script sandboxing.' },
+    CHS: { n: 'Chronicle (JS)', c: 'NodeJS / DiscordJS', v: '9,800 LOC', desc: 'Lightweight asynchronous JavaScript edition of the Chronicle agent pipeline with modular parsing engines.' },
+    BBS: { n: 'Boobs Map Tracker', c: 'HTML5 / Canvas', v: '18,800 LOC', desc: 'Interactive statistical visualizer displaying country demographics, size averages, and animated physical jiggle vector paths.' }
 };
 
 export const NAMES = {

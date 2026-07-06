@@ -41,7 +41,6 @@ const spotifySong = document.getElementById('spotify-song');
 const spotifyArtist = document.getElementById('spotify-artist');
 
 m.onclick = () => {
-    m.classList.toggle('open');
     nr.classList.toggle('show');
 };
 
@@ -111,6 +110,11 @@ async function init() {
     // Lanyard dynamic checking
     fetchLanyard();
     setInterval(fetchLanyard, 15000);
+    
+    // Render Lucide Icons
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 const showLeaderboard = () => {
