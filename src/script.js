@@ -37,6 +37,8 @@ gt.insertBefore(gtBg, gt.firstChild);
 gt.onclick = () => {
     mc.style.display = 'block';
     gt.classList.add('h');
+    const audio = new Audio('https://files.catbox.moe/7m6zyt.mp3');
+    audio.play().catch(e => {});
 };
 
 art.textContent = thighs;

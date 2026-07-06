@@ -21,7 +21,8 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: radial-gradient(circle at 10% 10%, #200508 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #0d0407 0%, var(--bg) 60%);
+    background: url('https://files.catbox.moe/e7tfw0.jpg') no-repeat center center;
+    background-size: cover;
     color: var(--fg);
 }
 
@@ -54,7 +55,7 @@ body {
 
 .a {
     white-space: pre;
-    font-size: 8px;
+    font-size: 16px;
     color: var(--acc-go);
     text-shadow: 0 0 25px rgba(255, 59, 48, 0.6);
     line-height: 1.15;
