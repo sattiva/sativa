@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sativa | Cresova</title>
-    <meta name="description" content="Portfolio">
+    <title>Sativa | cresova</title>
+    <meta name="description" content="Personal Portfolio Workspace">
     <link rel="stylesheet" href="src/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -12,18 +12,36 @@
 
     <div class="glowing-orb orb-1"></div>
     <div class="glowing-orb orb-2"></div>
-    <div class="glowing-orb orb-3"></div>
 
     <div class="gt" id="gt">
         <div class="a" id="gate-art"></div>
         <div class="gui">
             <div class="gtx">CLICK TO ENTER</div>
-            <div class="gst">thanks for visiting!</div>
+            <div class="gst">secure gateway established</div>
         </div>
     </div>
 
+    <!-- Top Navigation Header -->
+    <header class="n">
+        <div class="nl">
+            <a href="#" class="l">SATIVA</a>
+        </div>
+        <div class="project-nav-links">
+            <a href="#" class="p-link" data-id="CHG">Chronicle (Go)</a>
+            <a href="#" class="p-link" data-id="CHS">Chronicle (JS)</a>
+            <a href="https://boobs.lat" target="_blank" class="p-link" style="color: var(--acc-boobs);">boobs.lat</a>
+        </div>
+        <div class="m" id="m">
+            <i data-lucide="menu" id="burger-icon" style="width: 24px; height: 24px; color: #fff; cursor: pointer;"></i>
+        </div>
+        <div class="nr" id="nr">
+            <a href="https://github.com/sativacdf" class="b" target="_blank"><i data-lucide="github" style="width: 14px; height: 14px; margin-right: 6px;"></i>github</a>
+        </div>
+    </header>
+
+    <!-- Main Focused Profile Panel Centerpiece -->
     <div class="mc" id="mc">
-        <div class="workspace-layout">
+        <div class="center-focus-layout">
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="avatar-wrapper">
@@ -37,11 +55,11 @@
                 </div>
                 <div class="about-section">
                     <h3><i data-lucide="terminal" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>about</h3>
-                    <p>I build secure, low-level runtime environments, hardended servers, constant-time safety systems, and terminal automation tools.</p>
+                    <p>I build secure, low-level runtime environments, hardened servers, constant-time safety systems, and terminal automation tools.</p>
                 </div>
                 <div class="spotify-card" id="spotify-card">
                     <div class="spotify-header">
-                        <span class="spotify-logo"><i data-lucide="music" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>listening</span>
+                        <span class="spotify-logo"><i data-lucide="music" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"></i>listening</span>
                         <div class="sound-wave" id="spotify-wave">
                             <span></span><span></span><span></span>
                         </div>
@@ -55,47 +73,10 @@
                     </div>
                 </div>
             </div>
-
-            <div class="projects-deck">
-                <div class="project-card" id="CHG" data-id="CHG">
-                    <div class="card-glow" style="background: var(--acc-go);"></div>
-                    <div class="card-content">
-                        <div class="project-header">
-                            <span class="project-tag">GO / TUI</span>
-                            <span class="project-loc">23K LOC</span>
-                        </div>
-                        <h3>Chronicle (Go)</h3>
-                        <p>Secure, headless-compatible Discord bot manager featuring a custom terminal user interface and isolated Lua sandboxes.</p>
-                    </div>
-                </div>
-
-                <div class="project-card" id="CHS" data-id="CHS">
-                    <div class="card-glow" style="background: var(--acc-js);"></div>
-                    <div class="card-content">
-                        <div class="project-header">
-                            <span class="project-tag">NODEJS</span>
-                            <span class="project-loc">9.8K LOC</span>
-                        </div>
-                        <h3>Chronicle (JS)</h3>
-                        <p>Lightweight asynchronous JavaScript edition of the Chronicle agent pipeline featuring modular event parsing engines.</p>
-                    </div>
-                </div>
-
-                <a href="https://boobs.lat" target="_blank" class="project-card" id="BBS" style="text-decoration: none;">
-                    <div class="card-glow" style="background: var(--acc-boobs);"></div>
-                    <div class="card-content">
-                        <div class="project-header">
-                            <span class="project-tag">HTML5 / CANVAS</span>
-                            <span class="project-loc">18.8K LOC</span>
-                        </div>
-                        <h3>Boobs Map Tracker</h3>
-                        <p>High-fidelity demographical representation plotting average country cup sizes with fluid dynamic jiggle physics on interactive vectors.</p>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 
+    <!-- Hidden elements to keep JS references clean -->
     <div style="display:none;">
         <input type="text" id="cntry-srch">
         <div id="srch-sug"></div>
@@ -120,26 +101,18 @@
         <button id="zoom-in"></button>
         <button id="zoom-out"></button>
         <button id="zoom-reset"></button>
+        <a href="#" id="hdr-ldr"></a>
+        <a href="#" id="hdr-cmp"></a>
+        <a href="#" id="mob-ldr"></a>
+        <a href="#" id="mob-cmp"></a>
+        <div id="ldr-list"></div>
+        <div id="ldr-cls"></div>
+        <div id="ldr-mdl"></div>
+        <div id="cmp-cls"></div>
+        <div id="cmp-mdl"></div>
     </div>
 
     <div class="tt" id="tt"></div>
-
-    <header class="n">
-        <div class="nl">
-            <a href="#" class="l">SATIVA</a>
-            <a href="#" class="lk" id="hdr-ldr"><i data-lucide="folder-git2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>codebases</a>
-            <a href="#" class="lk" id="hdr-cmp"><i data-lucide="bar-chart-3" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>compare</a>
-        </div>
-        <div class="m" id="m">
-            <i data-lucide="menu" id="burger-icon" style="width: 24px; height: 24px; color: #fff; cursor: pointer;"></i>
-        </div>
-        <div class="nr" id="nr">
-            <div class="st"><i data-lucide="shield" style="width: 14px; height: 14px; color: var(--acc-go); margin-right: 4px;"></i>security engineer</div>
-            <a href="#" class="b mob-only" id="mob-ldr">codebases</a>
-            <a href="#" class="b mob-only" id="mob-cmp">compare</a>
-            <a href="https://github.com/sativacdf" class="b" target="_blank"><i data-lucide="github" style="width: 14px; height: 14px; margin-right: 6px;"></i>github</a>
-        </div>
-    </header>
 
     <div class="mdl" id="mdl">
         <div class="mdl-c">
@@ -151,33 +124,6 @@
                 <p>Complexity: <span class="mdl-jig">High</span></p>
                 <p>Maintenance Rating: <span class="mdl-soft">9.8/10</span></p>
                 <p style="margin-top: 10px; color: rgba(255,255,255,0.5); font-size: 0.85rem;" id="project-description"></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="mdl" id="ldr-mdl">
-        <div class="mdl-c" style="max-height: 80vh; overflow-y: auto;">
-            <div class="mdl-cls" id="ldr-cls">&times;</div>
-            <div class="mdl-h">ALL CODEBASES</div>
-            <div class="mdl-b" id="ldr-list" style="gap: 12px;"></div>
-        </div>
-    </div>
-
-    <div class="mdl" id="cmp-mdl">
-        <div class="mdl-c" style="max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <div class="mdl-cls" id="cmp-cls">&times;</div>
-            <div class="mdl-h">COMPARE CODEBASES</div>
-            <div class="mdl-b" style="display: flex; gap: 20px; flex-direction: column; margin-top: 15px;">
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 0.9rem; cursor: pointer;">
-                        <div id="cmp-body-1" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
-                        <label style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">PROJECT B</label>
-                        <div id="cmp-body-2" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    </div>
-                </div>
-                <div id="cmp-vis" style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px;"></div>
             </div>
         </div>
     </div>
