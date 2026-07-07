@@ -75,7 +75,8 @@ canvas#vfx-canvas {
     text-shadow: 0 0 25px rgba(255, 59, 48, 0.6);
     line-height: 1.15;
     text-align: center;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
+    display: table;
 }
 
 .gui {
@@ -83,14 +84,15 @@ canvas#vfx-canvas {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    background: rgba(12, 10, 14, 0.5);
-    border: 1px solid var(--border);
-    padding: 18px 36px;
+    background: rgba(12, 10, 14, 0.75);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    padding: 20px 40px;
     border-radius: 8px;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(255, 59, 48, 0.15);
 }
-.gtx { font-size: 0.85rem; letter-spacing: 0.25em; color: #fff; font-weight: 700; }
-.gst { font-size: 0.75rem; color: #555; }
+.gtx { font-size: 0.9rem; letter-spacing: 0.25em; color: #fff; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.gst { font-size: 0.75rem; color: #999; }
 
 /* Centered Layout Wrapper */
 .mc {
@@ -333,11 +335,25 @@ canvas#vfx-canvas {
 
 .mdl-b span { font-weight: 700; color: #fff; }
 
+/* Tilt and Hover effects */
+.profile-card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.profile-card:hover {
+    transform: translateY(-8px) scale(1.02) rotateX(2deg) rotateY(2deg);
+    border-color: rgba(255, 59, 48, 0.25);
+    box-shadow: 0 40px 80px rgba(255, 59, 48, 0.1), 0 20px 40px rgba(0, 0, 0, 0.9);
+}
+
 .m { display: none; }
 
 @media (max-width: 900px) {
     .m { display: block; }
     .project-nav-links { display: none; }
+    .n {
+        left: 20px;
+        right: 20px;
+    }
     .nr {
         position: absolute;
         top: 74px;
@@ -345,11 +361,11 @@ canvas#vfx-canvas {
         background: rgba(12, 10, 16, 0.95);
         border: 1px solid var(--border);
         backdrop-filter: blur(30px);
-        padding: 24px;
+        padding: 16px;
         border-radius: 12px;
         flex-direction: column;
-        width: 200px;
-        gap: 16px;
+        width: 180px;
+        gap: 12px;
         transform: translateY(-10px);
         opacity: 0;
         pointer-events: none;
@@ -361,5 +377,16 @@ canvas#vfx-canvas {
         transform: translateY(0);
         opacity: 1;
         pointer-events: auto;
+    }
+    .nr .b {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    .logo-ascii {
+        font-size: 5px !important;
+    }
+    .profile-card {
+        padding: 24px;
+        max-width: 90%;
     }
 }

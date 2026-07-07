@@ -130,16 +130,26 @@ if (canvas) {
     window.addEventListener('resize', resize);
     resize();
     
-    window.addEventListener('mousemove', (e) => {
+    const addParticles = (x, y) => {
         for (let i = 0; i < 3; i++) {
             pts.push({
-                x: e.clientX,
-                y: e.clientY,
+                x: x,
+                y: y,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
                 r: Math.random() * 3 + 1,
                 alpha: 1
             });
+        }
+    };
+    
+    window.addEventListener('mousemove', (e) => {
+        addParticles(e.clientX, e.clientY);
+    });
+    
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+            addParticles(e.touches[0].clientX, e.touches[0].clientY);
         }
     });
     
