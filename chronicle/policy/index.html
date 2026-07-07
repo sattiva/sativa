@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Chronicle</title>
+    <meta name="description" content="Chronicle Discord bot Privacy Policy — how we handle your data.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030204;
+            --fg: #f1f5f9;
+            --acc: #ff3b30;
+            --border: rgba(255,255,255,0.06);
+            --card: rgba(10,8,14,0.7);
+            --mono: 'JetBrains Mono', ui-monospace, monospace;
+            --sans: 'Inter', system-ui, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 80% 90%, rgba(255,59,48,0.07) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        nav {
+            position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 80px); max-width: 1100px; height: 60px;
+            background: var(--card); border: 1px solid var(--border);
+            backdrop-filter: blur(24px); border-radius: 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 28px; z-index: 100;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 0.9rem; color: #fff; text-decoration: none; }
+        .nav-brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 10px var(--acc); animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+        .nav-links { display: flex; align-items: center; gap: 28px; }
+        .nav-links a { color: #64748b; font-size: 0.8rem; text-decoration: none; font-family: var(--mono); transition: color 0.2s; }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a.active { color: var(--acc); }
+        .nav-back { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 8px; font-size: 0.75rem; font-family: var(--mono); text-decoration: none; border: 1px solid var(--border); color: #94a3b8; background: rgba(255,255,255,0.03); transition: all 0.2s; }
+        .nav-back:hover { border-color: rgba(255,255,255,0.15); color: #fff; }
+
+        main { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 140px 24px 80px; }
+        .doc-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em; color: var(--acc); text-transform: uppercase; margin-bottom: 12px; }
+        .doc-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; color: #fff; letter-spacing: -0.03em; margin-bottom: 8px; }
+        .doc-updated { font-family: var(--mono); font-size: 0.72rem; color: #475569; margin-bottom: 48px; }
+        .doc-intro { font-size: 0.9rem; color: #94a3b8; line-height: 1.75; margin-bottom: 48px; border-left: 2px solid rgba(255,59,48,0.3); padding-left: 18px; }
+
+        .doc-section { margin-bottom: 40px; }
+        .doc-section h2 {
+            font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--acc); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .doc-section h2::before { content: ''; display: block; width: 20px; height: 1px; background: var(--acc); opacity: 0.4; }
+        .doc-section p, .doc-section ul { font-size: 0.88rem; color: #94a3b8; line-height: 1.8; }
+        .doc-section ul { padding-left: 0; list-style: none; }
+        .doc-section ul li { padding: 6px 0 6px 18px; position: relative; }
+        .doc-section ul li::before { content: '—'; position: absolute; left: 0; color: rgba(255,59,48,0.4); font-family: var(--mono); }
+        .hi { color: #cbd5e1; font-weight: 600; }
+
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 28px 24px; display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; gap: 12px; }
+        footer span { font-family: var(--mono); font-size: 0.72rem; color: #334155; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 0.72rem; color: #475569; text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: #94a3b8; }
+        @media (max-width: 700px) { nav { width: calc(100% - 32px); padding: 0 18px; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/chronicle/" class="nav-brand">
+            <div class="nav-brand-dot"></div>
+            chronicle
+        </a>
+        <div class="nav-links">
+            <a href="/chronicle/">home</a>
+            <a href="/chronicle/tos/">terms</a>
+            <a href="/chronicle/policy/" class="active">privacy</a>
+        </div>
+        <a href="/chronicle/" class="nav-back">&larr; back</a>
+    </nav>
+
+    <main>
+        <div class="doc-label">legal</div>
+        <h1 class="doc-title">Privacy Policy</h1>
+        <p class="doc-updated">Last Updated: July 2026</p>
+        <p class="doc-intro">We value your privacy. This policy outlines how <strong>Chronicle</strong> ("the Bot") handles user data.</p>
+
+        <div class="doc-section">
+            <h2>1. Data We Collect</h2>
+            <p>To function properly, the Bot may collect and process:</p>
+            <ul>
+                <li><span class="hi">Discord User IDs</span> &mdash; Stored to track command usage, AI token balances, and developer authorizations.</li>
+                <li><span class="hi">Message Content</span> &mdash; Cached temporarily in memory (e.g. for the <code style="font-family:var(--mono);font-size:0.82em;color:var(--acc);">.snipe</code> and <code style="font-family:var(--mono);font-size:0.82em;color:var(--acc);">.editsnipe</code> commands).</li>
+                <li><span class="hi">Server IDs &amp; Audit Logs</span> &mdash; Logged to support moderation tracking, anti-nuke features, and server configuration.</li>
+            </ul>
+        </div>
+
+        <div class="doc-section">
+            <h2>2. Caching &amp; Retention</h2>
+            <ul>
+                <li><span class="hi">Deleted/Edited Messages</span> &mdash; Kept in temporary memory caches (limited to the last 100 entries per channel) and cleared upon bot restart or manual purge.</li>
+                <li><span class="hi">Permanent Data</span> &mdash; Configuration settings, AI balances, and moderation case logs are stored in a local database file (<code style="font-family:var(--mono);font-size:0.82em;color:var(--acc);">bots.db</code> and <code style="font-family:var(--mono);font-size:0.82em;color:var(--acc);">palantir.db</code>) and are not sent to any remote third party.</li>
+            </ul>
+        </div>
+
+        <div class="doc-section">
+            <h2>3. Data Sharing</h2>
+            <p>We do <strong>not</strong> sell, share, or distribute user data. All collected information remains local to the bot&rsquo;s runtime instance.</p>
+        </div>
+
+        <div class="doc-section">
+            <h2>4. User Rights</h2>
+            <p>Users can request the deletion of their cached data or configuration entries by contacting the bot host/owner.</p>
+        </div>
+    </main>
+
+    <footer>
+        <span>&copy; 2026 sativa/cfd &middot; chronicle</span>
+        <div class="footer-links">
+            <a href="/chronicle/tos/">terms of service</a>
+            <a href="/chronicle/policy/">privacy policy</a>
+            <a href="/">&larr; home</a>
+        </div>
+    </footer>
+</body>
+</html>

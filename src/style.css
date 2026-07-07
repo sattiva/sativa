@@ -68,6 +68,13 @@ canvas#vfx-canvas {
 }
 .gt.h { opacity: 0; visibility: hidden; }
 
+.gate-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
 .a {
     white-space: pre;
     font-size: 16px;
@@ -75,8 +82,8 @@ canvas#vfx-canvas {
     text-shadow: 0 0 25px rgba(255, 59, 48, 0.6);
     line-height: 1.15;
     text-align: center;
-    margin: 0 auto 20px auto;
-    display: table;
+    margin: 0;
+    display: block;
 }
 
 .gui {
@@ -84,12 +91,10 @@ canvas#vfx-canvas {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    background: rgba(12, 10, 14, 0.75);
-    border: 1px solid rgba(255, 59, 48, 0.2);
-    padding: 20px 40px;
-    border-radius: 8px;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 0 30px rgba(255, 59, 48, 0.15);
+    padding: 16px 0 0 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 .gtx { font-size: 0.9rem; letter-spacing: 0.25em; color: #fff; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
 .gst { font-size: 0.75rem; color: #999; }
@@ -105,10 +110,18 @@ canvas#vfx-canvas {
 
 .center-focus-layout {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.mob-projects {
+    display: none;
+}
+
+.nr-socials {
+    display: flex;
 }
 
 .profile-card {
@@ -249,6 +262,9 @@ canvas#vfx-canvas {
 .l { color: #fff; font-size: 0.95rem; font-weight: 900; letter-spacing: 0.15em; text-decoration: none; }
 
 .project-nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 24px;
 }
@@ -358,35 +374,63 @@ canvas#vfx-canvas {
         position: absolute;
         top: 74px;
         right: 0;
-        background: rgba(12, 10, 16, 0.95);
+        background: rgba(12, 10, 16, 0.98);
         border: 1px solid var(--border);
         backdrop-filter: blur(30px);
-        padding: 16px;
+        padding: 20px;
         border-radius: 12px;
         flex-direction: column;
-        width: 180px;
-        gap: 12px;
+        width: 220px;
+        gap: 16px;
         transform: translateY(-10px);
         opacity: 0;
         pointer-events: none;
         transition: all 0.2s ease;
         display: flex;
         z-index: 99;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
     .nr.show {
         transform: translateY(0);
         opacity: 1;
         pointer-events: auto;
     }
-    .nr .b {
+    .mob-projects {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 16px;
+        width: 100%;
+    }
+    .mob-projects .p-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+    }
+    .nr-socials {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    .nr-socials .b {
         margin-left: 0 !important;
         width: 100%;
     }
     .logo-ascii {
-        font-size: 5px !important;
+        font-size: 1.2vw !important;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    .mc {
+        padding: 110px 15px 40px 15px;
+        overflow-y: auto;
     }
     .profile-card {
         padding: 24px;
-        max-width: 90%;
+        max-width: 100%;
+        width: 100%;
     }
 }

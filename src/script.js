@@ -81,6 +81,7 @@ async function init() {
             const id = link.getAttribute('data-id');
             if (!id) return;
             e.preventDefault();
+            nr.classList.remove('show');
             const d = DAT[id];
             if (d) {
                 mdlH.textContent = d.n.toUpperCase();
