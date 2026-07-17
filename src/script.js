@@ -46,7 +46,7 @@ logoArt.textContent = sativaText;
 
 async function fetchLanyard() {
     try {
-        const res = await fetch('https://api.lanyard.rest/v1/users/1281996800340791452');
+        const res = await fetch('https://api.lanyard.rest/v1/users/423953946827161610');
         const data = await res.json();
         if (data.success && data.data) {
             const user = data.data.discord_user;
