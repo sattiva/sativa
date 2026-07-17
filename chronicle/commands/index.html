@@ -48,11 +48,10 @@
         .page-sub { font-family: var(--mono); font-size: 0.75rem; color: #52525b; }
         .page-sub .count { color: var(--acc); font-weight: 700; }
 
-        .search-wrap {
-            position: relative; margin-bottom: 36px;
-        }
+        .controls { display: flex; gap: 12px; margin-bottom: 36px; }
+        .search-wrap { position: relative; flex: 1; }
         .search-input {
-            width: 100%; padding: 14px 18px 14px 44px;
+            width: 100%; padding: 14px 18px 14px 42px;
             border-radius: 12px; border: 1px solid var(--border);
             background: var(--card); color: #fafafa; font-family: var(--mono);
             font-size: 0.85rem; outline: none; transition: border-color 0.2s;
@@ -60,14 +59,27 @@
         .search-input:focus { border-color: rgba(196,163,90,0.3); }
         .search-input::placeholder { color: #3f3f46; }
         .search-icon {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            color: #52525b; pointer-events: none;
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            pointer-events: none; display: flex; align-items: center;
         }
+        .search-icon svg { width: 14px; height: 14px; color: #52525b; }
+
+        .cat-select {
+            padding: 14px 36px 14px 16px;
+            border-radius: 12px; border: 1px solid var(--border);
+            background: var(--card); color: #fafafa; font-family: var(--mono);
+            font-size: 0.82rem; outline: none; cursor: pointer;
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2352525b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center;
+            min-width: 180px; transition: border-color 0.2s;
+        }
+        .cat-select:focus { border-color: rgba(196,163,90,0.3); }
+        .cat-select option { background: #0e0c14; color: #e4e4e7; }
 
         .empty-state {
             text-align: center; padding: 60px 24px; color: #52525b;
         }
-        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
         .empty-state p { font-family: var(--mono); font-size: 0.85rem; }
 
         .category { margin-bottom: 48px; }
@@ -76,11 +88,9 @@
             margin-bottom: 16px; padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
-        .cat-icon {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: rgba(196,163,90,0.08); border: 1px solid rgba(196,163,90,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.85rem; flex-shrink: 0;
+        .cat-marker {
+            width: 3px; height: 20px; border-radius: 2px;
+            background: var(--acc); flex-shrink: 0;
         }
         .cat-name { font-size: 0.9rem; font-weight: 700; color: #d4d4d8; text-transform: capitalize; }
         .cat-count { font-family: var(--mono); font-size: 0.7rem; color: #52525b; }
@@ -90,10 +100,11 @@
         .cmd-card {
             background: var(--card); border: 1px solid var(--border);
             border-radius: 10px; padding: 14px 16px;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: border-color 0.2s, transform 0.2s, background 0.2s;
             display: flex; align-items: flex-start; gap: 10px;
+            cursor: pointer;
         }
-        .cmd-card:hover { border-color: rgba(196,163,90,0.12); transform: translateY(-1px); }
+        .cmd-card:hover { border-color: rgba(196,163,90,0.2); transform: translateY(-1px); background: rgba(16,14,22,0.95); }
 
         .cmd-slash-badge {
             flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%;
@@ -115,6 +126,61 @@
             margin-left: 6px; vertical-align: middle;
         }
 
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s;
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+
+        .modal {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; width: 90%; max-width: 500px;
+            padding: 32px; position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 20px;
+            background: none; border: none; color: #52525b;
+            font-size: 1.5rem; cursor: pointer; font-family: var(--sans);
+            line-height: 1; transition: color 0.2s; padding: 4px 8px;
+        }
+        .modal-close:hover { color: #a1a1aa; }
+
+        .modal-cmd-name {
+            font-family: var(--mono); font-size: 1.3rem; font-weight: 700;
+            color: #fafafa; margin-bottom: 6px; word-break: break-word;
+        }
+        .modal-cmd-cat {
+            display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+            padding: 3px 10px; border-radius: 4px; text-transform: capitalize;
+            background: rgba(196,163,90,0.08); color: var(--acc);
+            margin-bottom: 20px;
+        }
+        .modal-section { margin-bottom: 18px; }
+        .modal-label {
+            font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em;
+            color: #52525b; text-transform: uppercase; margin-bottom: 6px;
+        }
+        .modal-desc { font-size: 0.85rem; color: #a1a1aa; line-height: 1.7; }
+        .modal-syntax {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            border-radius: 8px; padding: 14px 18px; font-family: var(--mono);
+            font-size: 0.82rem; color: #d4d4d8;
+        }
+        .modal-syntax .hl { color: var(--acc); }
+        .modal-syntax .dim { color: #52525b; }
+        .modal-type-row {
+            display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.78rem;
+        }
+        .type-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        }
+        .type-dot.prefix { background: #52525b; }
+        .type-dot.slash { background: var(--acc); box-shadow: 0 0 6px rgba(196,163,90,0.4); }
+
         footer {
             position: relative; z-index: 1; border-top: 1px solid var(--border);
             padding: 28px 24px; display: flex; align-items: center;
@@ -130,6 +196,8 @@
             nav { width: calc(100% - 32px); padding: 0 18px; }
             .nav-links { display: none; }
             .cmd-grid { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            .cat-select { min-width: auto; }
         }
     </style>
 </head>
@@ -154,18 +222,48 @@
             </p>
         </div>
 
-        <div class="search-wrap">
-            <span class="search-icon">&#128269;</span>
-            <input type="text" class="search-input" id="search" placeholder="search commands... (e.g. ban, balance, music)" autocomplete="off">
+        <div class="controls">
+            <div class="search-wrap">
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" class="search-input" id="search" placeholder="search commands..." autocomplete="off">
+            </div>
+            <select class="cat-select" id="cat-filter">
+                <option value="all">all categories</option>
+            </select>
         </div>
 
         <div class="empty-state" id="empty-state" style="display:none;">
-            <span class="empty-icon">&#128270;</span>
             <p>no commands match your search</p>
         </div>
 
         <div id="commands-container"></div>
     </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-cmd-name" id="modal-name"></div>
+            <div class="modal-cmd-cat" id="modal-cat"></div>
+
+            <div class="modal-section">
+                <div class="modal-label">Description</div>
+                <div class="modal-desc" id="modal-desc"></div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-label">Type</div>
+                <div class="modal-type-row" id="modal-type"></div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-label">Usage</div>
+                <div class="modal-syntax" id="modal-syntax"></div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <span>&copy; 2026 sativa/cfd &middot; chronicle</span>
@@ -177,34 +275,40 @@
     </footer>
 
     <script>
-        const CAT_ICONS = {
-            economy: '',
-            fun: '',
-            general: '',
-            moderation: '',
-            music: '',
-            roleplay: '',
-            tickets: '',
-            utility: ''
-        };
-
         const CAT_ORDER = ['moderation', 'economy', 'fun', 'music', 'roleplay', 'tickets', 'general', 'utility'];
 
         let allCommands = {};
 
-        async function load() {
-            try {
-                const res = await fetch('https://raw.githubusercontent.com/sativacdf/storage/refs/heads/main/commands_export.json');
-                allCommands = await res.json();
-            } catch (e) {
-                allCommands = {};
-            }
-            render(allCommands);
+        function esc(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        function countTotal(data) {
+            let n = 0;
+            for (const k in data) n += data[k].length;
+            return n;
+        }
+
+        function populateDropdown(data) {
+            const sel = document.getElementById('cat-filter');
+            // keep "all" option, rebuild rest
+            while (sel.options.length > 1) sel.remove(1);
+            CAT_ORDER.forEach(cat => {
+                if (data[cat] && data[cat].length > 0) {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = cat + ' (' + data[cat].length + ')';
+                    sel.appendChild(opt);
+                }
+            });
         }
 
         function render(data) {
             const container = document.getElementById('commands-container');
             const searchVal = document.getElementById('search').value.toLowerCase().trim();
+            const catFilter = document.getElementById('cat-filter').value;
 
             container.innerHTML = '';
 
@@ -214,6 +318,8 @@
             const categories = CAT_ORDER.filter(c => data[c] && data[c].length > 0);
 
             categories.forEach(cat => {
+                if (catFilter !== 'all' && cat !== catFilter) return;
+
                 let cmds = data[cat];
 
                 if (searchVal) {
@@ -229,12 +335,13 @@
                 const section = document.createElement('div');
                 section.className = 'category';
 
-                section.innerHTML =
-                    '<div class="category-header">' +
-                        '<div class="cat-icon">' + (CAT_ICONS[cat] || '📌') + '</div>' +
-                        '<span class="cat-name">' + cat + '</span>' +
-                        '<span class="cat-count">' + cmds.length + ' commands</span>' +
-                    '</div>';
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.innerHTML =
+                    '<div class="cat-marker"></div>' +
+                    '<span class="cat-name">' + cat + '</span>' +
+                    '<span class="cat-count">' + cmds.length + ' commands</span>';
+                section.appendChild(header);
 
                 const grid = document.createElement('div');
                 grid.className = 'cmd-grid';
@@ -248,6 +355,7 @@
                             '<div class="cmd-trigger">.' + esc(c.trigger) + (c.slash ? '<span class="badge">/</span>' : '') + '</div>' +
                             '<div class="cmd-desc">' + esc(c.description) + '</div>' +
                         '</div>';
+                    card.addEventListener('click', () => openModal(c));
                     grid.appendChild(card);
                     totalVisible++;
                 });
@@ -257,24 +365,40 @@
             });
 
             document.getElementById('empty-state').style.display = anyCategoryVisible ? 'none' : 'block';
-
             document.getElementById('total-count').textContent = totalVisible;
         }
 
-        function esc(s) {
-            const d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
+        function openModal(cmd) {
+            document.getElementById('modal-name').textContent = '.' + cmd.trigger;
+            document.getElementById('modal-cat').textContent = cmd.category;
+            document.getElementById('modal-desc').textContent = cmd.description;
+
+            const typeRow = document.getElementById('modal-type');
+            if (cmd.slash) {
+                typeRow.innerHTML =
+                    '<span class="type-dot slash"></span> Slash command <span style="color:#52525b;margin-left:6px;">(also available as prefix)</span>';
+            } else {
+                typeRow.innerHTML =
+                    '<span class="type-dot prefix"></span> Prefix command <span style="color:#52525b;margin-left:6px;">(.trigger)</span>';
+            }
+
+            const syntaxEl = document.getElementById('modal-syntax');
+            let syntaxHtml = '<span class="hl">.' + esc(cmd.trigger) + '</span>';
+            if (cmd.slash) {
+                syntaxHtml += '\n<span class="hl">/' + esc(cmd.trigger) + '</span>';
+            }
+            syntaxHtml += ' <span class="dim">-- triggers the command</span>';
+            syntaxEl.innerHTML = syntaxHtml;
+
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.add('show');
         }
 
-        // count all for initial display
-        function countTotal(data) {
-            let n = 0;
-            for (const k in data) n += data[k].length;
-            return n;
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
         }
 
-        // initial load
+        // Init
         (async () => {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/sativacdf/storage/refs/heads/main/commands_export.json');
@@ -283,12 +407,18 @@
 
             document.getElementById('total-count').textContent = countTotal(allCommands);
             document.getElementById('cat-count').textContent = Object.keys(allCommands).length;
-
+            populateDropdown(allCommands);
             render(allCommands);
         })();
 
-        document.getElementById('search').addEventListener('input', () => {
-            render(allCommands);
+        document.getElementById('search').addEventListener('input', () => render(allCommands));
+        document.getElementById('cat-filter').addEventListener('change', () => render(allCommands));
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal-overlay')) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
     </script>
 </body>
