@@ -105,9 +105,217 @@ async function init() {
     fetchLanyard();
     setInterval(fetchLanyard, 15000);
     
+    setupTabNav();
+    setupTerm();
+    setupSynth();
+    setupGame();
+    setupTelemetry();
+
     if (window.lucide) {
         window.lucide.createIcons();
     }
+}
+
+function setupTabNav() {
+    const btns = document.querySelectorAll('.db-tab-btn');
+    const panes = document.querySelectorAll('.db-pane');
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('active'));
+            panes.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            const tabId = btn.getAttribute('data-tab');
+            document.getElementById(`pane-${tabId}`).classList.add('active');
+        });
+    });
+}
+
+function setupTerm() {
+    const termScr = document.getElementById('term-scr');
+    const termIn = document.getElementById('term-in');
+    
+    const prn = (txt, cls = '') => {
+        const div = document.createElement('div');
+        div.className = `term-line ${cls}`;
+        div.innerHTML = txt;
+        termScr.appendChild(div);
+        termScr.scrollTop = termScr.scrollHeight;
+    };
+
+    termIn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const raw = termIn.value.trim();
+            termIn.value = '';
+            if (!raw) return;
+            prn(`sativa@guest:~$ ${raw}`, 'usr-cmd');
+            
+            const args = raw.toLowerCase().split(' ');
+            const cmd = args[0];
+            
+            switch (cmd) {
+                case 'help':
+                    prn('Commands: help, hack, matrix, joke, play, clear, about, languages');
+                    break;
+                case 'clear':
+                    termScr.innerHTML = '';
+                    break;
+                case 'about':
+                    prn('I go by sativa and like to build stuff. Hardened systems engineering and cryptanalysis.');
+                    break;
+                case 'languages':
+                    prn('Active skills: Golang, JavaScript, Python, Java.');
+                    break;
+                case 'play':
+                    playTone(440, 'triangle', 0.3);
+                    prn('Tone generated: A4 (440Hz)');
+                    break;
+                case 'joke':
+                    const jokes = [
+                        "There are 10 types of people: those who understand binary, and those who don't.",
+                        "Why do programmers wear glasses? Because they can't C#.",
+                        "['hip', 'hip'] (hip hip array!)"
+                    ];
+                    prn(jokes[Math.floor(Math.random() * jokes.length)]);
+                    break;
+                case 'hack':
+                    prn('Accessing mainframe...', 'acc-go');
+                    let step = 0;
+                    const runHack = () => {
+                        const logs = [
+                            '[INFO] Bypassing secure gateway firewall...',
+                            '[WARN] Packet injection detected. Reshuffling token payload.',
+                            '[OK] Port 8080 decrypted. Payload injection complete.',
+                            '[SUCCESS] Access granted. Sativa cluster is online.'
+                        ];
+                        if (step < logs.length) {
+                            prn(logs[step]);
+                            step++;
+                            setTimeout(runHack, 600);
+                        }
+                    };
+                    setTimeout(runHack, 600);
+                    break;
+                case 'matrix':
+                    prn('Streaming cipher sequence...');
+                    let lineCount = 0;
+                    const stream = setInterval(() => {
+                        let line = '';
+                        for (let i = 0; i < 40; i++) {
+                            line += Math.random() > 0.5 ? '1' : '0';
+                        }
+                        prn(line, 'acc-go');
+                        lineCount++;
+                        if (lineCount > 15) clearInterval(stream);
+                    }, 100);
+                    break;
+                default:
+                    prn(`Command not found: ${cmd}. Type 'help' for suggestions.`);
+            }
+        }
+    });
+}
+
+let actCtx = null;
+function playTone(freq, wave, dur) {
+    try {
+        if (!actCtx) actCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (actCtx.state === 'suspended') actCtx.resume();
+        const osc = actCtx.createOscillator();
+        const gNode = actCtx.createGain();
+        osc.type = wave;
+        osc.frequency.setValueAtTime(freq, actCtx.currentTime);
+        gNode.gain.setValueAtTime(0.1, actCtx.currentTime);
+        gNode.gain.exponentialRampToValueAtTime(0.01, actCtx.currentTime + dur);
+        osc.connect(gNode);
+        gNode.connect(actCtx.destination);
+        osc.start();
+        osc.stop(actCtx.currentTime + dur);
+    } catch (e) {}
+}
+
+function setupSynth() {
+    const waveSel = document.getElementById('synth-wave-type');
+    document.querySelectorAll('.synth-key').forEach(key => {
+        key.addEventListener('click', () => {
+            const freq = parseFloat(key.getAttribute('data-note'));
+            const wave = waveSel.value;
+            playTone(freq, wave, 0.2);
+            key.classList.add('active');
+            setTimeout(() => key.classList.remove('active'), 150);
+        });
+    });
+}
+
+function setupGame() {
+    let creds = 0;
+    let cps = 0;
+    
+    const credsEl = document.getElementById('game-credits');
+    const cpsEl = document.getElementById('game-cps');
+    const coreBtn = document.getElementById('game-core-btn');
+    
+    const upgs = {
+        gpu: { cost: 15, cps: 0.5, count: 0, el: document.getElementById('shop-gpu'), costEl: document.getElementById('cost-gpu') },
+        quantum: { cost: 100, cps: 4.0, count: 0, el: document.getElementById('shop-quantum'), costEl: document.getElementById('cost-quantum') },
+        ai: { cost: 500, cps: 25.0, count: 0, el: document.getElementById('shop-ai'), costEl: document.getElementById('cost-ai') }
+    };
+
+    const upd = () => {
+        credsEl.textContent = Math.floor(creds);
+        cpsEl.textContent = cps.toFixed(1);
+        for (const k in upgs) {
+            const u = upgs[k];
+            u.costEl.textContent = `Cost: ${u.cost}`;
+            if (creds >= u.cost) {
+                u.el.style.opacity = '1';
+                u.el.style.pointerEvents = 'auto';
+            } else {
+                u.el.style.opacity = '0.5';
+                u.el.style.pointerEvents = 'none';
+            }
+        }
+    };
+
+    coreBtn.addEventListener('click', () => {
+        creds += 1;
+        playTone(300 + Math.random() * 200, 'sine', 0.05);
+        upd();
+    });
+
+    for (const k in upgs) {
+        const u = upgs[k];
+        u.el.addEventListener('click', () => {
+            if (creds >= u.cost) {
+                creds -= u.cost;
+                u.count++;
+                cps += u.cps;
+                u.cost = Math.floor(u.cost * 1.25);
+                playTone(600, 'square', 0.1);
+                upd();
+            }
+        });
+    }
+
+    setInterval(() => {
+        if (cps > 0) {
+            creds += cps / 10;
+            upd();
+        }
+    }, 100);
+    
+    upd();
+}
+
+function setupTelemetry() {
+    const latEl = document.getElementById('node-latency');
+    const ldEl = document.getElementById('node-load');
+    
+    setInterval(() => {
+        const lat = Math.floor(10 + Math.random() * 15);
+        const ld = (Math.random() * 0.08 + 0.01).toFixed(3);
+        latEl.textContent = `${lat} ms`;
+        ldEl.textContent = `${ld}%`;
+    }, 2000);
 }
 
 mdlCls.onclick = () => {

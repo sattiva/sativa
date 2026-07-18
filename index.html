@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sativa | cresova</title>
+    <title>Sativa | 18blunts</title>
     <meta name="description" content="Personal Portfolio Workspace">
     <link rel="stylesheet" href="src/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -51,47 +51,151 @@
     </header>
 
     <div class="mc" id="mc">
-        <div class="center-focus-layout" style="flex-direction: column; gap: 20px;">
-            <pre id="sativa-logo" class="logo-ascii" style="color: var(--acc-go); font-family: monospace; font-size: 8px; line-height: 1.15; pointer-events: none; text-shadow: 0 0 15px rgba(255,59,48,0.5); text-align: center; white-space: pre; margin-bottom: 10px;"></pre>
-            <div class="profile-card">
-                <div class="profile-header">
-                    <a href="https://discord.com/users/423953946827161610" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 20px;">
-                        <div class="avatar-wrapper">
-                            <img id="discord-avatar" src="" alt="Avatar" style="display:none;">
-                            <div class="status-indicator" id="discord-status-dot"></div>
+        <div class="layout-container">
+            <div class="db-left">
+                <pre id="sativa-logo" class="logo-ascii" style="color: var(--acc-go); font-family: monospace; font-size: 8px; line-height: 1.15; pointer-events: none; text-shadow: 0 0 15px rgba(255,59,48,0.5); text-align: center; white-space: pre; margin-bottom: 10px;"></pre>
+                <div class="db-panel">
+                    <div class="db-tabs">
+                        <button class="db-tab-btn active" data-tab="term">
+                            <i data-lucide="terminal" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>terminal
+                        </button>
+                        <button class="db-tab-btn" data-tab="synth">
+                            <i data-lucide="music" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>synth
+                        </button>
+                        <button class="db-tab-btn" data-tab="game">
+                            <i data-lucide="shield-alert" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>cyber-core
+                        </button>
+                    </div>
+                    <div class="db-content">
+                        <div class="db-pane active" id="pane-term">
+                            <div class="term-screen" id="term-scr">
+                                <div class="term-line">System initialized. Type 'help' for commands.</div>
+                            </div>
+                            <div class="term-input-line">
+                                <span class="term-prompt">sativa@guest:~$</span>
+                                <input type="text" id="term-in" autocomplete="off">
+                            </div>
                         </div>
-                        <div class="profile-meta">
-                            <h2 id="discord-name">sativa</h2>
-                            <span id="discord-tag">@cresova</span>
-                            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-top: 2px;">he/him</div>
+                        <div class="db-pane" id="pane-synth">
+                            <div class="synth-grid">
+                                <button class="synth-key" data-note="261.63">C4</button>
+                                <button class="synth-key" data-note="293.66">D4</button>
+                                <button class="synth-key" data-note="329.63">E4</button>
+                                <button class="synth-key" data-note="349.23">F4</button>
+                                <button class="synth-key" data-note="392.00">G4</button>
+                                <button class="synth-key" data-note="440.00">A4</button>
+                                <button class="synth-key" data-note="493.88">B4</button>
+                                <button class="synth-key" data-note="523.25">C5</button>
+                                <button class="synth-key" data-note="587.33">D5</button>
+                                <button class="synth-key" data-note="659.25">E5</button>
+                                <button class="synth-key" data-note="698.46">F5</button>
+                                <button class="synth-key" data-note="783.99">G5</button>
+                                <button class="synth-key" data-note="880.00">A5</button>
+                                <button class="synth-key" data-note="987.77">B5</button>
+                                <button class="synth-key" data-note="1046.50">C6</button>
+                                <button class="synth-key" data-note="1174.66">D6</button>
+                            </div>
+                            <div class="synth-controls">
+                                <label style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+                                    Waveform:
+                                    <select id="synth-wave-type" style="background: #111; color: #fff; border: 1px solid var(--border); padding: 4px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.75rem;">
+                                        <option value="sine">Sine</option>
+                                        <option value="square">Square</option>
+                                        <option value="sawtooth">Sawtooth</option>
+                                        <option value="triangle">Triangle</option>
+                                    </select>
+                                </label>
+                            </div>
                         </div>
-                    </a>
-                </div>
-                <div class="about-section">
-                    <h3><i data-lucide="terminal" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>about</h3>
-                    <p>I go by sativa and like to build stuff. </p>
-                </div>
-                <div class="languages-section" style="margin-top: -10px;">
-                    <h3 style="font-size: 0.75rem; letter-spacing: 0.25em; color: #555; margin-bottom: 8px; text-transform: uppercase;"><i data-lucide="code-2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>languages</h3>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <span style="font-size: 0.7rem; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-go); display: flex; align-items: center; gap: 4px;"><i data-lucide="binary" style="width: 12px; height: 12px;"></i>golang</span>
-                        <span style="font-size: 0.7rem; background: rgba(255, 159, 10, 0.1); border: 1px solid rgba(255, 159, 10, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-boobs); display: flex; align-items: center; gap: 4px;"><i data-lucide="file-json" style="width: 12px; height: 12px;"></i>javascript</span>
-                        <span style="font-size: 0.7rem; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); padding: 4px 8px; border-radius: 4px; color: #007aff; display: flex; align-items: center; gap: 4px;"><i data-lucide="terminal" style="width: 12px; height: 12px;"></i>python</span>
-                        <span style="font-size: 0.7rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 4px 8px; border-radius: 4px; color: #cbd5e1; display: flex; align-items: center; gap: 4px;"><i data-lucide="coffee" style="width: 12px; height: 12px;"></i>java</span>
+                        <div class="db-pane" id="pane-game">
+                            <div class="game-container">
+                                <div class="game-stats">
+                                    <div class="stat-item">Core Credits: <span id="game-credits">0</span></div>
+                                    <div class="stat-item">CPS: <span id="game-cps">0</span></div>
+                                </div>
+                                <div class="game-core-wrapper">
+                                    <div class="game-core" id="game-core-btn">
+                                        <div class="game-core-pulse"></div>
+                                        <i data-lucide="zap" style="width: 32px; height: 32px; color: #fff; position: relative; z-index: 2;"></i>
+                                    </div>
+                                </div>
+                                <div class="game-shop">
+                                    <button class="shop-btn" id="shop-gpu">
+                                        <span>Buy GPU Miner (+0.5/s)</span>
+                                        <span class="cost" id="cost-gpu">Cost: 15</span>
+                                    </button>
+                                    <button class="shop-btn" id="shop-quantum">
+                                        <span>Buy Quantum Node (+4/s)</span>
+                                        <span class="cost" id="cost-quantum">Cost: 100</span>
+                                    </button>
+                                    <button class="shop-btn" id="shop-ai">
+                                        <span>Buy Hacking AI (+25/s)</span>
+                                        <span class="cost" id="cost-ai">Cost: 500</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="spotify-card" id="spotify-card">
-                    <div class="spotify-header">
-                        <span class="spotify-logo"><i data-lucide="music" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"></i>listening</span>
-                        <div class="sound-wave" id="spotify-wave">
-                            <span></span><span></span><span></span>
+            </div>
+            <div class="db-right">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <a href="https://discord.com/users/423953946827161610" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 20px;">
+                            <div class="avatar-wrapper">
+                                <img id="discord-avatar" src="" alt="Avatar" style="display:none;">
+                                <div class="status-indicator" id="discord-status-dot"></div>
+                            </div>
+                            <div class="profile-meta">
+                                <h2 id="discord-name">sativa</h2>
+                                <span id="discord-tag">@18blunts</span>
+                                <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-top: 2px;">he/him</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="about-section">
+                        <h3><i data-lucide="terminal" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>about</h3>
+                        <p>I go by sativa and like to build stuff. Hardened systems engineering, cybersecurity, cryptanalysis, and decoupled software architectures.</p>
+                    </div>
+                    <div class="languages-section">
+                        <h3><i data-lucide="code-2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>languages</h3>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <span style="font-size: 0.7rem; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-go); display: flex; align-items: center; gap: 4px;"><i data-lucide="binary" style="width: 12px; height: 12px;"></i>golang</span>
+                            <span style="font-size: 0.7rem; background: rgba(255, 159, 10, 0.1); border: 1px solid rgba(255, 159, 10, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--acc-boobs); display: flex; align-items: center; gap: 4px;"><i data-lucide="file-json" style="width: 12px; height: 12px;"></i>javascript</span>
+                            <span style="font-size: 0.7rem; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); padding: 4px 8px; border-radius: 4px; color: #007aff; display: flex; align-items: center; gap: 4px;"><i data-lucide="terminal" style="width: 12px; height: 12px;"></i>python</span>
+                            <span style="font-size: 0.7rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 4px 8px; border-radius: 4px; color: #cbd5e1; display: flex; align-items: center; gap: 4px;"><i data-lucide="coffee" style="width: 12px; height: 12px;"></i>java</span>
                         </div>
                     </div>
-                    <div class="spotify-details">
-                        <img id="spotify-art" src="" alt="Album Art">
-                        <div class="spotify-text">
-                            <div class="song-title" id="spotify-song">Track</div>
-                            <div class="song-artist" id="spotify-artist">Artist</div>
+                    <div class="system-status">
+                        <h3><i data-lucide="cpu" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>system telemetry</h3>
+                        <div class="status-grid">
+                            <div class="status-cell">
+                                <span class="lbl">LATENCY</span>
+                                <span class="val" id="node-latency">-- ms</span>
+                            </div>
+                            <div class="status-cell">
+                                <span class="lbl">SYS LOAD</span>
+                                <span class="val" id="node-load">0.02%</span>
+                            </div>
+                            <div class="status-cell">
+                                <span class="lbl">UPLINK</span>
+                                <span class="val" style="color: #22c55e;">ONLINE</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="spotify-card" id="spotify-card">
+                        <div class="spotify-header">
+                            <span class="spotify-logo"><i data-lucide="music" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"></i>listening</span>
+                            <div class="sound-wave" id="spotify-wave">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="spotify-details">
+                            <img id="spotify-art" src="" alt="Album Art">
+                            <div class="spotify-text">
+                                <div class="song-title" id="spotify-song">Track</div>
+                                <div class="song-artist" id="spotify-artist">Artist</div>
+                            </div>
                         </div>
                     </div>
                 </div>
