@@ -1,11 +1,11 @@
 :root {
-    --bg: #222027;
+    --bg: #09080c;
     --fg: #f1f5f9;
     --acc-go: #ff3b30;
     --acc-js: #ff453a;
     --acc-boobs: #ff9f0a;
     --border: rgba(255, 255, 255, 0.08);
-    --card-bg: rgba(45, 43, 53, 0.7);
+    --card-bg: rgba(15, 13, 20, 0.45);
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -21,7 +21,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: radial-gradient(circle at 10% 10%, #3e262c 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #291a32 0%, var(--bg) 60%);
+    background: radial-gradient(circle at 10% 10%, #200d11 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #120917 0%, var(--bg) 60%);
     color: var(--fg);
     cursor: crosshair;
 }

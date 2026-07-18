@@ -90,60 +90,40 @@ function renderMusicLog(curr) {
     if (!listEl) return;
     listEl.innerHTML = '';
     
-    let tracks = [];
+    let track = null;
     if (curr) {
-        tracks.push({
+        track = {
             s: curr.song,
             a: curr.artist,
             art: curr.album_art_url,
             active: true
-        });
-    }
-    
-    const lastSaved = localStorage.getItem('sativa-last-spotify');
-    if (lastSaved) {
-        const parsed = JSON.parse(lastSaved);
-        if (!curr || curr.song !== parsed.s) {
-            tracks.push({
+        };
+    } else {
+        const lastSaved = localStorage.getItem('sativa-last-spotify');
+        if (lastSaved) {
+            const parsed = JSON.parse(lastSaved);
+            track = {
                 s: parsed.s,
                 a: parsed.a,
                 art: parsed.art,
                 active: false,
                 last: true
-            });
+            };
         }
     }
     
-    const fallbacks = [
-        { s: "Starboy", a: "The Weeknd", art: "https://files.catbox.moe/e7tfw0.jpg" },
-        { s: "After Hours", a: "The Weeknd", art: "https://files.catbox.moe/e7tfw0.jpg" },
-        { s: "PRIDE.", a: "Kendrick Lamar", art: "https://files.catbox.moe/e7tfw0.jpg" }
-    ];
-    
-    for (const f of fallbacks) {
-        if (tracks.length >= 3) break;
-        if (!tracks.some(t => t.s.toLowerCase() === f.s.toLowerCase())) {
-            tracks.push({
-                s: f.s,
-                a: f.a,
-                art: f.art,
-                active: false
-            });
-        }
-    }
-    
-    tracks.slice(0, 3).forEach(t => {
+    if (track) {
         const div = document.createElement('div');
-        div.className = `music-log-item ${t.active ? 'active-now' : ''}`;
+        div.className = `music-log-item ${track.active ? 'active-now' : ''}`;
         div.innerHTML = `
-            <img src="${t.art || 'https://files.catbox.moe/e7tfw0.jpg'}" onerror="this.onerror=null; this.src='https://files.catbox.moe/e7tfw0.jpg';" alt="Art">
+            <img src="${track.art || 'https://files.catbox.moe/e7tfw0.jpg'}" onerror="this.onerror=null; this.src='https://files.catbox.moe/e7tfw0.jpg';" alt="Art">
             <div class="music-log-details">
-                <span class="song-title">${t.s}</span>
-                <span class="song-artist">${t.active ? 'Listening Now' : (t.last ? 'Last Played' : t.a)}</span>
+                <span class="song-title">${track.s}</span>
+                <span class="song-artist">${track.active ? 'Listening Now' : 'Last Played: ' + track.a}</span>
             </div>
         `;
         listEl.appendChild(div);
-    });
+    }
 }
 
 async function init() {
@@ -263,7 +243,14 @@ function setupActivityFeed() {
 
 function setupTelemetry() {
     const latEl = document.getElementById('node-latency');
-    const pngEl = document.getElementById('node-ping');
+    const viewEl = document.getElementById('view-count');
+    
+    if (viewEl) {
+        let count = parseInt(localStorage.getItem('sativa-views') || '1342');
+        count++;
+        localStorage.setItem('sativa-views', count.toString());
+        viewEl.textContent = count.toLocaleString();
+    }
     
     const updTime = () => {
         const timeEl = document.getElementById('user-time');
@@ -300,11 +287,9 @@ function setupTelemetry() {
     setInterval(updTime, 1000);
     
     setInterval(() => {
-        if (latEl && pngEl) {
+        if (latEl) {
             const lat = Math.floor(8 + Math.random() * 12);
-            const png = Math.floor(lat + (Math.random() * 6 - 3));
             latEl.textContent = `${lat} ms`;
-            pngEl.textContent = `${png} ms`;
         }
     }, 2500);
 }
