@@ -115,9 +115,9 @@ function renderMusicLog(curr) {
     }
     
     const fallbacks = [
-        { s: "Starboy", a: "The Weeknd", art: "https://i.scdn.co/image/ab67616d0000b2734718dec6954e4477c7406a4e" },
-        { s: "After Hours", a: "The Weeknd", art: "https://i.scdn.co/image/ab67616d0000b273881d8d8313690aeaa9efec11" },
-        { s: "PRIDE.", a: "Kendrick Lamar", art: "https://i.scdn.co/image/ab67616d0000b273cdb64cc658ae96b2c393ea29" }
+        { s: "Starboy", a: "The Weeknd", art: "https://files.catbox.moe/e7tfw0.jpg" },
+        { s: "After Hours", a: "The Weeknd", art: "https://files.catbox.moe/e7tfw0.jpg" },
+        { s: "PRIDE.", a: "Kendrick Lamar", art: "https://files.catbox.moe/e7tfw0.jpg" }
     ];
     
     for (const f of fallbacks) {
@@ -136,7 +136,7 @@ function renderMusicLog(curr) {
         const div = document.createElement('div');
         div.className = `music-log-item ${t.active ? 'active-now' : ''}`;
         div.innerHTML = `
-            <img src="${t.art || 'https://files.catbox.moe/e7tfw0.jpg'}" alt="Art">
+            <img src="${t.art || 'https://files.catbox.moe/e7tfw0.jpg'}" onerror="this.onerror=null; this.src='https://files.catbox.moe/e7tfw0.jpg';" alt="Art">
             <div class="music-log-details">
                 <span class="song-title">${t.s}</span>
                 <span class="song-artist">${t.active ? 'Listening Now' : (t.last ? 'Last Played' : t.a)}</span>
