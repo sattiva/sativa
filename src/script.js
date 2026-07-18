@@ -65,6 +65,10 @@ async function fetchLanyard() {
             
             statusDot.className = 'status-indicator ' + data.data.discord_status;
             
+            if (user.public_flags !== undefined) {
+                renderBadges(user.public_flags);
+            }
+            
             let curr = null;
             if (data.data.listening_to_spotify && data.data.spotify) {
                 curr = data.data.spotify;
@@ -359,6 +363,71 @@ if (canvas) {
         requestAnimationFrame(loop);
     };
     loop();
+}
+
+function renderBadges(flags) {
+    const badgesEl = document.getElementById('discord-badges');
+    if (!badgesEl) return;
+    badgesEl.innerHTML = '';
+    
+    const activeDev = 1 << 22;
+    const staff = 1 << 0;
+    const partner = 1 << 1;
+    const bravery = 1 << 6;
+    const brilliance = 1 << 7;
+    const balance = 1 << 8;
+    const early = 1 << 9;
+
+    const list = [];
+    if (flags & activeDev) {
+        list.push({
+            name: "Active Developer",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5865F2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 3px rgba(88,101,242,0.6));"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>`
+        });
+    }
+    if (flags & staff) {
+        list.push({
+            name: "Discord Staff",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`
+        });
+    }
+    if (flags & partner) {
+        list.push({
+            name: "Partnered Server Owner",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
+        });
+    }
+    if (flags & early) {
+        list.push({
+            name: "Early Supporter",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
+        });
+    }
+    if (flags & bravery) {
+        list.push({
+            name: "HypeSquad Bravery",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`
+        });
+    }
+    if (flags & brilliance) {
+        list.push({
+            name: "HypeSquad Brilliance",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f1c40f" stroke-width="2.5"><polygon points="12 2 22 12 12 22 2 12 12 2"></polygon></svg>`
+        });
+    }
+    if (flags & balance) {
+        list.push({
+            name: "HypeSquad Balance",
+            svg: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>`
+        });
+    }
+
+    list.forEach(b => {
+        const span = document.createElement('span');
+        span.innerHTML = b.svg;
+        span.title = b.name;
+        badgesEl.appendChild(span);
+    });
 }
 
 init();
