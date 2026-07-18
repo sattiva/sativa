@@ -461,4 +461,30 @@ if (kWrap && kMenu) {
     });
 }
 
+function initTilt() {
+    const cards = document.querySelectorAll('.profile-card, .contact-card, .proj-card, .system-status, .spotify-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            
+            const tiltX = ((y - cy) / cy) * -8;
+            const tiltY = ((x - cx) / cx) * 8;
+            
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02)`;
+            card.style.transition = 'transform 0.05s ease';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+            card.style.transition = 'transform 0.5s ease';
+        });
+    });
+}
+
+initTilt();
 init();
