@@ -74,7 +74,7 @@ gt.onclick = () => {
     }, 1500);
 };
 
-art.textContent = thighs;
+if (art) art.textContent = thighs;
 
 async function fetchLanyard() {
     try {
