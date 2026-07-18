@@ -37,12 +37,38 @@ canvas#vfx-canvas {
     position: fixed;
     border-radius: 50%;
     filter: blur(150px);
-    opacity: 0.15;
+    opacity: 0.22;
     z-index: 0;
     pointer-events: none;
+    transition: all 0.5s ease;
 }
-.orb-1 { width: 500px; height: 500px; background: var(--acc-go); top: 20%; left: 20%; }
-.orb-2 { width: 400px; height: 400px; background: var(--acc-js); bottom: 20%; right: 20%; }
+.orb-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--acc-go);
+    top: 10%;
+    left: 10%;
+    animation: float-orb-1 25s infinite alternate ease-in-out;
+}
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: var(--acc-js);
+    bottom: 10%;
+    right: 10%;
+    animation: float-orb-2 30s infinite alternate ease-in-out;
+}
+
+@keyframes float-orb-1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(120px, 60px) scale(1.15); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes float-orb-2 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-140px, -70px) scale(0.85); }
+    100% { transform: translate(0, 0) scale(1); }
+}
 
 /* Entry Gate */
 .gt {
@@ -115,7 +141,7 @@ canvas#vfx-canvas {
     margin: 0 auto;
     display: flex;
     gap: 40px;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: center;
 }
 
@@ -129,6 +155,7 @@ canvas#vfx-canvas {
 
 .db-right {
     flex: 0 0 390px;
+    display: flex;
 }
 
 .profile-card {
@@ -136,9 +163,9 @@ canvas#vfx-canvas {
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 36px;
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(50px);
     width: 100%;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -150,10 +177,10 @@ canvas#vfx-canvas {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 20px;
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(50px);
     display: flex;
     flex-direction: column;
-    height: 520px;
+    flex: 1;
     overflow: hidden;
 }
 
