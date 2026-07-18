@@ -1075,3 +1075,87 @@ canvas#vfx-canvas {
     20% { transform: rotate(-2deg) translateX(-10px); }
     100% { transform: rotate(0deg); }
 }
+
+/* Beaker Bong CSS */
+.bong-wrap {
+  position: relative;
+  width: 200px;
+  height: 320px;
+  transform-origin: 50% 90%;
+  transition: transform 0.1s;
+}
+.base {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  width: 160px;
+  height: 140px;
+  background: linear-gradient(180deg, rgba(200,230,255,0.06) 0%, rgba(180,220,250,0.04) 50%, rgba(160,210,240,0.03) 100%);
+  border-radius: 0 0 80px 80px;
+  z-index: 2;
+  box-shadow: inset 0 0 30px rgba(200,230,255,0.05), inset 0 0 60px rgba(180,220,250,0.03), 0 0 20px rgba(200,230,255,0.02);
+  border: 1px solid rgba(200,230,255,0.08);
+  border-top: none;
+}
+.base-rim {
+  position: absolute;
+  left: 18px;
+  bottom: 138px;
+  width: 164px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(200,230,255,0.1), rgba(255,255,255,0.15), rgba(200,230,255,0.1), transparent);
+  border-radius: 2px;
+  z-index: 3;
+}
+.neck {
+  position: absolute;
+  left: 60px;
+  bottom: 140px;
+  width: 80px;
+  height: 140px;
+  background: linear-gradient(180deg, rgba(200,230,255,0.05), rgba(180,220,250,0.04), rgba(200,230,255,0.05));
+  z-index: 2;
+  box-shadow: inset 0 0 20px rgba(200,230,255,0.04), 0 0 15px rgba(200,230,255,0.02);
+  border-left: 1px solid rgba(200,230,255,0.08);
+  border-right: 1px solid rgba(200,230,255,0.08);
+}
+.mouthpiece {
+  position: absolute;
+  left: 52px;
+  bottom: 280px;
+  width: 96px;
+  height: 25px;
+  background: linear-gradient(180deg, rgba(200,230,255,0.07), rgba(180,220,250,0.05));
+  border-radius: 8px 8px 4px 4px;
+  z-index: 2;
+  box-shadow: inset 0 0 15px rgba(200,230,255,0.04);
+  border: 1px solid rgba(200,230,255,0.1);
+  border-bottom: none;
+}
+.downstem {
+  position: absolute;
+  left: 85px;
+  bottom: 80px;
+  width: 30px;
+  height: 80px;
+  background: linear-gradient(90deg, rgba(200,230,255,0.06), rgba(180,220,250,0.08), rgba(200,230,255,0.06));
+  border-radius: 0 0 15px 15px;
+  z-index: 1;
+  transform: rotate(-15deg);
+  transform-origin: top center;
+  box-shadow: inset 0 0 10px rgba(200,230,255,0.04);
+  border: 1px solid rgba(200,230,255,0.06);
+}
+.bowl {
+  position: absolute;
+  left: 105px;
+  bottom: 55px;
+  width: 45px;
+  height: 35px;
+  background: linear-gradient(180deg, rgba(200,230,255,0.08), rgba(180,220,250,0.06), rgba(200,230,255,0.08));
+  border-radius: 0 0 22px 22px;
+  z-index: 2;
+  transform: rotate(-15deg);
+  box-shadow: inset 0 0 15px rgba(200,230,255,0.04), 0 2px 8px rgba(0,0,0,0.2);
+  border: 1px solid rgba(200,230,255,0.1);
+}

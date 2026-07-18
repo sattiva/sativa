@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bong Animation</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  display:flex; flex-direction:column; align-items:center;
+  gap:40px; padding:40px;
+  background:radial-gradient(ellipse at center, #0f0f0f 0%, #050505 100%);
+  min-height:100vh; font-family:'Segoe UI',sans-serif; color:#e0e0e0;
+}
+
+.stage {
+  position:relative; width:520px; height:380px;
+  display:flex; align-items:flex-end; justify-content:center;
+  overflow:hidden; border:1px solid #1a1a1a; border-radius:16px;
+  background:radial-gradient(ellipse at 50% 80%, #0d0d0d 0%, #030303 100%);
+  box-shadow:inset 0 0 100px rgba(0,0,0,0.9), 0 4px 24px rgba(0,0,0,0.6);
+  cursor:pointer; transition:box-shadow 0.3s;
+}
+.stage:hover { box-shadow:inset 0 0 100px rgba(0,0,0,0.9), 0 4px 24px rgba(0,0,0,0.6), 0 0 30px rgba(100,200,255,0.03); }
+.stage-label {
+  position:absolute; top:14px; left:18px;
+  font-size:9px; text-transform:uppercase; letter-spacing:4px;
+  color:#2a2a2a; font-weight:800; pointer-events:none;
+}
+.stage-hint {
+  position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+  font-size:9px; text-transform:uppercase; letter-spacing:3px;
+  color:#1a1a1a; font-weight:700; pointer-events:none;
+  transition:opacity 0.3s;
+}
+.stage:hover .stage-hint { opacity:0.5; }
+
+.bong-wrap {
+  position:relative; width:200px; height:320px;
+  transform-origin:50% 90%; transition:transform 0.1s;
+}
+
+/* BASE / BEAKER - thick glass bottom */
+.base {
+  position:absolute; left:20px; bottom:0; width:160px; height:140px;
+  background:linear-gradient(180deg, rgba(200,230,255,0.06) 0%, rgba(180,220,250,0.04) 50%, rgba(160,210,240,0.03) 100%);
+  border-radius:0 0 80px 80px;
+  z-index:2;
+  box-shadow:
+    inset 0 0 30px rgba(200,230,255,0.05),
+    inset 0 0 60px rgba(180,220,250,0.03),
+    0 0 20px rgba(200,230,255,0.02);
+  border:1px solid rgba(200,230,255,0.08);
+  border-top:none;
+}
+.base::before {
+  content:''; position:absolute; left:8px; top:10px; right:8px; bottom:8px;
+  border-radius:0 0 72px 72px;
+  border:1px solid rgba(200,230,255,0.06);
+  border-top:none;
+}
+.base::after {
+  content:''; position:absolute; left:20px; top:20px; width:30px; height:60px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+  border-radius:0 0 15px 15px;
+}
+
+/* Glass thickness highlight */
+.base-rim {
+  position:absolute; left:18px; bottom:138px; width:164px; height:4px;
+  background:linear-gradient(90deg, transparent, rgba(200,230,255,0.1), rgba(255,255,255,0.15), rgba(200,230,255,0.1), transparent);
+  border-radius:2px;
+  z-index:3;
+}
+
+/* NECK - straight tube */
+.neck {
+  position:absolute; left:60px; bottom:140px; width:80px; height:140px;
+  background:linear-gradient(180deg, rgba(200,230,255,0.05), rgba(180,220,250,0.04), rgba(200,230,255,0.05));
+  z-index:2;
+  box-shadow:
+    inset 0 0 20px rgba(200,230,255,0.04),
+    0 0 15px rgba(200,230,255,0.02);
+  border-left:1px solid rgba(200,230,255,0.08);
+  border-right:1px solid rgba(200,230,255,0.08);
+}
+.neck::before {
+  content:''; position:absolute; left:8px; top:0; width:20px; height:100%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02), transparent);
+}
+.neck::after {
+  content:''; position:absolute; right:5px; top:0; width:1px; height:100%;
+  background:linear-gradient(180deg, transparent, rgba(200,230,255,0.06), transparent);
+}
+
+/* MOUTHPIECE - flared top */
+.mouthpiece {
+  position:absolute; left:52px; bottom:280px; width:96px; height:25px;
+  background:linear-gradient(180deg, rgba(200,230,255,0.07), rgba(180,220,250,0.05));
+  border-radius:8px 8px 4px 4px;
+  z-index:2;
+  box-shadow:inset 0 0 15px rgba(200,230,255,0.04);
+  border:1px solid rgba(200,230,255,0.1);
+  border-bottom:none;
+}
+.mouthpiece::before {
+  content:''; position:absolute; left:10px; top:4px; width:30px; height:15px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+  border-radius:4px;
+}
+.mouthpiece-rim {
+  position:absolute; left:50px; bottom:305px; width:100px; height:5px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.12), rgba(200,230,255,0.15), rgba(255,255,255,0.12), transparent);
+  border-radius:3px;
+  z-index:3;
+}
+
+/* DOWNSTEM */
+.downstem {
+  position:absolute; left:85px; bottom:80px; width:30px; height:80px;
+  background:linear-gradient(90deg, rgba(200,230,255,0.06), rgba(180,220,250,0.08), rgba(200,230,255,0.06));
+  border-radius:0 0 15px 15px;
+  z-index:1;
+  transform:rotate(-15deg);
+  transform-origin:top center;
+  box-shadow:inset 0 0 10px rgba(200,230,255,0.04);
+  border:1px solid rgba(200,230,255,0.06);
+}
+.downstem::before {
+  content:''; position:absolute; left:5px; top:0; width:8px; height:100%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+}
+
+/* BOWL - attached to downstem */
+.bowl {
+  position:absolute; left:105px; bottom:55px; width:45px; height:35px;
+  background:linear-gradient(180deg, rgba(200,230,255,0.08), rgba(180,220,250,0.06), rgba(200,230,255,0.08));
+  border-radius:0 0 22px 22px;
+  z-index:2;
+  transform:rotate(-15deg);
+  box-shadow:inset 0 0 15px rgba(200,230,255,0.04), 0 2px 8px rgba(0,0,0,0.2);
+  border:1px solid rgba(200,230,255,0.1);
+}
+.bowl::before {
+  content:''; position:absolute; left:8px; top:4px; width:15px; height:20px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+  border-radius:0 0 10px 10px;
+}
+.bowl-rim {
+  position:absolute; left:102px; bottom:88px; width:51px; height:4px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), rgba(200,230,255,0.12), rgba(255,255,255,0.1), transparent);
+  border-radius:2px;
+  z-index:3;
+  transform:rotate(-15deg);
+}
+
+/* BOWL CONTENTS - green herb */
+.bowl-herb {
+  position:absolute; left:110px; bottom:58px; width:35px; height:25px;
+  background:linear-gradient(180deg, #4a6a2a, #3d5a20, #4a6a2a);
+  border-radius:0 0 17px 17px;
+  z-index:1;
+  opacity:0;
+  transform:rotate(-15deg);
+  overflow:hidden;
+}
+.bowl-herb::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(90deg, transparent 0px, transparent 4px, rgba(60,90,30,0.4) 4px, rgba(60,90,30,0.4) 6px);
+}
+
+/* WATER LINE */
+.water {
+  position:absolute; left:22px; bottom:2px; width:156px; height:0px;
+  background:linear-gradient(180deg, rgba(100,180,220,0.15), rgba(80,160,200,0.2), rgba(60,140,180,0.15));
+  border-radius:0 0 78px 78px;
+  z-index:1;
+  opacity:0;
+  overflow:hidden;
+}
+.water::before {
+  content:''; position:absolute; left:0; top:0; right:0; height:3px;
+  background:linear-gradient(90deg, transparent, rgba(200,240,255,0.3), rgba(255,255,255,0.2), rgba(200,240,255,0.3), transparent);
+}
+.water::after {
+  content:''; position:absolute; left:20px; top:5px; width:40px; height:2px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  border-radius:1px;
+}
+
+/* BUBBLES in water */
+.bubbles {
+  position:absolute; left:22px; bottom:2px; width:156px; height:85px;
+  z-index:2; pointer-events:none;
+  opacity:0;
+}
+
+/* SMOKE in chamber */
+.chamber-smoke {
+  position:absolute; left:62px; bottom:145px; width:76px; height:0px;
+  background:linear-gradient(180deg, rgba(200,200,200,0.08), rgba(200,200,200,0.04), transparent);
+  border-radius:0 0 38px 38px;
+  z-index:1;
+  opacity:0;
+  pointer-events:none;
+}
+
+/* EXHALE SMOKE */
+.exhale-smoke {
+  position:absolute; left:80px; top:-40px; width:100px; height:120px;
+  pointer-events:none; z-index:10; opacity:0;
+}
+.smoke-puff {
+  position:absolute; width:20px; height:20px;
+  background:radial-gradient(circle, rgba(200,200,200,0.15), transparent);
+  border-radius:50%;
+  opacity:0;
+  filter:blur(8px);
+}
+
+/* SPARKS from lighter */
+.spark-container {
+  position:absolute; left:120px; bottom:70px; width:60px; height:60px;
+  pointer-events:none; z-index:15;
+}
+.spark {
+  position:absolute; width:2px; height:2px;
+  background:#ffaa44;
+  border-radius:50%;
+  box-shadow:0 0 4px #ff8844, 0 0 8px #ff6622;
+  opacity:0;
+}
+
+/* LIGHTER FLAME near bowl */
+.flame {
+  position:absolute; left:115px; bottom:75px; width:0; height:0;
+  background:radial-gradient(ellipse at 50% 85%, rgba(255,220,80,0.9) 0%, rgba(255,160,40,0.7) 30%, rgba(255,80,20,0.4) 60%, transparent 85%);
+  border-radius:50% 50% 50% 50% / 70% 70% 30% 30%;
+  transform:rotate(15deg);
+  opacity:0;
+  z-index:14;
+  filter:blur(0.3px);
+}
+.flame::before {
+  content:''; position:absolute; left:30%; top:25%; width:40%; height:45%;
+  background:radial-gradient(ellipse, rgba(255,255,220,0.6), transparent);
+  border-radius:50%;
+}
+
+/* WATER SPILL when it falls */
+.water-spill {
+  position:absolute; left:50%; bottom:0; width:0; height:0;
+  background:radial-gradient(ellipse, rgba(100,180,220,0.3), transparent);
+  border-radius:50%;
+  opacity:0;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* ANIMATIONS */
+
+@keyframes tiltBong {
+  0% { transform:rotate(0deg); }
+  30% { transform:rotate(-25deg); }
+  60% { transform:rotate(-20deg); }
+  100% { transform:rotate(-22deg); }
+}
+@keyframes tiltBack {
+  0% { transform:rotate(-22deg); }
+  100% { transform:rotate(0deg); }
+}
+@keyframes fallOver {
+  0% { transform:rotate(-22deg); }
+  30% { transform:rotate(45deg); }
+  60% { transform:rotate(75deg); }
+  100% { transform:rotate(78deg); }
+}
+@keyframes fallBounce {
+  0% { transform:rotate(78deg); }
+  20% { transform:rotate(76deg); }
+  40% { transform:rotate(78deg); }
+  60% { transform:rotate(77deg); }
+  100% { transform:rotate(78deg); }
+}
+
+@keyframes waterRise {
+  0% { height:0; opacity:0; }
+  100% { height:85px; opacity:1; }
+}
+@keyframes waterSlosh {
+  0%, 100% { transform:rotate(0deg); }
+  25% { transform:rotate(-3deg); }
+  75% { transform:rotate(2deg); }
+}
+@keyframes waterSpill {
+  0% { width:0; height:0; opacity:0; }
+  30% { width:200px; height:40px; opacity:0.6; }
+  100% { width:300px; height:60px; opacity:0.3; }
+}
+
+@keyframes bubbleRise {
+  0% { opacity:0; transform:translateY(0) scale(0.5); }
+  10% { opacity:1; }
+  100% { opacity:0; transform:translateY(-80px) scale(1.2); }
+}
+@keyframes bubblePop {
+  0% { opacity:0; transform:scale(0); }
+  50% { opacity:0.8; transform:scale(1); }
+  100% { opacity:0; transform:scale(1.5); }
+}
+
+@keyframes smokeFill {
+  0% { height:0; opacity:0; }
+  100% { height:130px; opacity:0.6; }
+}
+@keyframes smokeSwirl {
+  0%, 100% { transform:translateX(0); }
+  50% { transform:translateX(5px); }
+}
+
+@keyframes flameAppear {
+  0% { width:0; height:0; opacity:0; }
+  100% { width:14px; height:28px; opacity:1; }
+}
+@keyframes flameFlicker {
+  0%, 100% { transform:rotate(15deg) scaleY(1) scaleX(1); }
+  25% { transform:rotate(10deg) scaleY(1.3) scaleX(0.8); }
+  50% { transform:rotate(20deg) scaleY(0.85) scaleX(1.15); }
+  75% { transform:rotate(12deg) scaleY(1.1) scaleX(0.9); }
+}
+@keyframes flameRetreat {
+  0% { width:14px; height:28px; opacity:1; }
+  100% { width:0; height:0; opacity:0; }
+}
+
+@keyframes sparkFly {
+  0% { opacity:1; transform:translate(0,0) scale(1); }
+  100% { opacity:0; transform:translate(var(--sx), var(--sy)) scale(0); }
+}
+
+@keyframes smokeExhale {
+  0% { opacity:0; }
+  20% { opacity:1; }
+  100% { opacity:0; }
+}
+@keyframes smokePuffRise {
+  0% { opacity:0; transform:translateY(0) scale(0.3) rotate(0deg); }
+  20% { opacity:0.6; }
+  100% { opacity:0; transform:translateY(-100px) scale(2.5) rotate(var(--rot)); }
+}
+
+/* Animation classes */
+.anim-tilt .bong-wrap { animation:tiltBong 0.8s ease-out forwards; }
+.anim-tilt .water { animation:waterRise 1s ease-out forwards, waterSlosh 2s ease-in-out infinite 1s; }
+.anim-tilt .bubbles { opacity:1; }
+.anim-tilt .bowl-herb { opacity:1; transition:opacity 0.5s 0.5s; }
+
+.anim-hit .bong-wrap { animation:tiltBack 0.6s ease-out forwards; }
+.anim-hit .flame { animation:flameAppear 0.3s ease-out forwards, flameFlicker 0.6s ease-in-out infinite; }
+.anim-hit .chamber-smoke { animation:smokeFill 2s ease-out forwards, smokeSwirl 3s ease-in-out infinite 2s; }
+.anim-hit .exhale-smoke { animation:smokeExhale 3s ease-out forwards 2s; }
+.anim-hit .bubbles { animation:bubblePop 0.3s ease-out forwards; }
+
+.anim-fall .bong-wrap { animation:fallOver 1.2s cubic-bezier(0.22,1,0.36,1) forwards, fallBounce 0.5s ease-out forwards 1.2s; }
+.anim-fall .water { animation:waterSpill 0.8s ease-out forwards 0.5s; }
+.anim-fall .flame { animation:flameRetreat 0.2s ease-out forwards; }
+.anim-fall .chamber-smoke { opacity:0; transition:opacity 0.3s; }
+.anim-fall .exhale-smoke { opacity:0; transition:opacity 0.3s; }
+
+.btn {
+  background:#0a0a0a; border:1px solid #222; color:#444;
+  padding:12px 28px; border-radius:10px; cursor:pointer;
+  font-size:10px; text-transform:uppercase; letter-spacing:3px;
+  transition:all 0.2s; font-weight:700;
+}
+.btn:hover { border-color:#444; color:#777; background:#0f0f0f; }
+.btn:active { transform:scale(0.95); }
+.btn:disabled { opacity:0.25; cursor:not-allowed; }
+
+h2 {
+  margin:0; font-weight:300; letter-spacing:8px;
+  text-transform:uppercase; font-size:11px; color:#1a1a1a;
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<h2>The Ritual</h2>
+
+<div class="stage" id="stage" onclick="doSequence()">
+  <div class="stage-label">Click to Rip</div>
+  <div class="stage-hint">Click the bong</div>
+  <div class="bong-wrap" id="bong">
+    <!-- Mouthpiece -->
+    <div class="mouthpiece-rim"></div>
+    <div class="mouthpiece"></div>
+
+    <!-- Neck -->
+    <div class="neck"></div>
+
+    <!-- Base -->
+    <div class="base-rim"></div>
+    <div class="base"></div>
+
+    <!-- Water -->
+    <div class="water" id="water"></div>
+
+    <!-- Bubbles container -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <!-- Downstem -->
+    <div class="downstem"></div>
+
+    <!-- Bowl -->
+    <div class="bowl-rim"></div>
+    <div class="bowl"></div>
+    <div class="bowl-herb"></div>
+
+    <!-- Chamber smoke -->
+    <div class="chamber-smoke" id="chamberSmoke"></div>
+
+    <!-- Exhale smoke -->
+    <div class="exhale-smoke" id="exhaleSmoke"></div>
+
+    <!-- Flame -->
+    <div class="flame" id="flame"></div>
+
+    <!-- Sparks -->
+    <div class="spark-container" id="sparks"></div>
+
+    <!-- Water spill -->
+    <div class="water-spill" id="waterSpill"></div>
+  </div>
+</div>
+
+<div style="display:flex;gap:12px;">
+  <button class="btn" id="btnReset" onclick="doReset()">Reset</button>
+</div>
+
+<script>
+(function() {
+  var bong = document.getElementById('bong');
+  var stage = document.getElementById('stage');
+  var water = document.getElementById('water');
+  var waterSpill = document.getElementById('waterSpill');
+  var bubblesContainer = document.getElementById('bubbles');
+  var chamberSmoke = document.getElementById('chamberSmoke');
+  var exhaleSmoke = document.getElementById('exhaleSmoke');
+  var flame = document.getElementById('flame');
+  var sparksContainer = document.getElementById('sparks');
+  var isAnimating = false;
+  var bubbleTimer = null;
+
+  function createBubble() {
+    var bubble = document.createElement('div');
+    bubble.style.position = 'absolute';
+    bubble.style.width = (3 + Math.random() * 5) + 'px';
+    bubble.style.height = bubble.style.width;
+    bubble.style.background = 'radial-gradient(circle, rgba(200,240,255,0.4), transparent)';
+    bubble.style.borderRadius = '50%';
+    bubble.style.left = (15 + Math.random() * 120) + 'px';
+    bubble.style.bottom = (5 + Math.random() * 20) + 'px';
+    bubble.style.animation = 'bubbleRise ' + (1 + Math.random() * 1.5) + 's ease-out forwards';
+    bubblesContainer.appendChild(bubble);
+    setTimeout(function() { bubble.remove(); }, 3000);
+  }
+
+  function createSparks() {
+    for (var i = 0; i < 12; i++) {
+      var spark = document.createElement('div');
+      spark.className = 'spark';
+      var angle = (Math.random() * 120 - 60) * Math.PI / 180;
+      var dist = 10 + Math.random() * 40;
+      spark.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+      spark.style.setProperty('--sy', Math.sin(angle) * dist - 20 + 'px');
+      spark.style.left = (20 + Math.random() * 20) + 'px';
+      spark.style.top = (20 + Math.random() * 20) + 'px';
+      spark.style.animation = 'sparkFly ' + (0.2 + Math.random() * 0.4) + 's ease-out forwards';
+      sparksContainer.appendChild(spark);
+    }
+  }
+
+  function createExhaleSmoke() {
+    for (var i = 0; i < 8; i++) {
+      var puff = document.createElement('div');
+      puff.className = 'smoke-puff';
+      puff.style.left = (10 + Math.random() * 60) + 'px';
+      puff.style.top = (20 + Math.random() * 40) + 'px';
+      var size = 15 + Math.random() * 25;
+      puff.style.width = size + 'px';
+      puff.style.height = size + 'px';
+      puff.style.setProperty('--rot', (Math.random() * 30 - 15) + 'deg');
+      puff.style.animation = 'smokePuffRise ' + (2 + Math.random() * 2) + 's ease-out forwards';
+      exhaleSmoke.appendChild(puff);
+      setTimeout(function() { puff.remove(); }, 4000);
+    }
+  }
+
+  window.doSequence = function() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Reset
+    bong.className = 'bong-wrap';
+    sparksContainer.innerHTML = '';
+    exhaleSmoke.innerHTML = '';
+    chamberSmoke.style.height = '0';
+    chamberSmoke.style.opacity = '0';
+    flame.style.width = '0';
+    flame.style.height = '0';
+    flame.style.opacity = '0';
+    waterSpill.style.width = '0';
+    waterSpill.style.height = '0';
+    waterSpill.style.opacity = '0';
+    void bong.offsetWidth;
+
+    // Step 1: Tilt + water fills
+    bong.classList.add('anim-tilt');
+
+    // Start bubbles
+    setTimeout(function() {
+      bubbleTimer = setInterval(createBubble, 100);
+    }, 500);
+
+    // Step 2: Hit it (flame, smoke fills chamber)
+    setTimeout(function() {
+      createSparks();
+      bong.classList.add('anim-hit');
+    }, 1500);
+
+    // Step 3: Exhale smoke
+    setTimeout(function() {
+      createExhaleSmoke();
+      clearInterval(bubbleTimer);
+    }, 3500);
+
+    // Step 4: FALL - tips over to 78 degrees, water spills
+    setTimeout(function() {
+      bong.classList.remove('anim-hit');
+      bong.classList.add('anim-fall');
+    }, 5500);
+
+    // Reset flag
+    setTimeout(function() {
+      isAnimating = false;
+    }, 7000);
+  };
+
+  window.doReset = function() {
+    isAnimating = false;
+    bong.className = 'bong-wrap';
+    clearInterval(bubbleTimer);
+    sparksContainer.innerHTML = '';
+    exhaleSmoke.innerHTML = '';
+    chamberSmoke.style.height = '0';
+    chamberSmoke.style.opacity = '0';
+    flame.style.width = '0';
+    flame.style.height = '0';
+    flame.style.opacity = '0';
+    waterSpill.style.width = '0';
+    waterSpill.style.height = '0';
+    waterSpill.style.opacity = '0';
+  };
+})();
+</script>
+
+</body>
+</html>
