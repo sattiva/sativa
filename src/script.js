@@ -38,7 +38,12 @@ gt.insertBefore(gtBg, gt.firstChild);
 
 gt.onclick = () => {
     mc.style.display = 'block';
+    document.body.classList.add('mc-active');
     gt.classList.add('h');
+    const slash = document.getElementById('slash-flash');
+    if (slash) {
+        slash.classList.add('active');
+    }
     const audio = new Audio('https://files.catbox.moe/7m6zyt.mp3');
     audio.play().catch(e => {});
 };
