@@ -1,11 +1,11 @@
 :root {
-    --bg: #030204;
+    --bg: #222027;
     --fg: #f1f5f9;
     --acc-go: #ff3b30;
     --acc-js: #ff453a;
     --acc-boobs: #ff9f0a;
-    --border: rgba(255, 255, 255, 0.04);
-    --card-bg: rgba(9, 8, 12, 0.65);
+    --border: rgba(255, 255, 255, 0.08);
+    --card-bg: rgba(45, 43, 53, 0.7);
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -21,7 +21,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: radial-gradient(circle at 10% 10%, #200508 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #0d0407 0%, var(--bg) 60%);
+    background: radial-gradient(circle at 10% 10%, #3e262c 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #291a32 0%, var(--bg) 60%);
     color: var(--fg);
     cursor: crosshair;
 }
@@ -608,7 +608,7 @@ canvas#vfx-canvas {
         overflow-y: auto;
     }
     .layout-container {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 24px;
     }
     .db-left, .db-right {
@@ -623,4 +623,48 @@ canvas#vfx-canvas {
         max-width: 100%;
         width: 100%;
     }
+}
+
+/* Contact Styles */
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.contact-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Ascii Letter Wave Styles */
+.ascii-char {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.15s;
+    user-select: none;
+}
+.ascii-char:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    transform: scale(1.4) translateY(-3px);
+}
+.ascii-char.wave-active {
+    animation: char-ripple 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+@keyframes char-ripple {
+    0% { transform: scale(1); color: var(--acc-go); }
+    50% { transform: scale(2.2) translateY(-10px); color: var(--acc-boobs); text-shadow: 0 0 15px var(--acc-boobs); }
+    100% { transform: scale(1); color: var(--acc-go); }
 }

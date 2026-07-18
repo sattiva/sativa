@@ -55,36 +55,15 @@
                 <pre id="sativa-logo" class="logo-ascii" style="color: var(--acc-go); font-family: monospace; font-size: 8px; line-height: 1.15; pointer-events: none; text-shadow: 0 0 15px rgba(255,59,48,0.5); text-align: center; white-space: pre; margin-bottom: 10px;"></pre>
                 <div class="db-panel">
                     <div class="db-tabs">
-                        <button class="db-tab-btn active" data-tab="activity">
-                            <i data-lucide="activity" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>activity
-                        </button>
-                        <button class="db-tab-btn" data-tab="projects">
+                        <button class="db-tab-btn active" data-tab="projects">
                             <i data-lucide="folder" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>projects
+                        </button>
+                        <button class="db-tab-btn" data-tab="contact">
+                            <i data-lucide="mail" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i>contact
                         </button>
                     </div>
                     <div class="db-content">
-                        <div class="db-pane active" id="pane-activity">
-                            <div class="activity-feed" id="activity-feed">
-                                <!-- Activity entries -->
-                                <div class="act-item">
-                                    <span class="act-time">11:52</span>
-                                    <span class="act-text">Optimized index layout column spacing</span>
-                                </div>
-                                <div class="act-item">
-                                    <span class="act-time">11:45</span>
-                                    <span class="act-text">Hardened CSP security headers config</span>
-                                </div>
-                                <div class="act-item">
-                                    <span class="act-time">10:14</span>
-                                    <span class="act-text">Merged upstream branch security-hotfix</span>
-                                </div>
-                                <div class="act-item">
-                                    <span class="act-time">08:00</span>
-                                    <span class="act-text">System backup: Archive written to secure tape node</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="db-pane" id="pane-projects">
+                        <div class="db-pane active" id="pane-projects">
                             <div class="project-list">
                                 <div class="proj-card p-link" data-id="CHG">
                                     <div class="proj-header">
@@ -107,6 +86,28 @@
                                     </div>
                                     <p class="proj-desc">Cyberpunk community hub and encrypted chat protocol board.</p>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="db-pane" id="pane-contact">
+                            <div class="contact-links">
+                                <a href="https://discord.com/users/423953946827161610" target="_blank" class="contact-card">
+                                    <div class="contact-icon" style="background: rgba(88, 101, 242, 0.1); color: #5865F2; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px;">
+                                        <i data-lucide="message-square" style="width: 18px; height: 18px;"></i>
+                                    </div>
+                                    <div class="contact-details" style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span class="contact-label" style="font-size: 0.6rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Discord</span>
+                                        <span class="contact-value" style="font-size: 0.8rem; color: #fff; font-weight: bold;">@18blunts</span>
+                                    </div>
+                                </a>
+                                <a href="https://github.com/sativacdf" target="_blank" class="contact-card">
+                                    <div class="contact-icon" style="background: rgba(255, 255, 255, 0.05); color: #fff; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px;">
+                                        <i data-lucide="github" style="width: 18px; height: 18px;"></i>
+                                    </div>
+                                    <div class="contact-details" style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span class="contact-label" style="font-size: 0.6rem; color: #64748b; font-weight: bold; text-transform: uppercase;">GitHub</span>
+                                        <span class="contact-value" style="font-size: 0.8rem; color: #fff; font-weight: bold;">github.com/sativacdf</span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>

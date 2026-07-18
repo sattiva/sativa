@@ -26,6 +26,8 @@ const spotifyArt = document.getElementById('spotify-art');
 const spotifySong = document.getElementById('spotify-song');
 const spotifyArtist = document.getElementById('spotify-artist');
 
+let pts = [];
+
 m.onclick = () => {
     nr.classList.toggle('show');
 };
@@ -42,7 +44,6 @@ gt.onclick = () => {
 };
 
 art.textContent = thighs;
-logoArt.textContent = sativaText;
 
 async function fetchLanyard() {
     try {
@@ -76,6 +77,41 @@ async function fetchLanyard() {
 }
 
 async function init() {
+    if (logoArt) {
+        logoArt.innerHTML = '';
+        for (let i = 0; i < sativaText.length; i++) {
+            const c = sativaText[i];
+            if (c === '\n') {
+                logoArt.appendChild(document.createElement('br'));
+            } else if (c === ' ') {
+                const s = document.createElement('span');
+                s.style.whiteSpace = 'pre';
+                s.textContent = ' ';
+                logoArt.appendChild(s);
+            } else {
+                const s = document.createElement('span');
+                s.className = 'ascii-char';
+                s.textContent = c;
+                s.addEventListener('click', (e) => {
+                    s.classList.add('wave-active');
+                    setTimeout(() => s.classList.remove('wave-active'), 600);
+                    for (let j = 0; j < 10; j++) {
+                        pts.push({
+                            x: e.clientX,
+                            y: e.clientY,
+                            vx: (Math.random() - 0.5) * 6,
+                            vy: (Math.random() - 0.5) * 6 - 2,
+                            r: Math.random() * 8 + 6,
+                            alpha: 0.8,
+                            color: Math.random() > 0.5 ? '#ff3b30' : '#ff9f0a'
+                        });
+                    }
+                });
+                logoArt.appendChild(s);
+            }
+        }
+    }
+
     document.querySelectorAll('.p-link').forEach(link => {
         link.addEventListener('click', (e) => {
             const id = link.getAttribute('data-id');
@@ -106,7 +142,6 @@ async function init() {
     setInterval(fetchLanyard, 15000);
     
     setupTabNav();
-    setupActivityFeed();
     setupTelemetry();
 
     if (window.lucide) {
@@ -182,7 +217,6 @@ window.onclick = e => {
 const canvas = document.getElementById('vfx-canvas');
 if (canvas) {
     const ctx = canvas.getContext('2d');
-    let pts = [];
     
     const resize = () => {
         canvas.width = window.innerWidth;
@@ -227,7 +261,7 @@ if (canvas) {
             }
             ctx.save();
             ctx.globalAlpha = p.alpha;
-            ctx.fillStyle = '#ff3b30';
+            ctx.fillStyle = p.color || '#ff3b30';
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             ctx.fill();
