@@ -66,8 +66,26 @@ async function fetchLanyard() {
                 spotifySong.textContent = sp.song;
                 spotifyArtist.textContent = sp.artist;
                 spotifyCard.style.display = 'flex';
+                const wave = document.getElementById('spotify-wave');
+                if (wave) wave.style.display = 'flex';
+                localStorage.setItem('sativa-last-spotify', JSON.stringify({
+                    s: sp.song,
+                    a: sp.artist,
+                    art: sp.album_art_url
+                }));
             } else {
-                spotifyCard.style.display = 'none';
+                const last = localStorage.getItem('sativa-last-spotify');
+                if (last) {
+                    const sp = JSON.parse(last);
+                    spotifyArt.src = sp.art;
+                    spotifySong.textContent = sp.s;
+                    spotifyArtist.textContent = 'Last played: ' + sp.a;
+                    spotifyCard.style.display = 'flex';
+                    const wave = document.getElementById('spotify-wave');
+                    if (wave) wave.style.display = 'none';
+                } else {
+                    spotifyCard.style.display = 'none';
+                }
             }
             if (window.lucide) {
                 window.lucide.createIcons();
@@ -194,6 +212,40 @@ function setupActivityFeed() {
 function setupTelemetry() {
     const latEl = document.getElementById('node-latency');
     const pngEl = document.getElementById('node-ping');
+    
+    const updTime = () => {
+        const timeEl = document.getElementById('user-time');
+        const offsetEl = document.getElementById('user-offset');
+        if (!timeEl || !offsetEl) return;
+        
+        const options = {
+            timeZone: 'America/New_York',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+        timeEl.textContent = formatter.format(new Date());
+        
+        const visitorOffsetMin = new Date().getTimezoneOffset();
+        const nyDate = new Date();
+        const nyTime = new Date(nyDate.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        const utcTime = new Date(nyDate.toLocaleString('en-US', { timeZone: 'UTC' }));
+        const nyOffsetMin = Math.round((utcTime - nyTime) / 60000);
+        
+        const diffHours = (nyOffsetMin - visitorOffsetMin) / 60;
+        if (diffHours === 0) {
+            offsetEl.textContent = 'same time';
+        } else if (diffHours > 0) {
+            offsetEl.textContent = `${Math.abs(diffHours).toFixed(0)}h behind you`;
+        } else {
+            offsetEl.textContent = `${Math.abs(diffHours).toFixed(0)}h ahead of you`;
+        }
+    };
+
+    updTime();
+    setInterval(updTime, 1000);
     
     setInterval(() => {
         if (latEl && pngEl) {
