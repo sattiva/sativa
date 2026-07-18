@@ -37,15 +37,41 @@ gtBg.className = 'gt-bg';
 gt.insertBefore(gtBg, gt.firstChild);
 
 gt.onclick = () => {
-    mc.style.display = 'block';
-    document.body.classList.add('mc-active');
-    gt.classList.add('h');
-    const slash = document.getElementById('slash-flash');
-    if (slash) {
-        slash.classList.add('active');
+    const bong = document.getElementById('bong');
+    const bubblesContainer = document.getElementById('bong-bubbles');
+    const smoke = document.getElementById('bong-smoke');
+    
+    if (bong) {
+        bong.classList.add('anim-tilt');
     }
-    const audio = new Audio('https://files.catbox.moe/7m6zyt.mp3');
-    audio.play().catch(e => {});
+    if (smoke) {
+        smoke.style.opacity = '1';
+    }
+    
+    let bubbleInterval = setInterval(() => {
+        if (!bubblesContainer) return;
+        const p = document.createElement('div');
+        p.className = 'bubble-particle';
+        p.style.left = Math.random() * 80 + 40 + 'px';
+        p.style.animationDelay = Math.random() * 0.2 + 's';
+        bubblesContainer.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+    }, 60);
+    
+    setTimeout(() => {
+        clearInterval(bubbleInterval);
+        mc.style.display = 'block';
+        document.body.classList.add('mc-active');
+        gt.classList.add('h');
+        
+        const slash = document.getElementById('slash-flash');
+        if (slash) {
+            slash.classList.add('active');
+        }
+        
+        const audio = new Audio('https://files.catbox.moe/7m6zyt.mp3');
+        audio.play().catch(e => {});
+    }, 1500);
 };
 
 art.textContent = thighs;
