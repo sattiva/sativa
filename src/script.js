@@ -65,38 +65,85 @@ async function fetchLanyard() {
             
             statusDot.className = 'status-indicator ' + data.data.discord_status;
             
+            let curr = null;
             if (data.data.listening_to_spotify && data.data.spotify) {
-                const sp = data.data.spotify;
-                spotifyArt.src = sp.album_art_url;
-                spotifySong.textContent = sp.song;
-                spotifyArtist.textContent = sp.artist;
-                spotifyCard.style.display = 'flex';
+                curr = data.data.spotify;
+                localStorage.setItem('sativa-last-spotify', JSON.stringify({
+                    s: curr.song,
+                    a: curr.artist,
+                    art: curr.album_art_url
+                }));
                 const wave = document.getElementById('spotify-wave');
                 if (wave) wave.style.display = 'flex';
-                localStorage.setItem('sativa-last-spotify', JSON.stringify({
-                    s: sp.song,
-                    a: sp.artist,
-                    art: sp.album_art_url
-                }));
             } else {
-                const last = localStorage.getItem('sativa-last-spotify');
-                if (last) {
-                    const sp = JSON.parse(last);
-                    spotifyArt.src = sp.art;
-                    spotifySong.textContent = sp.s;
-                    spotifyArtist.textContent = 'Last played: ' + sp.a;
-                    spotifyCard.style.display = 'flex';
-                    const wave = document.getElementById('spotify-wave');
-                    if (wave) wave.style.display = 'none';
-                } else {
-                    spotifyCard.style.display = 'none';
-                }
+                const wave = document.getElementById('spotify-wave');
+                if (wave) wave.style.display = 'none';
             }
-            if (window.lucide) {
-                window.lucide.createIcons();
-            }
+            
+            renderMusicLog(curr);
         }
     } catch (e) {}
+}
+
+function renderMusicLog(curr) {
+    const listEl = document.getElementById('music-log-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    
+    let tracks = [];
+    if (curr) {
+        tracks.push({
+            s: curr.song,
+            a: curr.artist,
+            art: curr.album_art_url,
+            active: true
+        });
+    }
+    
+    const lastSaved = localStorage.getItem('sativa-last-spotify');
+    if (lastSaved) {
+        const parsed = JSON.parse(lastSaved);
+        if (!curr || curr.song !== parsed.s) {
+            tracks.push({
+                s: parsed.s,
+                a: parsed.a,
+                art: parsed.art,
+                active: false,
+                last: true
+            });
+        }
+    }
+    
+    const fallbacks = [
+        { s: "Starboy", a: "The Weeknd", art: "https://i.scdn.co/image/ab67616d0000b2734718dec6954e4477c7406a4e" },
+        { s: "After Hours", a: "The Weeknd", art: "https://i.scdn.co/image/ab67616d0000b273881d8d8313690aeaa9efec11" },
+        { s: "PRIDE.", a: "Kendrick Lamar", art: "https://i.scdn.co/image/ab67616d0000b273cdb64cc658ae96b2c393ea29" }
+    ];
+    
+    for (const f of fallbacks) {
+        if (tracks.length >= 3) break;
+        if (!tracks.some(t => t.s.toLowerCase() === f.s.toLowerCase())) {
+            tracks.push({
+                s: f.s,
+                a: f.a,
+                art: f.art,
+                active: false
+            });
+        }
+    }
+    
+    tracks.slice(0, 3).forEach(t => {
+        const div = document.createElement('div');
+        div.className = `music-log-item ${t.active ? 'active-now' : ''}`;
+        div.innerHTML = `
+            <img src="${t.art || 'https://files.catbox.moe/e7tfw0.jpg'}" alt="Art">
+            <div class="music-log-details">
+                <span class="song-title">${t.s}</span>
+                <span class="song-artist">${t.active ? 'Listening Now' : (t.last ? 'Last Played' : t.a)}</span>
+            </div>
+        `;
+        listEl.appendChild(div);
+    });
 }
 
 async function init() {

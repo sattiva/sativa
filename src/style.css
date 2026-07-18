@@ -447,41 +447,53 @@ canvas#vfx-canvas {
     100% { height: 12px; }
 }
 
-/* Katana Navigation Header */
-.n {
+/* Katana Scabbard (Saya) */
+.saya {
     position: fixed;
     top: 30px;
     left: 40px;
     right: 40px;
     z-index: 50;
-    height: 48px;
-    padding: 0 40px;
+    height: 64px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+/* Katana Blade (Header Container) */
+.n {
+    width: 100%;
+    height: 100%;
+    padding: 0 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #16141c 0%, #3e3a47 60%, #cbd5e1 95%, var(--acc-go) 100%);
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.5), inset 0 -2px 5px rgba(0,0,0,0.6);
-    transform: translateX(120%);
-    opacity: 0;
-    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s;
+    position: relative;
 }
-.n::before {
+
+/* The actual sharp steel blade */
+.n::after {
     content: '';
     position: absolute;
-    right: 5%;
-    top: 0;
-    bottom: 0;
-    width: 25px;
-    background: linear-gradient(180deg, #d4af37, #aa7c11);
-    border-left: 1px solid #7a5807;
-    border-right: 1px solid #7a5807;
-    z-index: -1;
+    bottom: 8px;
+    left: 30px;
+    right: 30px;
+    height: 5px;
+    background: linear-gradient(90deg, #666 0%, #cbd5e1 70%, #fff 98%, var(--acc-go) 100%);
+    box-shadow: 0 2px 8px rgba(255,59,48,0.5);
+    clip-path: polygon(0% 0%, 98% 0%, 100% 50%, 98% 100%, 0% 100%);
+    transform: translateX(-120%);
+    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 1;
 }
-.mc-active .n {
+
+.mc-active .n::after {
     transform: translateX(0);
-    opacity: 1;
 }
 
 /* Slicing Animation Overlay */
@@ -620,7 +632,7 @@ canvas#vfx-canvas {
 @media (max-width: 900px) {
     .m { display: block; }
     .project-nav-links { display: none; }
-    .n {
+    .saya {
         left: 20px;
         right: 20px;
     }
@@ -742,4 +754,45 @@ canvas#vfx-canvas {
     0% { transform: scale(1); color: var(--acc-go); }
     50% { transform: scale(2.2) translateY(-10px); color: var(--acc-boobs); text-shadow: 0 0 15px var(--acc-boobs); }
     100% { transform: scale(1); color: var(--acc-go); }
+}
+
+/* Music Log List */
+.music-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+.music-log-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+}
+.music-log-item img {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+}
+.music-log-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.music-log-details .song-title {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+}
+.music-log-details .song-artist {
+    font-size: 0.65rem;
+    color: #64748b;
+}
+.music-log-item.active-now {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.03);
 }
