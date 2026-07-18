@@ -430,4 +430,35 @@ function renderBadges(flags) {
     });
 }
 
+window.playKatanaAnim = function(type) {
+    const w = document.getElementById('katana-nav-blade');
+    if (!w) return;
+    w.classList.remove('anim-unsheathe', 'anim-slash', 'anim-combined');
+    void w.offsetWidth;
+    w.classList.add('anim-' + type);
+    
+    if (type === 'slash' || type === 'combined') {
+        const audio = new Audio('https://files.catbox.moe/7m6zyt.mp3');
+        audio.play().catch(e => {});
+        const sf = document.getElementById('slash-flash');
+        if (sf) {
+            sf.classList.remove('active');
+            void sf.offsetWidth;
+            sf.classList.add('active');
+        }
+    }
+};
+
+const kWrap = document.getElementById('katana-nav-blade');
+const kMenu = document.getElementById('katana-menu');
+if (kWrap && kMenu) {
+    kWrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        kMenu.classList.toggle('show');
+    });
+    document.addEventListener('click', () => {
+        kMenu.classList.remove('show');
+    });
+}
+
 init();
