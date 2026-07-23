@@ -1,7 +1,7 @@
 <div align="center">
 
 <details open>
-<summary><b>ASCII Banner: VRORM</b></summary>
+<summary><b></b></summary>
 <br>
 
 ```
