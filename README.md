@@ -21,7 +21,7 @@
 High-performance systems software developer specializing in security engineering, real-time event infrastructure, low-level binary analysis, and bot framework architecture.
 
 - **Core Stack:** Go, Luau/Lua, C/C++, Python, SQLite, BoltDB
-- **Projects:** [Chronicle](https://github.com/sativacdf/chronicle.go) · [RackedMC](https://github.com/sativacdf/RackedMC)
+- **Projects:** [Chronicle](https://github.com/sativac/chronicle.go) · [RackedMC](https://github.com/sativac/RackedMC)
 
 ---
 
@@ -52,15 +52,15 @@ High-performance systems software developer specializing in security engineering
 ### Activity & Statistics
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=sativacdf&show_icons=true&theme=dark&hide_border=true&title_color=ffffff&icon_color=00add8&text_color=999999&bg_color=0d1117" alt="sativa's GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api?username=sativac&show_icons=true&theme=dark&hide_border=true&title_color=ffffff&icon_color=00add8&text_color=999999&bg_color=0d1117" alt="sativa's GitHub Stats" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=sativacdf&layout=compact&theme=dark&hide_border=true&title_color=ffffff&text_color=999999&bg_color=0d1117" alt="Top Languages" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=sativac&layout=compact&theme=dark&hide_border=true&title_color=ffffff&text_color=999999&bg_color=0d1117" alt="Top Languages" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=sativacdf&theme=react-dark&hide_border=true&bg_color=0d1117" alt="sativa's Contribution Graph" />
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=sativac&theme=react-dark&hide_border=true&bg_color=0d1117" alt="sativa's Contribution Graph" />
 </p>
 
 ---
