@@ -16,7 +16,7 @@ oo     .d8P  888          888       888       .8'     `888.   888  `88b.   888
 </details>
 
 <details>
-<summary><b>ASCII Banner: Sativa Standard</b></summary>
+<summary><b></b></summary>
 <br>
 
 ```
@@ -32,7 +32,7 @@ oo     .d8P  888          888       888       .8'     `888.   888  `88b.   888
 </details>
 
 <details>
-<summary><b>ASCII Banner: Crab Modern</b></summary>
+<summary><b></b></summary>
 <br>
 
 ```
@@ -50,7 +50,7 @@ a8P"Y88888P"    88      "Y88P" "Y8     "Y8P' "Y8P"         `Y8   88        Y8  "
 </details>
 
 <details>
-<summary><b>ASCII Banner: Ambush High-Density</b></summary>
+<summary><b></b></summary>
 <br>
 
 ```
