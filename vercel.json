@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/chronicle", "destination": "/chronicle/index.html" },
+    { "source": "/chronicle/tos", "destination": "/chronicle/tos/index.html" },
+    { "source": "/chronicle/policy", "destination": "/chronicle/policy/index.html" }
+  ]
+}
