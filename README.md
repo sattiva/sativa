@@ -18,20 +18,19 @@
 
 ### About Me
 
-High-performance systems software developer specializing in security engineering, real-time event infrastructure, low-level binary analysis, and bot framework architecture.
+Software developer in security engineering, real-time event infrastructure, low-level binary analysis, and bot architecture.
 
-- **Core Stack:** Go, Luau/Lua, C/C++, Python, SQLite, BoltDB
+- **Core Stack:** Go, Luau/Lua, C/C++, Python, SQLite, BoltDB, Java, JS
 - **Projects:** [Chronicle](https://github.com/sativac/chronicle.go) · [RackedMC](https://github.com/sativac/RackedMC)
 
 ---
 
-### Web Network & Projects
+### Projects
 
-- **[sativa.cfd](https://sativa.cfd):** Personal hub & development portfolio.
-- **[spitari.win](https://spitari.win):** Live web platform & services.
-- **[boobs.lat](https://boobs.lat):** Interactive global breast size statistics & comparative map.
-- **[thighs.click](https://thighs.click):** Upcoming domain project (in active development).
-
+- **[sativa.cfd](https://sativa.cfd):** Personal portfolio.
+- **[spitari.win](https://spitari.win):** Web platform.
+- **[boobs.lat](https://boobs.lat):** Breast size statistics & map.
+- 
 ---
 
 ### Technical Capabilities
