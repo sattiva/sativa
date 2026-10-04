@@ -383,18 +383,7 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .spot-link{padding:7px 14px;border-radius:99px;border:1px solid var(--rule);color:var(--paper);text-decoration:none;font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,border-color .2s;white-space:nowrap}
 .spot-link:hover{background:var(--case-2);border-color:var(--faint)}
 
-.arcade{position:relative;width:100%;height:288px;margin-top:16px;border-radius:12px;overflow:hidden;background:#08080a;border:1px solid var(--rule);touch-action:none}
-#arcadeCanvas{width:100%;height:100%;display:block}
-.arcade-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(8,8,10,.78);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);cursor:pointer}
-.arcade-btn{position:relative;padding:11px 30px;border-radius:99px;background:var(--paper);color:var(--ink);border:none;font:700 12px var(--fm);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;overflow:hidden;transition:transform .15s}
-.arcade-btn:hover{transform:scale(1.03)}
-.arcade-btn:active{transform:scale(.97)}
 /* charge meter fills while the start button is held */
-.arcade-charge{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--signal);box-shadow:0 0 12px rgba(var(--signal),.8)}
-.arcade-btn.charging{transform:scale(.96)}
-.arcade-read{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:var(--fm);font-size:10.5px;color:var(--dim);padding:12px 2px 0}
-.arcade-read b{color:var(--paper);font-weight:500;font-variant-numeric:tabular-nums}
-.arcade-read .ab-life{color:#e5484d}
 .channels{display:flex;align-items:center;gap:6px;margin-left:auto}
 .ch{font-family:var(--fm);font-size:8.5px;font-weight:500;letter-spacing:.11em;text-transform:uppercase;padding:3px 7px;border-radius:99px;border:1px solid var(--rule);color:var(--faint);white-space:nowrap}
 .ch.on{color:var(--ink);background:var(--signal);border-color:transparent}
@@ -410,10 +399,13 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .game svg{width:28px;height:28px;display:block}
 .game span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
 
-/* ---- Guestbook --------------------------------------------------------- */
+/* ---- Recommendations ---------------------------------------------------- */
 .gb-form{display:flex;flex-direction:column;gap:0;border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:20px}
 .gb-field{position:relative;display:flex;align-items:center;border-bottom:1px solid var(--rule)}
 .gb-field:first-of-type{border-top:1px solid var(--rule)}
+.gb-row{display:grid;grid-template-columns:1fr 1fr}
+.gb-row .gb-field:first-child{border-right:1px solid var(--rule)}
+.gb-row .gb-field:first-child .gb-input{padding-right:14px}
 .gb-input,.gb-textarea{width:100%;background:none;border:none;padding:15px 60px 15px 0;color:var(--paper);font:500 14px var(--fm);letter-spacing:-.004em;outline:none;resize:none}
 .gb-textarea{min-height:88px;line-height:1.65;padding-right:52px}
 .gb-input::placeholder,.gb-textarea::placeholder{color:var(--faint)}
@@ -440,6 +432,8 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .gb-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
 .gb-name{font-size:13px;font-weight:600;color:var(--paper);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gb-time{font-family:var(--fm);font-size:10px;font-variant-numeric:tabular-nums;color:var(--faint);flex-shrink:0}
+.gb-track{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;font-size:15px;font-weight:600;color:var(--paper);letter-spacing:-.012em;margin:0 0 4px}
+.gb-artist{font-size:12.5px;font-weight:400;color:var(--dim);font-style:italic}
 .gb-msg{font-size:13.5px;color:var(--mute);line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
 
 /* ---- docked player ----------------------------------------------------- */
@@ -543,7 +537,7 @@ html.motion-off .view-enter{animation:none}
 html.motion-off .view{transition:none}
 html.motion-off .vault-kicker i{animation:none}
 html.motion-off .log-row.live .log-mark{box-shadow:none}
-html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{transition:none}
+html.motion-off .dock-btn,html.motion-off .gb-btn{transition:none}
 
 /* ---- desktop ----------------------------------------------------------- */
 @media (min-width:1000px){
@@ -574,7 +568,6 @@ html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{tr
   .home-name{font-size:29px;margin-top:17px}
   .meter b{font-size:19px}
   .meter span{font-size:8px;letter-spacing:.1em}
-  .arcade{height:250px}
   .dock-in{padding:9px 16px 11px;gap:11px}
   .dock-seek{flex:0 0 84px}
   .dock-time{min-width:64px;font-size:9.5px}
@@ -594,7 +587,6 @@ html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{tr
 .meter div:nth-child(3n+2),.meter div:nth-child(3n+3){padding-left:13px}
 .meter b{font-size:17px}
   .meter span{font-size:7.5px;letter-spacing:.07em}
-  .arcade{height:222px}
   .albums{grid-template-columns:1fr 1fr;gap:10px}
   .dock-time{display:none}
   .game svg{width:24px;height:24px}
@@ -666,13 +658,13 @@ html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{tr
   <nav class="tabs" aria-label="Sections"><div class="tabs-inner">
     <button class="nav-btn active" data-view="home" type="button">home</button>
     <button class="nav-btn" data-view="music" type="button">music</button>
-    <button class="nav-btn" data-view="games" type="button">games</button>
-    <button class="nav-btn" data-view="guestbook" type="button">guestbook</button>
+    <button class="nav-btn" data-view="guestbook" type="button">recommend</button>
   </div></nav>
 </div></header>
 
-<main class="stage" style="transform: translate3d(0px, 0px, 0px);">
+
 <section class="view" data-view="home">
+
   <div class="home-id">
     <div class="home-ava"><img id="avatar" class="js-avatar" alt="Avatar" referrerpolicy="no-referrer" decoding="async" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23131316'/%3E%3C/svg%3E"><span class="status-dot js-status" id="statusDot"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#9a9a9a" stroke-width="4.6"/></svg></span></div>
     <h1 class="home-name js-name" id="displayName">Sativa</h1>
@@ -714,23 +706,22 @@ html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{tr
     <div class="weather-forecast" id="weatherForecast"></div>
   </div>
 
-  <div class="panel">
+  <div class="panel" style="margin-top:22px">
     <div class="panel-head">
-      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="2.5"></rect><path d="M7 11v3M5.5 12.5h3"></path></svg>Arcade</div>
-      <div class="panel-meta">press and hold to charge</div>
+      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="2.5"></rect><path d="M7 11v3M5.5 12.5h3"></path></svg>Games</div>
+      <div class="panel-meta">what i play</div>
     </div>
-    <div class="arcade" id="arcadeWrap">
-      <canvas id="arcadeCanvas" aria-label="Breakout arcade game"></canvas>
-      <div class="arcade-overlay" id="arcadeOverlay">
-        <button class="arcade-btn" id="arcadeStartBtn" type="button">Start<i class="arcade-charge" id="arcadeCharge"></i></button>
-      </div>
-    </div>
-    <div class="arcade-read">
-      <span>score <b id="arcadeScore">0</b></span>
-      <span>lives <b class="ab-life" id="arcadeLives">3</b></span>
-      <span>level <b id="arcadeLevel">1</b></span>
-      <span>best <b id="arcadeBest">0</b></span>
-      <span class="channels" id="arcadeChannels"></span>
+
+    <div class="games">
+      <a class="game" href="https://www.roblox.com/users/profile?username=sealanterns12" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#e2231a"><use href="#i-rb"></use></svg><span>Roblox</span>
+      </a>
+      <a class="game" href="https://www.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#f5a623"><path d="M21.7101 3.2348a.0218.0218 0 0 1-.0216-.0215c.001-.0815.003-.3698.004-.424 0-.1292-.1428-.1831-.2117-.0829-.0113.016-.1457.212-.2287.3323a.0244.0244 0 0 1-.0198.0103h-6.5508a.0473.0473 0 0 1-.0473-.0463l-.0131-.177a.0477.0477 0 0 1 .056-.0477l.335.0319a.0593.0593 0 0 1 .0435-.0464l.2268-.0848a.0427.0427 0 0 0-.0295-.0542l-1.9935-1.581c-.7867-.125-1.302.2107-1.577.4784a1.594 1.594 0 0 0-.3018.4095l-.0965.2125c-.008.0164-.0463.0263-.0878.0398l-.5776.0019a.109 0 0 0-.0644.0443l-.3261.9664a.0473 0 0 0 .0214.0576l.1931.9274a.0477.0477 0 0 0 .0427.0424l.4299-.0766a.109 0 0 1 .0917.0294l.6967.5103a.0477.0477 0 0 0 .0621-.0113l.1086-.0356a.0477.0477 0 0 0 .0286-.0355l.0034-.0465a.0473.0473 0 0 0-.0547-.0344l-1.8793-.3527a.0477.0477 0 0 1-.0348-.0533l-.0005-.0535a.0473.0473 0 0 1 .0234-.0495l.618-.609a.2017.2017 0 0 0 .0483-.072l.0254-.1965a.0473.0473 0 0 0-.0547-.0344l-1.0399-.2509a.0473.0473 0 0 1-.0309-.0474l-.0001-.1041a.0477.0477 0 0 1 .0274-.0462l.3893-.2292a.0473.0473 0 0 0 .0535-.0399l.0716-.2111a.0473.0473 0 0 0-.0418-.0515l-1.7157-.7919a.0473.0473 0 0 1-.0232-.0415l-.0186-.1476a.0473.0473 0 0 0-.0466-.0374l-1.6521-.9066a.109 0 0 0-.1128-.0147l-1.6714.2193a.109 0 0 0-.0812.0621l-.0318.0888a.109 0 0 1-.0622.0606l-1.0097.3968a.0477.0477 0 0 1-.0589-.0116l-.2157-.1549a.0473.0473 0 0 0-.0596.0052l-.9536.6875a.0477.0477 0 0 1-.0629.0159l-.3142.3004a.0473.0473 0 0 0-.0148.0463l.0028.1337a.0477.0477 0 0 0 .0557.0527l1.0057.2368a.0477.0477 0 0 1 .0373.0458l.0387.0931a.0473.0473 0 0 0 .0419.0376l2.0898.8275a.0473.0473 0 0 0 .0521-.0146l.4535-.3729a.0473.0473 0 0 1 .0642-.0166l.1116.0726a.0473.0473 0 0 0 .0608.0066l3.7327.0047a.109 0 0 1 .0932-.0931v-.6336a.022 0 0 1 .0216-.0216h1.4393a.0465.0465 0 0 0 .0464-.0463v-.2855a.022 0 0 1 .0216-.0216h1.4398z"/></svg><span>Counter-Strike 2</span>
+      </a>
+      <a class="game" href="https://www.minecraft.net/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#82B449"><path d="M12 2.4 22.2 8.1 12 13.8 1.8 8.1Z"></path><path d="M1.8 8.1 12 13.8v8.4L1.8 16.5Z" fill="#77553A"></path><path d="M12 13.8 22.2 8.1v8.4L12 22.2Z" fill="#9B7149"></path></svg><span>Minecraft</span>
+      </a>
     </div>
   </div>
 </section>
@@ -810,47 +801,28 @@ html.motion-off .dock-btn,html.motion-off .gb-btn,html.motion-off .arcade-btn{tr
   </div>
 </section>
 
-<section class="view" data-view="games" hidden="">
-  <div class="panel" style="margin-top:22px">
-    <div class="panel-head">
-      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="2.5"></rect><path d="M7 11v3M5.5 12.5h3"></path></svg>Games</div>
-      <div class="panel-meta">arcade</div>
-    </div>
 
-
-
-
-
-    <div class="games">
-      <a class="game" href="https://www.roblox.com/users/profile?username=sealanterns12" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#e2231a"><use href="#i-rb"></use></svg><span>Roblox</span>
-      </a>
-      <a class="game" href="https://www.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#f5a623"><path d="M21.7101 3.2348a.0218.0218 0 0 1-.0216-.0215c.001-.0815.003-.3698.004-.424 0-.1292-.1428-.1831-.2117-.0829-.0113.016-.1457.212-.2287.3323a.0244.0244 0 0 1-.0198.0103h-6.5508a.0473.0473 0 0 1-.0473-.0463l-.0131-.177a.0477.0477 0 0 1 .056-.0477l.335.0319a.059.059 0 0 0 .0624-.0445l.2441-.989a.0475.0475 0 0 0-.0295-.0542l-.2268-.0848a.0427.0427 0 0 1-.0263-.0295c-.0412-.1722-.3766-1.3235-1.9935-1.581-.7867-.125-1.302.2107-1.577.4784a1.594 1.594 0 0 0-.3018.4095l-.0965.2125c-.008.0164-.046.2157-.046.234l.0513.9815a.109.109 0 0 0 .0422.0856l.3546.153-.1958.3244a.055.055 0 0 1-.053.0402s-.417.0108-.6227.0192c-.3856.0155-1.2444.4858-1.8773 1.8385-.6219 1.3282-.724 1.5496-.724 1.5496a.0736.0736 0 0 1-.0684.0398l-.5776.0019c-.0356 0-.0736.0285-.0886.0608l-.8982 2.5428c-.0149.0323-.006.081.0173.1081l.627.3918a.059.059 0 0 1 .0195.059l-.3274.9664a.1916.1916 0 0 1-.0235.0618l-.4343.3824a.1056.1056 0 0 0-.0356.059l-.5978 1.5308a.0632.0632 0 0 1-.0608.0455l-.3355.0018a.1633.1633 0 0 0-.162.1488l-.2007 2.2883a1.7194 1.7194 0 0 1-.0159.1207l-.1583.908a.128.128 0 0 1-.0333.0553l-.5584.4263c-.2559.2443-.5988.6903-.7665 1.0015l-1.86 3.9235c-.045.0833-.0811.227-.0788.3221l.1321.2354c.002.0842-.0319.4559-.0707.5307L.817 23.6545a.0985.0985 0 0 0-.003.0856l.0309.0706.0932.1859 1.8913.0029c.1173.0106.247-.1396.2507-.3005l.1027-1.2965-.0268-.1952 3.6063-4.232c.0942-.1146.222-.3168.2861-.4506l1.7186-3.7892a.1712.1712 0 0 1 .1004-.088l.1086-.035a.1694.1694 0 0 1 .1827.0528c.1505.1807.5042.781.6765 1.0315.1425.2079.8495 1.2304 1.1582 1.5675.0853.0926.3481.198.4658.2696a.083.083 0 0 1 .029.1119l-1.0298 1.8083-.4549 2.1357a.9542.9542 0 0 0-.0356.1526l-.4118 1.4831c.003.1873-.141.2856-.1527.5064l-.15 1.084a.0581.0581 0 0 0 .0582.0614l2.5445.014c.0951-.0003.1902-.0045.2854-.0067a1.1049 1.1049 0 0 0 .0755-.0069c.1242-.0158.5629-.0754.75-.1503.1097-.0388.1809-.0819.2268-.1295.1855-.1935.2002-.278.2034-.3975.001-.0212-.011-.0726-.0283-.1049-.0053-.0117-.0316-.0382-.059-.0477l-1.1815-.3562a.3693.3693 0 0 1-.1889-.1338l-.3172-.469a.0865.0865 0 0 1 .0173-.0973l.618-.609a.2017.2017 0 0 0 .0483-.072l1.9036-4.488c.089-.285.0595-.6056 0-.9445-.044-.2504-.6854-1.3264-.8532-1.6236-.1476-.262-1.0677-1.8707-1.286-2.2517-.0793-.1376-.1894-.1328-.2287-.276l-.0726-1.1173a.0398.0398 0 0 1 .0356-.0505l.3312-.0276a.093.093 0 0 0 .0741-.0487l1.147-2.1544a.0958.0958 0 0 0-.002-.094l-.2349-.2907a.0874.0874 0 0 1-.001-.0875l.3515-.3796a.054.054 0 0 1 .0736-.0206l.9343.5266a.3819.3819 0 0 0 .186.0505c.259-.0019.6858-.1549.908-.2906a.3833.3833 0 0 0 .1386-.148l.4583-1.0703c.006-.0136.0262-.0117.029.0028l.1278.5953a.0635.0635 0 0 0 .0788.0501l1.3494-.3a.0662.0662 0 0 0 .05-.0786l-.318-1.3437a.0716.0716 0 0 1 .009-.0534l.1313-.2036a.281.281 0 0 0 .036-.0814l.1589-.725a.0408.0408 0 0 1 .0397-.0323l3.7327.0047a.0916.0916 0 0 0 .0932-.0931v-.6336a.022.022 0 0 1 .0216-.0216h1.4393a.0465.0465 0 0 0 .0464-.0463v-.2855a.0465.0465 0 0 0-.0464-.0463h-1.4398z"/></svg><span>Counter-Strike 2</span>
-      </a>
-      <a class="game" href="https://www.minecraft.net/" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#82B449"><path d="M12 2.4 22.2 8.1 12 13.8 1.8 8.1Z"></path><path d="M1.8 8.1 12 13.8v8.4L1.8 16.5Z" fill="#77553A"></path><path d="M12 13.8 22.2 8.1v8.4L12 22.2Z" fill="#9B7149"></path></svg><span>Minecraft</span>
-      </a>
-    </div>
-  </div>
-</section>
 
 <section class="view" data-view="guestbook" hidden="">
   <div class="panel" style="margin-top:22px">
     <div class="panel-head">
-      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Guestbook</div>
-      <div class="panel-meta" id="gbCountBadge">no notes yet</div>
+      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>Recommend a track</div>
+      <div class="panel-meta" id="gbCountBadge">none yet</div>
     </div>
 
     <form class="gb-form" id="gbForm" novalidate="">
       <div class="gb-field"><input class="gb-input" id="gbAuthor" name="author" placeholder="your name" maxlength="32" autocomplete="nickname" required=""></div>
-      <div class="gb-field msg"><textarea class="gb-textarea" id="gbText" name="message" placeholder="leave a message" maxlength="500" required=""></textarea><span class="gb-count" id="gbCount">0/500</span></div>
+      <div class="gb-row">
+        <div class="gb-field"><input class="gb-input" id="gbTrack" name="track" placeholder="track title" maxlength="80" required=""></div>
+        <div class="gb-field"><input class="gb-input" id="gbArtist" name="artist" placeholder="artist" maxlength="80"></div>
+      </div>
+      <div class="gb-field msg"><textarea class="gb-textarea" id="gbWhy" name="why" placeholder="why it deserves a spot in the vault" maxlength="140" required=""></textarea><span class="gb-count" id="gbCount">0/140</span></div>
       <input class="gb-trap" id="gbTrap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="gb-ts" id="gbTurnstile" hidden=""></div>
       <p class="gb-hint" id="gbHint" hidden=""></p>
       <div class="gb-actions">
         <span class="gb-rate" id="gbRate">4 per hour</span>
-        <button class="gb-btn" id="gbSubmit" type="submit">Sign<i class="gb-fill" id="gbFill"></i></button>
+        <button class="gb-btn" id="gbSubmit" type="submit">Recommend<i class="gb-fill" id="gbFill"></i></button>
       </div>
     </form>
 

@@ -1,18 +1,21 @@
-
 import { $, esc, toast, timeAgo } from './config.js';
 import { scMax } from './navigation.js';
 import { mountTurnstile, turnstileToken, resetTurnstile, turnstileActive } from './turnstile.js';
 
 const API = '/api/guestbook';
 const NAME_MAX = 32;
-const MSG_MAX = 500;
+const TRACK_MAX = 80;
+const ARTIST_MAX = 80;
+const WHY_MAX = 140;
 const REFRESH_MS = 90000;
 
 export function initGuestbook() {
   const list = $('gbList');
   const form = $('gbForm');
   const nameInput = $('gbAuthor');
-  const msgInput = $('gbText');
+  const trackInput = $('gbTrack');
+  const artistInput = $('gbArtist');
+  const whyInput = $('gbWhy');
   const badge = $('gbCountBadge');
   const btn = $('gbSubmit');
   const tsMount = $('gbTurnstile');
@@ -22,10 +25,12 @@ export function initGuestbook() {
   const rate = $('gbRate');
   const fill = $('gbFill');
 
-  if (!list || !form || !nameInput || !msgInput) return;
+  if (!list || !form || !nameInput || !trackInput || !whyInput) return;
 
   if (nameInput) nameInput.maxLength = NAME_MAX;
-  if (msgInput) msgInput.maxLength = MSG_MAX;
+  if (trackInput) trackInput.maxLength = TRACK_MAX;
+  if (artistInput) artistInput.maxLength = ARTIST_MAX;
+  if (whyInput) whyInput.maxLength = WHY_MAX;
   form.setAttribute('novalidate', '');
 
   let renderedAt = Date.now();
@@ -61,20 +66,20 @@ export function initGuestbook() {
 
   function paintCount() {
     if (!count) return;
-    const n = msgInput.value.length;
-    count.textContent = n + '/' + MSG_MAX;
-    count.classList.toggle('warn', n > MSG_MAX - 40);
+    const n = whyInput.value.length;
+    count.textContent = n + '/' + WHY_MAX;
+    count.classList.toggle('warn', n > WHY_MAX - 40);
   }
 
-  if (msgInput) {
-    msgInput.addEventListener('input', paintCount);
+  if (whyInput) {
+    whyInput.addEventListener('input', paintCount);
     paintCount();
   }
   paintCooldown();
 
   function setBusy(on) {
     inFlight = on;
-    setLabel(on ? 'Signing' : 'Sign');
+    setLabel(on ? 'Sending' : 'Recommend');
     if (btn) btn.disabled = on || offline || cooldownUntil > Date.now();
   }
 
@@ -92,14 +97,16 @@ export function initGuestbook() {
   function renderNotes(notes) {
     if (!list) return;
     if (!notes.length) {
-      list.innerHTML = '<p class="empty">no notes yet — sign the first one</p>';
+      list.innerHTML = '<p class="empty">nothing recommended yet — drop the first track</p>';
       return;
     }
     list.innerHTML = notes
       .map(function (n) {
         const who = String(n.n || '').slice(0, NAME_MAX);
-        const body = String(n.m || '').slice(0, MSG_MAX);
-        if (!who || !body) return '';
+        const track = String(n.m || '').slice(0, TRACK_MAX);
+        const artist = String(n.a || '').slice(0, ARTIST_MAX);
+        const why = String(n.w || '').slice(0, WHY_MAX);
+        if (!who || !track || !why) return '';
         return (
           '<article class="gb">' +
           '<div class="gb-head">' +
@@ -108,7 +115,8 @@ export function initGuestbook() {
           esc(timeAgo(n.t)) +
           '</time>' +
           '</div>' +
-          '<p class="gb-msg">' + esc(body) + '</p>' +
+          '<p class="gb-track">' + esc(track) + (artist ? '<span class="gb-artist">' + esc(artist) + '</span>' : '') + '</p>' +
+          '<p class="gb-msg">' + esc(why) + '</p>' +
           '</article>'
         );
       })
@@ -117,7 +125,9 @@ export function initGuestbook() {
   }
 
   function renderBadges(total) {
-    if (badge) badge.textContent = total > 0 ? total + ' signature' + (total === 1 ? '' : 's') : 'no notes yet';
+    if (badge) {
+      badge.textContent = total > 0 ? total + ' recommendation' + (total === 1 ? '' : 's') : 'none yet';
+    }
   }
 
   function setOffline(on, msg) {
@@ -141,19 +151,19 @@ export function initGuestbook() {
     try {
       r = await fetch(API + '?limit=40', { headers: { Accept: 'application/json' } });
     } catch (e) {
-      setOffline(true, 'cannot reach the guestbook — check your connection');
+      setOffline(true, 'cannot reach the recommendations — check your connection');
       return;
     }
     let j = null;
     try {
       j = await r.json();
     } catch (e) {
-      setOffline(true, 'guestbook returned an unreadable response');
+      setOffline(true, 'recommendations returned an unreadable response');
       return;
     }
     if (!r.ok || !j || j.ok !== true) {
       const d = j && j.detail ? String(j.detail) : '';
-      setOffline(true, d || 'guestbook is unavailable right now');
+      setOffline(true, d || 'recommendations are unavailable right now');
       return;
     }
     setOffline(false, '');
@@ -170,12 +180,14 @@ export function initGuestbook() {
     e.preventDefault();
     if (inFlight || offline) return;
     if (cooldownUntil > Date.now()) {
-      toast('one signature every ' + BURST_SECONDS + 's — wait for the timer', true);
+      toast('one recommendation every ' + BURST_SECONDS + 's — wait for the timer', true);
       return;
     }
 
     const name = nameInput.value.trim().replace(/\s+/g, ' ');
-    const msg = msgInput.value.trim().replace(/\s+/g, ' ');
+    const track = trackInput.value.trim().replace(/\s+/g, ' ');
+    const artist = artistInput ? artistInput.value.trim().replace(/\s+/g, ' ') : '';
+    const why = whyInput.value.trim().replace(/\s+/g, ' ');
     if (trap && trap.value.trim() !== '') return;
 
     if (name.length < 2) {
@@ -183,9 +195,14 @@ export function initGuestbook() {
       nameInput.focus();
       return;
     }
-    if (msg.length < 4) {
-      toast('message needs at least 4 characters', true);
-      msgInput.focus();
+    if (track.length < 1) {
+      toast('add a track title', true);
+      trackInput.focus();
+      return;
+    }
+    if (why.length < 4) {
+      toast('say why in at least 4 characters', true);
+      whyInput.focus();
       return;
     }
 
@@ -202,7 +219,9 @@ export function initGuestbook() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           name: name,
-          message: msg,
+          track: track,
+          artist: artist,
+          why: why,
           website: trap ? trap.value : '',
           turnstileToken: token,
           renderedAt: renderedAt
@@ -216,20 +235,22 @@ export function initGuestbook() {
         if (code === 'rate_limited') {
           const retry = parseInt(r.headers && r.headers.get && r.headers.get('retry-after'), 10);
           startCooldown(isFinite(retry) && retry > 0 ? retry : BURST_SECONDS);
-          toast(j.detail || 'too many signatures — try again shortly', true);
+          toast(j.detail || 'too many recommendations — try again shortly', true);
         } else if (code === 'duplicate') {
           startCooldown(BURST_SECONDS);
-          toast('you already signed with this exact message', true);
+          toast('you already recommended this exact track', true);
         } else if (code === 'turnstile_failed') {
           toast('verification failed — try again', true);
           resetTurnstile();
         } else {
-          toast((j && j.detail) || 'could not sign the guestbook', true);
+          toast((j && j.detail) || 'could not send the recommendation', true);
         }
         return;
       }
       nameInput.value = '';
-      msgInput.value = '';
+      trackInput.value = '';
+      if (artistInput) artistInput.value = '';
+      whyInput.value = '';
       if (trap) trap.value = '';
       renderedAt = Date.now();
       resetTurnstile();
@@ -238,10 +259,10 @@ export function initGuestbook() {
       const note = j.note;
       const existing = Array.prototype.slice.call(list.querySelectorAll('.gb'));
       renderNotes(note ? [note].concat(existing.map(remap)) : []);
-      toast('signed');
+      toast('recommended');
       load(true);
     } catch (e) {
-      toast('network error — signature not saved', true);
+      toast('network error — recommendation not saved', true);
     } finally {
       setBusy(false);
     }
@@ -249,11 +270,15 @@ export function initGuestbook() {
 
   function remap(el) {
     const nameEl = el.querySelector('.gb-name');
+    const trackEl = el.querySelector('.gb-track');
+    const artistEl = el.querySelector('.gb-artist');
     const msgEl = el.querySelector('.gb-msg');
     const timeEl = el.querySelector('time');
     return {
       n: nameEl ? nameEl.textContent : '',
-      m: msgEl ? msgEl.textContent : '',
+      m: trackEl ? trackEl.childNodes[0].textContent : '',
+      a: artistEl ? artistEl.textContent : '',
+      w: msgEl ? msgEl.textContent : '',
       t: (timeEl && Date.parse(timeEl.getAttribute('datetime') || '')) || Date.now()
     };
   }

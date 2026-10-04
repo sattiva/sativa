@@ -28,15 +28,13 @@ try {
 export const TITLES = {
   home: 'Sativa',
   music: 'Music — Sativa',
-  games: 'Games — Sativa',
-  guestbook: 'Guestbook — Sativa'
+  guestbook: 'Recommend a track — Sativa'
 };
 
 export const PATH = {
   home: '/home',
   music: '/music',
-  games: '/games',
-  guestbook: '/guestbook'
+  guestbook: '/recommend'
 };
 
 export const VIEW = { '/': 'home', '': 'home' };

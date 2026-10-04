@@ -5,7 +5,6 @@ import { initLyricsModal, setArt, setBgArt, clearNow } from './lyrics.js';
 import { connect, presence } from './lanyard.js';
 import { initMusic } from './music.js';
 import { initStats } from './stats.js';
-import { initGames } from './games.js';
 import { initGuestbook } from './guestbook.js';
 
 function boot(fn) {
@@ -58,7 +57,6 @@ function init() {
   boot(initLyricsModal);
   boot(initMusic);
   boot(initStats);
-  boot(initGames);
   boot(initGuestbook);
   boot(initViewCounter);
   boot(initNavigation);

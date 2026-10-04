@@ -1,4 +1,3 @@
-
 const crypto = require('crypto');
 const store = require('./_lib/store');
 const G = require('./_lib/guard');
@@ -16,6 +15,10 @@ const DWELL_MS = 2500;
 const URL_CAP = 2;
 const DEDUPE_TTL = 86400;
 
+const TRACK_MIN = 1;
+const TRACK_MAX = 80;
+const ARTIST_MAX = 80;
+const WHY_MAX = 140;
 const READ_LIMITS = [{ scope: 'gb:read', max: 90, windowMs: 60000 }];
 
 const WRITE_LIMITS = [
@@ -25,10 +28,10 @@ const WRITE_LIMITS = [
 ];
 
 const SEED = [
-  { n: 'Kovak', m: 'Sick redesign! The music vault & gaming hub are clean af.', t: 1759500000000 },
-  { n: 'vivid_ghost', m: 'Love the Toronto weather widget and the neon aesthetic.', t: 1759410000000 },
-  { n: 'cipher_9', m: 'lanyard discord presence synced instant, nice work', t: 1759320000000 },
-  { n: 'blaze', m: 'sealanterns12 gang, added u', t: 1759230000000 }
+  { n: 'Kovak', m: 'Bounce Out x Limerence', a: 'Limerence, Yves Tumor', w: 'that sample goes hard', t: 1759500000000 },
+  { n: 'vivid_ghost', m: 'Star Shopping', a: 'Lil Peep', w: 'put this on at 2am', t: 1759410000000 },
+  { n: 'cipher_9', m: 'Transgender', a: 'Crystal Castles', w: 'the album version hits different', t: 1759320000000 },
+  { n: 'blaze', m: 'Goth', a: 'Sidewalks and Skeletons', w: 'title track is criminally underrated', t: 1759230000000 }
 ];
 
 function id() {
@@ -52,6 +55,8 @@ function parseNotes(raw) {
       id: G.text(v.id, 32) || id(),
       n: G.text(v.n, NAME_MAX),
       m: G.text(v.m, MSG_MAX),
+      a: G.text(v.a, ARTIST_MAX),
+      w: G.text(v.w, WHY_MAX),
       t: Number(v.t) > 0 ? Number(v.t) : Date.now()
     });
   }
@@ -64,7 +69,18 @@ function seedOnce() {
     .then((won) => {
       if (!won) return null;
       const now = Date.now();
-      const cmds = SEED.map((s, i) => ['LPUSH', NOTES_KEY, JSON.stringify({ id: id() + i, n: s.n, m: s.m, t: s.t || now })]);
+      const cmds = SEED.map((s, i) => [
+        'LPUSH',
+        NOTES_KEY,
+        JSON.stringify({
+          id: id() + i,
+          n: s.n,
+          m: s.m,
+          a: s.a,
+          w: s.w,
+          t: s.t || now
+        })
+      ]);
       cmds.push(['LTRIM', NOTES_KEY, '0', String(LIST_CAP - 1)]);
       cmds.push(['SET', COUNT_KEY, String(SEED.length)]);
       return store
@@ -99,11 +115,11 @@ function handleGet(req, res) {
           });
         })
         .catch(() => {
-          G.fail(res, 503, 'guestbook_unavailable', 'Guestbook storage is unavailable.');
+          G.fail(res, 503, 'recommendations_unavailable', 'Recommendations storage is unavailable.');
         });
     })
     .catch(() => {
-      G.fail(res, 500, 'guestbook_error', 'Unexpected error.');
+      G.fail(res, 500, 'recommendations_error', 'Unexpected error.');
     });
 }
 
@@ -132,17 +148,24 @@ function handlePost(req, res) {
       }
 
       const name = G.text(body.name, NAME_MAX);
-      const msg = G.text(body.message, MSG_MAX);
+      const track = G.text(body.track, TRACK_MAX);
+      const artist = G.text(body.artist, ARTIST_MAX);
+      const why = G.text(body.why, WHY_MAX);
+
       if (name.length < NAME_MIN) {
         G.fail(res, 422, 'bad_name', 'Name must be at least ' + NAME_MIN + ' characters.');
         return;
       }
-      if (msg.length < MSG_MIN) {
-        G.fail(res, 422, 'bad_message', 'Message must be at least ' + MSG_MIN + ' characters.');
+      if (track.length < TRACK_MIN) {
+        G.fail(res, 422, 'bad_track', 'Add a track title.');
         return;
       }
-      if ((msg.match(/https?:\/\//gi) || []).length > URL_CAP) {
-        G.fail(res, 422, 'bad_message', 'Too many links in the message.');
+      if (why.length < MSG_MIN) {
+        G.fail(res, 422, 'bad_why', 'Say why in at least ' + MSG_MIN + ' characters.');
+        return;
+      }
+      if ((why.match(/https?:\/\//gi) || []).length > URL_CAP) {
+        G.fail(res, 422, 'bad_why', 'Too many links.');
         return;
       }
 
@@ -152,16 +175,18 @@ function handlePost(req, res) {
           return;
         }
 
-        const entry = { id: ident, n: name, m: msg, t: Date.now() };
-        const dedupeKey = 'gb:d:' + crypto
-          .createHash('sha256')
-          .update(name.toLowerCase() + '\u0000' + msg.toLowerCase())
-          .digest('hex')
-          .slice(0, 32);
+        const entry = { id: ident, n: name, m: track, a: artist, w: why, t: Date.now() };
+        const dedupeKey =
+          'gb:d:' +
+          crypto
+            .createHash('sha256')
+            .update(name.toLowerCase() + '\u0000' + track.toLowerCase() + '\u0000' + why.toLowerCase())
+            .digest('hex')
+            .slice(0, 32);
 
         return store.setnx(dedupeKey, DEDUPE_TTL, '1').then((fresh) => {
           if (!fresh) {
-            G.fail(res, 409, 'duplicate', 'You already signed with this exact message.');
+            G.fail(res, 409, 'duplicate', 'You already recommended this exact track.');
             return;
           }
           return store
@@ -182,8 +207,8 @@ function handlePost(req, res) {
       G.fail(
         res,
         st,
-        st === 503 ? 'guestbook_unavailable' : 'guestbook_error',
-        st === 503 ? 'Guestbook storage is unavailable. Try again later.' : 'Unexpected error.'
+        st === 503 ? 'recommendations_unavailable' : 'recommendations_error',
+        st === 503 ? 'Recommendations storage is unavailable. Try again later.' : 'Unexpected error.'
       );
     });
 }
@@ -193,7 +218,7 @@ module.exports = async function handler(req, res) {
   if (!G.method(req, res, ['GET', 'HEAD', 'POST'])) return;
 
   if (!store.READY) {
-    G.fail(res, 503, 'guestbook_unavailable', 'Guestbook storage is not configured.');
+    G.fail(res, 503, 'recommendations_unavailable', 'Recommendations storage is not configured.');
     return;
   }
 

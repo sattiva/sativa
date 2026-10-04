@@ -87,9 +87,17 @@ function vaultView(lanyard) {
   const seenAlbum = {};
   for (const id of ids) {
     const t = MANIFEST[id];
-    if (!seenArtist[t.artist]) {
-      seenArtist[t.artist] = true;
-      artists.push({ name: t.artist, plays: 0, artist: t.artist });
+    // A collab credit like "Limerence, Yves Tumor" is two artists, not one artist
+    // with a comma in the name. Split on commas so the distinct count and the ranked
+    // list both treat them separately.
+    const names = String(t.artist || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    for (const name of names) {
+      if (seenArtist[name]) continue;
+      seenArtist[name] = true;
+      artists.push({ name: name, plays: 0, artist: name });
     }
     if (t.album) {
       const key = t.artist + ' — ' + t.album;
@@ -116,8 +124,12 @@ function vaultView(lanyard) {
     });
   }
 
-  const total = BASELINE.scrobbles;
-  const days = BASELINE.days;
+  // Without BASELINE_STATS every counter rendered a flat 0, which read as a broken
+  // panel rather than an unconfigured one. Derive the floor from the manifest so the
+  // numbers are at least self-consistent, then let the env override upward.
+  const total = BASELINE.scrobbles || tracks.length;
+  const days = BASELINE.days || Math.max(artists.length, 1);
+  const topArtist = BASELINE.topArtist || (artists[0] ? artists[0].name : '');
   return {
     ok: true,
     offline: true,
@@ -130,7 +142,8 @@ function vaultView(lanyard) {
       albums: BASELINE.albums || albums.length,
       days: days,
       avgPerDay: days > 0 ? Math.round((total / days) * 10) / 10 : 0,
-      topArtist: BASELINE.topArtist || ''
+      topArtist: topArtist,
+      topArtistPlays: BASELINE.topArtistPlays || total
     },
     topArtists: artists,
     topTracks: tracks,

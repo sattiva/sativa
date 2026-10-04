@@ -115,7 +115,7 @@ let motionChoicePending = true;
 let autoTour = false;
 let tourIndex = 0;
 let tourTimer = null;
-const tourViews = ['home', 'music', 'games', 'guestbook'];
+const tourViews = ['home', 'music', 'guestbook'];
 
 export function playReveal(items) {
   items = items || rvItems;
@@ -132,7 +132,7 @@ export function playReveal(items) {
 
 function tourDuration(view) {
   if (view === 'home') return 300 + Math.max(0, rvItems.length - 1) * 900 + 1000;
-  return { music: 2800, games: 6500, guestbook: 2800 }[view] || 3000;
+  return { music: 2800, guestbook: 2800 }[view] || 3000;
 }
 
 function scheduleTourStep() {
