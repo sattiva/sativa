@@ -1,4 +1,5 @@
 {
+  "_deploy": "2026-10-04-bust",
   "cleanUrls": true,
   "outputDirectory": ".",
   "rewrites": [
