@@ -16,22 +16,17 @@ export function scApply() {
   $stage.style.transform = 'translate3d(0,' + (-SC.y).toFixed(2) + 'px,0)';
 }
 
+// No easing. A still page scrolls to where you asked and stops, and there is no rAF
+// loop burning frames to get there.
 function scLoop() {
-  const d = SC.target - SC.y;
-  if (Math.abs(d) < 0.12) {
-    SC.y = SC.target;
-    scApply();
-    SC.raf = null;
-    return;
-  }
-  SC.y += d * 0.14;
+  SC.y = SC.target;
   scApply();
-  SC.raf = requestAnimationFrame(scLoop);
+  SC.raf = null;
 }
 
 export function scStart() {
-  if (!SC.active || SC.raf) return;
-  SC.raf = requestAnimationFrame(scLoop);
+  if (!SC.active) return;
+  scLoop();
 }
 
 export function scTo(y, instant) {
