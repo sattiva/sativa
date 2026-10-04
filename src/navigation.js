@@ -1,6 +1,5 @@
 // Navigation, Smooth Scroll, Reveal, Motion Preferences, Tilt & WebGL Background
 import { $, S, C, TITLES, PATH, VIEW, MOB, TOUCH, CK_V, cGet, cSet } from './config.js';
-import { stopCustomAudio } from './music.js';
 
 const $stage = typeof document !== 'undefined' ? document.querySelector('.stage') : null;
 
@@ -251,9 +250,8 @@ export function showView(t, push, instant) {
   }
   if (cur === nxt) return;
 
-  if (cur && cur.dataset.view === 'music' && t !== 'music') {
-    stopCustomAudio();
-  }
+  // Playback deliberately survives navigation: the dock is global, so leaving the
+  // music view no longer tears down audio.
 
   document.title = TITLES[t] || 'Sativa';
 
@@ -557,6 +555,7 @@ export function initViewCounter() {
       if (!d || typeof d.count !== 'number') return;
       cSet(CK_V, d.count);
       if ($('viewCounter')) $('viewCounter').hidden = false;
+      if ($('railViews')) $('railViews').textContent = d.count.toLocaleString();
       animateCount(d.count);
     }).catch(() => {});
   }
@@ -564,6 +563,7 @@ export function initViewCounter() {
   const cvv = cGet(CK_V, 86400000);
   if (cvv && typeof cvv === 'number') {
     if ($('viewCounter')) $('viewCounter').hidden = false;
+    if ($('railViews')) $('railViews').textContent = cvv.toLocaleString();
     animateCount(cvv);
   }
 

@@ -1,7 +1,7 @@
-// Music Vault player. Resolves artwork per track from the iTunes Search API (with a
-// deterministic monogram fallback so a lookup miss never leaves a blank tile), drives
-// the now-playing strip, and scrobbles to /api/scrobble once a play passes the halfway
-// mark. The server re-validates the track id against its own manifest.
+// Music Vault player. Artwork resolved per track from the iTunes Search API with a
+// generated monogram fallback, playback driven from a docked player that persists across
+// views, and a scrobble to /api/scrobble once a play passes the halfway mark. The server
+// re-validates the track id against its own manifest.
 
 import { $, toast, safeUrl, tile } from './config.js';
 
@@ -9,13 +9,14 @@ const SCROBBLE_AT = 0.5;
 const ART_SIZE = 400;
 const LOOKUP_TIMEOUT_MS = 6000;
 
-const PLAY_ICON = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+const PLAY_ICON = '<svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>';
 const PAUSE_ICON = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
 
 let audio = null;
 let curRow = null;
 let curScrobbled = false;
 let rafId = null;
+let scrubbing = false;
 
 function upscale(u) {
   return String(u || '').replace(/\/\d+x\d+(bb)?\.(jpg|png)/, '/' + ART_SIZE + 'x' + ART_SIZE + 'bb.$1');
@@ -60,39 +61,53 @@ function setArt(img, url, title) {
   img.src = url || tile(title, 2);
 }
 
+function fmtTime(s) {
+  const v = Math.max(0, Math.floor(Number(s) || 0));
+  return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0');
+}
+
+function setDockIcon(playing) {
+  const btn = $('dockToggle');
+  if (btn) {
+    btn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+    btn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  }
+}
+
 function paintRow(row, playing) {
   if (!row) return;
   row.classList.toggle('playing', playing);
-  const btn = row.querySelector('.track-play-btn');
-  if (btn) {
-    btn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
-    btn.setAttribute('aria-label', (playing ? 'Pause ' : 'Play ') + (row.dataset.title || 'track'));
-  }
+  const mark = row.querySelector('.track-mark svg');
+  if (mark) mark.innerHTML = playing ? '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>' : '<polygon points="6 3 20 12 6 21 6 3"></polygon>';
+  row.setAttribute('aria-label', (playing ? 'Playing ' : 'Play ') + (row.dataset.title || 'track'));
   if (!playing) {
     const fill = row.querySelector('.track-bar i');
     if (fill) fill.style.width = '0%';
   }
 }
 
-function paintNow(row, on) {
-  const wrap = $('vaultNow');
-  if (!wrap) return;
-  wrap.hidden = !on;
+function showDock(on) {
+  const dock = $('dock');
+  if (dock) dock.hidden = !on;
+}
+
+function paintDock(row, on) {
+  showDock(on);
   if (!on || !row) return;
   const rowImg = row.querySelector('.track-art img');
-  const art = $('vaultArt');
-  const title = $('vaultTitle');
-  const artist = $('vaultArtist');
-  const bar = $('vaultBar');
+  const art = $('dockArt');
+  const title = $('dockTitle');
+  const artist = $('dockArtist');
+  const fill = $('dockFill');
+  const time = $('dockTime');
+  const seek = $('dockSeek');
   if (art) art.src = (rowImg && rowImg.src) || tile(row.dataset.title, 2);
   if (title) title.textContent = row.dataset.title || '';
   if (artist) artist.textContent = row.dataset.artist || '';
-  if (bar) bar.style.width = '0%';
-}
-
-function fmtTime(s) {
-  const v = Math.max(0, Math.floor(Number(s) || 0));
-  return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0');
+  if (fill) fill.style.width = '0%';
+  if (time) time.textContent = '0:00 / ' + fmtTime(row.dataset.dur);
+  if (seek) seek.setAttribute('aria-valuenow', '0');
+  setDockIcon(true);
 }
 
 function startLoop(row) {
@@ -104,12 +119,16 @@ function startLoop(row) {
     const dur = audio.duration;
     const known = dur && isFinite(dur) ? dur : Number(row.dataset.dur) || 0;
     const pct = known > 0 ? Math.min(1, el / known) : 0;
-    const rowFill = row.querySelector('.track-bar i');
-    const nowFill = $('vaultBar');
-    if (rowFill) rowFill.style.width = (pct * 100).toFixed(2) + '%';
-    if (nowFill) nowFill.style.width = (pct * 100).toFixed(2) + '%';
-    const stamp = $('vaultElapsed');
-    if (stamp) stamp.textContent = fmtTime(el);
+    if (!scrubbing) {
+      const rowFill = row.querySelector('.track-bar i');
+      const dockFill = $('dockFill');
+      const seek = $('dockSeek');
+      if (rowFill) rowFill.style.width = (pct * 100).toFixed(2) + '%';
+      if (dockFill) dockFill.style.width = (pct * 100).toFixed(2) + '%';
+      if (seek) seek.setAttribute('aria-valuenow', String(Math.round(pct * 100)));
+    }
+    const time = $('dockTime');
+    if (time) time.textContent = fmtTime(el) + ' / ' + fmtTime(known);
     if (!curScrobbled && dur && isFinite(dur) && el >= dur * SCROBBLE_AT) {
       curScrobbled = true;
       fireScrobble(row, el * 1000);
@@ -143,7 +162,8 @@ export function stopCustomAudio() {
     audio = null;
   }
   paintRow(curRow, false);
-  paintNow(null, false);
+  paintDock(null, false);
+  showDock(false);
   curRow = null;
   curScrobbled = false;
 }
@@ -151,25 +171,39 @@ export function stopCustomAudio() {
 function play(row) {
   const src = safeUrl(row.dataset.src);
   if (!src) return;
-  stopCustomAudio();
-  curRow = row;
-  curScrobbled = false;
-  paintRow(row, true);
-  paintNow(row, true);
+  const wasSame = curRow === row;
+  if (!wasSame) {
+    stopCustomAudio();
+    curRow = row;
+    curScrobbled = false;
+    paintRow(row, true);
+    paintDock(row, true);
+  }
+
+  if (wasSame && audio) {
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      setDockIcon(true);
+      paintRow(row, true);
+    } else {
+      audio.pause();
+      setDockIcon(false);
+    }
+    return;
+  }
 
   const a = new Audio(src);
   a.preload = 'auto';
   a.volume = 0.7;
   audio = a;
   a.addEventListener('play', () => startLoop(row));
+  a.addEventListener('pause', () => setDockIcon(false));
   a.addEventListener('ended', () => stopCustomAudio());
   a.addEventListener('error', () => {
     if (audio !== a) return;
     stopCustomAudio();
     toast('preview unavailable for this track', true);
   });
-  // Belt and braces: the play event is the primary signal, but if it is ever missed
-  // the resolved play() promise still gets the progress/scrobble loop running.
   a.play()
     .then(() => {
       if (audio === a) startLoop(row);
@@ -181,13 +215,53 @@ function play(row) {
     });
 }
 
-function toggle(row) {
-  if (curRow === row && audio) {
-    if (audio.paused) audio.play().catch(() => {});
-    else audio.pause();
-    return;
+// Seek by dragging anywhere on the dock progress rail.
+function bindSeek() {
+  const seek = $('dockSeek');
+  if (!seek) return;
+
+  function ratioFrom(e) {
+    const r = seek.getBoundingClientRect();
+    if (!r.width) return 0;
+    return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
   }
-  play(row);
+
+  function apply(e) {
+    if (!audio || !curRow) return;
+    const r = ratioFrom(e);
+    const known = audio.duration && isFinite(audio.duration) ? audio.duration : Number(curRow.dataset.dur) || 0;
+    if (known > 0) audio.currentTime = r * known;
+  }
+
+  seek.addEventListener('pointerdown', function (e) {
+    if (!audio) return;
+    scrubbing = true;
+    seek.setPointerCapture(e.pointerId);
+    apply(e);
+    e.preventDefault();
+  });
+  seek.addEventListener('pointermove', function (e) {
+    if (scrubbing) apply(e);
+  });
+  function end(e) {
+    if (!scrubbing) return;
+    scrubbing = false;
+    apply(e);
+    try {
+      seek.releasePointerCapture(e.pointerId);
+    } catch (err) {}
+  }
+  seek.addEventListener('pointerup', end);
+  seek.addEventListener('pointercancel', end);
+  seek.addEventListener('keydown', function (e) {
+    if (!audio) return;
+    const known = audio.duration && isFinite(audio.duration) ? audio.duration : 0;
+    if (!known) return;
+    if (e.key === 'ArrowRight') audio.currentTime = Math.min(known, audio.currentTime + 5);
+    else if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+    else return;
+    e.preventDefault();
+  });
 }
 
 export function initMusic() {
@@ -203,6 +277,8 @@ export function initMusic() {
     const durEl = row.querySelector('.track-dur');
     const parts = (durEl ? durEl.textContent : '').split(':');
     row.dataset.dur = parts.length === 2 ? String(Number(parts[0]) * 60 + Number(parts[1])) : '0';
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
 
     const img = row.querySelector('.track-art img');
     setArt(img, '', row.dataset.title);
@@ -210,12 +286,26 @@ export function initMusic() {
       if (url) setArt(img, url, row.dataset.title);
     });
 
-    row.addEventListener('click', () => toggle(row));
+    row.addEventListener('click', () => play(row));
+    row.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      play(row);
+    });
   });
 
-  const stop = $('vaultStop');
+  const toggle = $('dockToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      if (!audio) return;
+      if (audio.paused) audio.play().catch(() => {});
+      else audio.pause();
+    });
+  }
+  const stop = $('dockStop');
   if (stop) stop.addEventListener('click', () => stopCustomAudio());
+  bindSeek();
 
   const badge = $('musicStatusBadge');
-  if (badge) badge.textContent = rows.length + ' Tracks';
+  if (badge) badge.textContent = rows.length + ' tracks';
 }

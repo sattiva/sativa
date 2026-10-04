@@ -42,8 +42,11 @@ function wDesc(c) {
 
 export function tick() {
   const n = new Date();
-  $('localTime').textContent = tFmt.format(n);
-  $('localDate').textContent = dFmt.format(n);
+  const t = tFmt.format(n);
+  const lt = $('localTime');
+  if (lt) lt.textContent = t;
+  const ld = $('localDate');
+  if (ld) ld.textContent = dFmt.format(n);
 }
 
 export function fT(v) {

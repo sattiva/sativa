@@ -186,6 +186,9 @@ export function presence(p) {
   }
   const sd = $('statusDot');
   if (sd) sd.innerHTML = SI[p.discord_status] || SI.offline;
+  // Discord card subtitle mirrors presence, so the link card carries live state.
+  const ld = $('linkDiscord');
+  if (ld) ld.textContent = '@' + (u && u.username ? u.username : 'zgwf') + (p.discord_status && p.discord_status !== 'offline' ? ' \\u00b7 ' + p.discord_status : '');
   act(getPrimary(p.activities));
   custom(getCustom(p.activities));
 

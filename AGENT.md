@@ -197,3 +197,10 @@ edit without a rebuild never ships.
   `/music` or `/guestbook` returns the host's error page instead of the app.
 - `index.html` must NOT hardcode `class="smooth-scroll"`. That class sets
   `body{overflow:hidden}` and is only safe when the custom scroller is actually driving.
+- Always scope view lookups to the section: `section[data-view="music"]`, never
+  `[data-view="music"]`. The nav buttons carry `data-view` too and come earlier in the
+  DOM, so an unscoped selector returns a zero-height button. That silently broke the
+  stats IntersectionObserver and the hero never rendered on mobile.
+- Never give a module a bare `$` unless it imports one. `src/games.js` has no `$` import
+  and uses a local `byId`; adding a `$('...')` there throws inside `initGames` and the
+  arcade dies silently.

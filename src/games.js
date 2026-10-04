@@ -4,6 +4,8 @@
 // pixels; the canvas backing store is DPR-scaled so it stays sharp on retina without
 // distorting the playfield.
 
+const byId = (id) => document.getElementById(id);
+
 const PADDLE_FRAC = 0.15;
 const BALL_REF_R = 0.021;
 const COLS = 8;
@@ -22,12 +24,17 @@ const ROWS_SPEC = [
 ];
 
 const POWERS = {
-  expand: { label: 'WIDE', c: '#39ff88' },
-  shrink: { label: 'SMALL', c: '#ff9f43' },
-  multi: { label: 'MULTI', c: '#00f0ff' },
-  slow: { label: 'SLOW', c: '#b28dff' },
-  life: { label: 'LIFE', c: '#ff2a55' }
+  expand: { label: 'wide', c: '#39d98a' },
+  shrink: { label: 'small', c: '#d9a441' },
+  multi: { label: 'multi', c: '#4cc9f0' },
+  slow: { label: 'slow', c: '#b28dff' },
+  life: { label: 'life', c: '#ff6b8b' }
 };
+
+// Charge meter: holding START before launch trades accuracy for raw speed, and the
+// angle offset is what you actually control. A tap launches straight up.
+const CHARGE_MAX_MS = 1100;
+const CHARGE_SPREAD = 1.15;
 
 export function initGames() {
   const cv = document.getElementById('arcadeCanvas');
@@ -44,8 +51,9 @@ export function initGames() {
   const levelEl = document.getElementById('arcadeLevel');
 
   let W = 580;
-  let H = 220;
+  let H = 260;
   let dpr = 1;
+  let hadBox = false;
 
   let state = 'idle'; // idle | launch | play | paused | clear | over
   let score = 0;
@@ -78,39 +86,72 @@ export function initGames() {
   function hud() {
     if (scoreEl) scoreEl.textContent = String(score);
     if (bestEl) bestEl.textContent = String(Math.max(best, score));
-    if (livesEl) {
-      livesEl.textContent = 'x' + lives;
-    }
+    if (livesEl) livesEl.textContent = String(lives);
     if (levelEl) levelEl.textContent = String(level);
+    paintChannels();
+  }
+
+  // Active power-ups are shown as lit channels rather than icons floating in the play
+  // area, so the playfield stays readable.
+  function paintChannels() {
+    const host = byId('arcadeChannels');
+    if (!host) return;
+    const live = [];
+    if (expandT > 0) live.push('expand');
+    if (slowT > 0) live.push('slow');
+    if (balls.length > 1) live.push('multi');
+    const want = live.join(',');
+    if (host.dataset.live === want) return;
+    host.dataset.live = want;
+    host.innerHTML = live
+      .map(function (k) {
+        return '<span class="ch on" data-c="' + k + '">' + POWERS[k].label + '</span>';
+      })
+      .join('');
   }
 
   // Overlay is button-only by design: no title, no instructions. State is carried by the
-  // button label and the score/lives/level bar underneath.
+  // button label, the charge meter and the readout underneath.
   function banner(btn) {
-    if (startBtn) startBtn.textContent = btn;
+    if (startBtn) {
+      // startBtn holds the charge bar as a child, so set text on a text node only.
+      const bar = byId('arcadeCharge');
+      if (bar) {
+        while (startBtn.firstChild && startBtn.firstChild !== bar) startBtn.removeChild(startBtn.firstChild);
+        startBtn.insertBefore(document.createTextNode(btn), bar);
+      } else {
+        startBtn.textContent = btn;
+      }
+    }
     if (ov) ov.style.display = 'flex';
   }
 
   function resize() {
     const r = wrap.getBoundingClientRect();
+    // Hidden views measure 0x0. Bail rather than baking a 240px fallback into the
+    // geometry; ResizeObserver calls back with the real box once the view is shown.
+    if (!r.width || !r.height) return;
     const cw = Math.max(240, Math.round(r.width));
     const ch = Math.max(160, Math.round(r.height));
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     cv.width = Math.round(cw * dpr);
     cv.height = Math.round(ch * dpr);
-    const sx = cw / (W || cw);
+    const first = !hadBox;
     W = cw;
     H = ch;
-    // Keep brick geometry proportional instead of letting it desync from the new width.
-    for (let i = 0; i < bricks.length; i++) {
-      bricks[i].x *= sx;
-      bricks[i].w *= sx;
-    }
+    hadBox = true;
     paddle.baseW = Math.max(52, Math.round(W * PADDLE_FRAC));
     paddle.w = expandT > 0 ? Math.round(paddle.baseW * 1.45) : paddle.baseW;
     paddle.h = Math.max(9, Math.round(H * 0.045));
     paddle.y = H - paddle.h - Math.round(H * 0.06);
     paddle.x = Math.max(0, Math.min(W - paddle.w, paddle.x || (W - paddle.w) / 2));
+    // Rebuilding is correct whenever no round is in flight. Proportionally scaling brick
+    // x/width to fit a new box stretches them, because height and row pitch do not scale
+    // with it.
+    if (first || state === 'idle' || state === 'over' || state === 'clear') {
+      buildLevel();
+      resetBall();
+    }
   }
 
   function makeBall(x, y, vx, vy) {
@@ -581,6 +622,7 @@ export function initGames() {
     if (dt > 1 / 30) dt = 1 / 30;
     if (shake > 0) shake = Math.max(0, shake - dt * 26);
     if (flash > 0) flash = Math.max(0, flash - dt * 2.6);
+    chargeTick(now);
     if (state !== 'paused') step(dt);
     draw();
   }
@@ -637,44 +679,145 @@ export function initGames() {
     if (document.hidden && state === 'play') togglePause();
   });
 
-  // One dispatcher for every entry point (button, overlay click, Space/Enter) so the
-// overlay can never claim an action the state machine does not agree with.
-function activate() {
+// One dispatcher for every entry point (button, overlay click, Space/Enter) so the
+  // overlay can never claim an action the state machine does not agree with.
+  function activate() {
     if (state === 'paused') togglePause();
     else if (state === 'clear') advance();
     else if (state === 'over' || state === 'idle') start();
   }
 
-  function launchBall() {
+  // Charge replaces the random launch angle. charge 0 -> straight up; charge 1 -> the
+  // widest angle the clamp allows. Holding longer is a real trade: faster ball, harder
+  // to recover from a bad angle.
+  let charge = 0;
+  let charging = false;
+
+  function paintCharge() {
+    const bar = byId('arcadeCharge');
+    if (bar) bar.style.width = (charge * 100).toFixed(1) + '%';
+    if (startBtn) startBtn.classList.toggle('charging', charging);
+  }
+
+  function beginCharge() {
+    if (state !== 'launch') return;
+    charging = true;
+    charge = 0;
+    paintCharge();
+  }
+
+  function endCharge() {
+    if (!charging) return;
+    charging = false;
+    launchBall(charge);
+    charge = 0;
+    paintCharge();
+    // Safety net: if the pointerup is lost entirely (browser chrome stole it, the tab
+    // was switched mid-hold) the charge cannot stay stuck open.
+    window.addEventListener('pointerup', releaseGuard, { once: true });
+    window.addEventListener('pointercancel', releaseGuard, { once: true });
+  }
+
+  function releaseGuard() {
+    if (charging) endCharge();
+  }
+
+  function launchBall(power) {
     state = 'play';
     const b = balls[0];
     if (!b) return;
-    const sp = H * 1.08;
-    const ang = -Math.PI / 2 + (Math.random() - 0.5) * 0.7;
+    const p = Math.max(0, Math.min(1, Number(power) || 0));
+    const sp = H * (1.02 + p * 0.42);
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2 * CHARGE_SPREAD * p;
     b.vx = Math.cos(ang) * sp;
     b.vy = Math.sin(ang) * sp;
   }
 
-  if (startBtn) startBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    activate();
-  });
+  if (startBtn) {
+    // One gesture does both: pressing from idle/over/clear starts the round AND begins
+    // the charge, so a single press-and-hold is the whole launch. Previously the first
+    // press only started the round and a second press was needed to charge.
+    startBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (state === 'paused') {
+        togglePause();
+        return;
+      }
+      if (state !== 'launch') start();
+      // start() hides the overlay, so the button vanishes from under the cursor and an
+      // uncaptured pointerup would land on some other element and never release the
+      // charge. Capturing the pointer keeps every subsequent event bound to this button.
+      try {
+        startBtn.setPointerCapture(e.pointerId);
+      } catch (err) {}
+      beginCharge();
+    });
+    startBtn.addEventListener('pointerup', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      try {
+        startBtn.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      if (charging) {
+        endCharge();
+        return;
+      }
+      activate();
+    });
+    startBtn.addEventListener('pointercancel', () => {
+      if (charging) endCharge();
+    });
+    // Keyboard and assistive activation still work; they just launch straight up.
+    startBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (state === 'launch') return;
+      activate();
+    });
+  }
   if (ov) ov.addEventListener('click', () => activate());
+
+  // charge fills in step with the game loop so it animates at frame rate
+  let lastChargePaint = performance.now();
+  function chargeTick(now) {
+    if (!charging) {
+      lastChargePaint = now;
+      return;
+    }
+    const delta = Math.min(250, Math.max(0, now - lastChargePaint));
+    lastChargePaint = now;
+    charge = Math.min(1, charge + delta / CHARGE_MAX_MS);
+    paintCharge();
+  }
 
   let rt = null;
   window.addEventListener('resize', () => {
     clearTimeout(rt);
-    rt = setTimeout(() => {
-      resize();
-      if (state === 'idle' || state === 'over') draw();
-    }, 120);
+    rt = setTimeout(fitToBox, 120);
   });
+
+  // The arcade view is hidden at init, so the first getBoundingClientRect() is 0x0 and
+  // the canvas ends up sized for a 240px box. A ResizeObserver catches the moment it
+  // actually becomes visible, which a window resize listener never would.
+  function fitToBox() {
+    resize();
+    if (state === 'idle' || state === 'over' || state === 'clear') draw();
+  }
+  if (typeof ResizeObserver === 'function') {
+    try {
+      const ro = new ResizeObserver(() => {
+        if (!wrap.clientWidth) return;
+        fitToBox();
+      });
+      ro.observe(wrap);
+    } catch (e) {}
+  }
 
   resize();
   buildLevel();
   resetBall();
   hud();
   draw();
-  banner('START');
+  banner('Start');
 }

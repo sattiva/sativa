@@ -1,6 +1,6 @@
 // Music Vault statistics. Redis is the only source: GET /api/scrobble returns the
 // lifetime baseline plus everything tracked locally. Nothing renders until the fetch
-// resolves, so the grid never flashes placeholder zeros as if they were real numbers.
+// resolves, so the meter never flashes placeholder zeros as if they were real readings.
 
 import { $, esc, toast, safeUrl, fmtNum, timeAgo, tile } from './config.js';
 import { scMax } from './navigation.js';
@@ -31,6 +31,16 @@ function set(id, v) {
   if (el) el.textContent = v;
 }
 
+// Redis stores no image URLs, so every tile is a generated gradient monogram. If an
+// artwork URL ever does appear it wins, so this is a floor rather than a hardcode.
+function art(seed, cls, url) {
+  const clean = safeUrl(url);
+  if (clean) {
+    return '<img class="' + cls + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(clean) + '">';
+  }
+  return '<span class="' + cls + ' ' + cls + '-ph" style="background-image:url(' + tile(seed, 1) + ')"></span>';
+}
+
 function renderStats(st) {
   set('statScrobbles', fmtNum(st.scrobbles));
   set('statArtists', fmtNum(st.artists));
@@ -39,65 +49,55 @@ function renderStats(st) {
   set('statAvg', st.avgPerDay != null ? fmtNum(st.avgPerDay) : '—');
   set('statDays', st.days != null ? fmtNum(st.days) : '—');
 
-  const wrap = $('statTopArtist');
-  const name = $('statTopArtistName');
-  const v = st.topArtist || '';
-  if (wrap && name) {
-    wrap.hidden = !v;
-    name.textContent = v;
-  }
-  const grid = $('statGrid');
-  if (grid) grid.classList.add('is-loaded');
-}
+  // hero readout repeats the three numbers that matter, at a different scale
+  set('heroScrobbles', fmtNum(st.scrobbles));
+  set('heroAvg', st.avgPerDay != null ? fmtNum(st.avgPerDay) : '—');
+  set('heroDays', st.days != null ? fmtNum(st.days) : '—');
+  set('statTopArtistName', st.topArtist || '—');
 
-// Redis stores no image URLs, so every tile is a generated gradient monogram. If an
-// artwork URL ever does appear it wins, so this is a floor rather than a hardcode.
-function art(name, cls) {
-  const url = safeUrl(name && name.art);
-  const seed = String((name && (name.title || name.name)) || '');
-  if (url) {
-    return '<img class="' + cls + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(url) + '">';
-  }
-  return '<span class="' + cls + ' ' + cls + '-ph" style="background-image:url(' + tile(seed, 1) + ')"></span>';
+  const rail = $('railScrobbles');
+  if (rail) rail.textContent = fmtNum(st.scrobbles);
+
+  const grid = $('statGrid');
+  if (grid) grid.classList.add('on');
 }
 
 function renderRecent(rows) {
   const el = $('recentList');
   if (!el) return;
   if (!rows || !rows.length) {
-    el.innerHTML = '<p class="rp-empty">nothing played yet</p>';
+    el.innerHTML = '<p class="empty">nothing logged yet</p>';
     return;
   }
   el.innerHTML = rows
     .map(function (r) {
       const title = String(r.title || r.name || '').slice(0, 90);
       const artist = String(r.artist || '').slice(0, 90);
-      const live = r.now ? ' is-live' : '';
+      const live = r.now ? ' live' : '';
       const when = r.now ? 'now' : r.ts ? timeAgo(r.ts) : '';
       return (
-        '<div class="rp-row' + live + '">' +
-        art({ title, art: r.art }, 'rp-art') +
-        '<span class="rp-txt">' +
-        '<span class="rp-name">' + esc(title) + '</span>' +
-        '<span class="rp-artist">' + esc(artist) + '</span>' +
-        '</span>' +
-        '<span class="rp-when">' + esc(when) + '</span>' +
+        '<div class="log-row' + live + '">' +
+        '<span class="log-mark"></span>' +
+        art(title, 'log-art', r.art) +
+        '<span class="log-txt"><span class="log-name">' + esc(title) + '</span>' +
+        '<span class="log-artist">' + esc(artist) + '</span></span>' +
+        '<span class="log-when">' + esc(when) + '</span>' +
         '</div>'
       );
     })
     .join('');
 }
 
-function rows(items) {
-  if (!items || !items.length) return '<p class="rp-empty">no data yet</p>';
+function rank(items) {
+  if (!items || !items.length) return '<p class="empty">nothing logged yet</p>';
   return items
     .map(function (r, i) {
       const name = String(r.name || '').slice(0, 80);
       return (
-        '<div class="rk-row">' +
+        '<div class="rk">' +
         '<span class="rk-n">' + (i + 1) + '</span>' +
-        art(r, 'rk-art') +
-        '<span class="rk-txt"><span class="rk-name">' + esc(name) + '</span></span>' +
+        art(name, 'rk-art', r.art) +
+        '<span class="rk-name">' + esc(name) + '</span>' +
         '<span class="rk-plays">' + esc(fmtNum(r.plays)) + '</span>' +
         '</div>'
       );
@@ -109,7 +109,7 @@ function albums(items) {
   const el = $('topAlbumsList');
   if (!el) return;
   if (!items || !items.length) {
-    el.innerHTML = '<p class="rp-empty">no data yet</p>';
+    el.innerHTML = '<p class="empty">nothing logged yet</p>';
     return;
   }
   el.innerHTML = items
@@ -117,8 +117,8 @@ function albums(items) {
       const name = String(r.name || '').slice(0, 70);
       const tail = String(r.artist || '').slice(0, 70);
       return (
-        '<div class="al-card">' +
-        art(r, 'al-art') +
+        '<div class="al">' +
+        art(name, 'al-art', r.art) +
         '<span class="al-name">' + esc(name) + '</span>' +
         (tail ? '<span class="al-artist">' + esc(tail) + '</span>' : '') +
         '<span class="al-plays">' + esc(fmtNum(r.plays)) + ' plays</span>' +
@@ -152,9 +152,8 @@ async function load() {
   renderRecent(j.recent);
 
   const artistsEl = $('topArtistsList');
-  if (artistsEl) artistsEl.innerHTML = rows(j.topArtists);
-  const albumsEl = $('topAlbumsList');
-  if (albumsEl) albums(j.topAlbums);
+  if (artistsEl) artistsEl.innerHTML = rank(j.topArtists);
+  albums(j.topAlbums);
 
   setTimeout(scMax, 80);
 }
@@ -164,7 +163,10 @@ function refresh() {
 }
 
 export function initStats() {
-  const section = document.querySelector('[data-view="music"]');
+  // Must be scoped to the section. The nav buttons also carry data-view and appear
+  // earlier in the DOM, so an unscoped selector returns a zero-height button and the
+  // observer never fires -- the stats silently never load.
+  const section = document.querySelector('section[data-view="music"]');
   const grid = $('statGrid');
   if (!section || !grid) return;
 
@@ -186,7 +188,11 @@ export function initStats() {
           return;
         }
       },
-      { threshold: 0.05 }
+      // threshold must be 0. A threshold of 0.05 asks for 5% of the TARGET to be
+      // visible, and the music section is several thousand pixels tall, so on a phone
+      // only a sliver is ever on screen and the observer never fires -- the hero stayed
+      // blank forever. Any intersection is enough to start the fetch.
+      { threshold: 0, rootMargin: '120px' }
     );
     io.observe(section);
   } else {

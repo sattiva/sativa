@@ -178,194 +178,6 @@
     }
   }
 
-  // src/music.js
-  var SCROBBLE_AT = 0.5;
-  var ART_SIZE = 400;
-  var LOOKUP_TIMEOUT_MS = 6e3;
-  var PLAY_ICON = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-  var PAUSE_ICON = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
-  var audio = null;
-  var curRow = null;
-  var curScrobbled = false;
-  var rafId = null;
-  function upscale(u) {
-    return String(u || "").replace(/\/\d+x\d+(bb)?\.(jpg|png)/, "/" + ART_SIZE + "x" + ART_SIZE + "bb.$1");
-  }
-  function norm(s) {
-    return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
-  }
-  async function itunesArt(title, artist) {
-    const term = (artist ? artist + " " : "") + title;
-    const ctl = new AbortController();
-    const timer2 = setTimeout(() => ctl.abort(), LOOKUP_TIMEOUT_MS);
-    try {
-      const r = await fetch(
-        "https://itunes.apple.com/search?media=music&entity=song&limit=3&country=US&term=" + encodeURIComponent(term),
-        { signal: ctl.signal }
-      );
-      if (!r.ok) return "";
-      const j = await r.json();
-      const rows2 = Array.isArray(j && j.results) ? j.results : [];
-      if (!rows2.length) return "";
-      const want = norm(title);
-      const hit = rows2.find((x) => norm(x.trackName) === want) || rows2[0];
-      return safeUrl(upscale(hit.artworkUrl100 || hit.artworkUrl60));
-    } catch (e) {
-      return "";
-    } finally {
-      clearTimeout(timer2);
-    }
-  }
-  function setArt(img, url, title) {
-    if (!img) return;
-    img.onerror = function() {
-      this.onerror = null;
-      this.src = tile(title, 2);
-    };
-    img.src = url || tile(title, 2);
-  }
-  function paintRow(row, playing) {
-    if (!row) return;
-    row.classList.toggle("playing", playing);
-    const btn = row.querySelector(".track-play-btn");
-    if (btn) {
-      btn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
-      btn.setAttribute("aria-label", (playing ? "Pause " : "Play ") + (row.dataset.title || "track"));
-    }
-    if (!playing) {
-      const fill = row.querySelector(".track-bar i");
-      if (fill) fill.style.width = "0%";
-    }
-  }
-  function paintNow(row, on) {
-    const wrap = $("vaultNow");
-    if (!wrap) return;
-    wrap.hidden = !on;
-    if (!on || !row) return;
-    const rowImg = row.querySelector(".track-art img");
-    const art2 = $("vaultArt");
-    const title = $("vaultTitle");
-    const artist = $("vaultArtist");
-    const bar = $("vaultBar");
-    if (art2) art2.src = rowImg && rowImg.src || tile(row.dataset.title, 2);
-    if (title) title.textContent = row.dataset.title || "";
-    if (artist) artist.textContent = row.dataset.artist || "";
-    if (bar) bar.style.width = "0%";
-  }
-  function fmtTime(s) {
-    const v = Math.max(0, Math.floor(Number(s) || 0));
-    return Math.floor(v / 60) + ":" + String(v % 60).padStart(2, "0");
-  }
-  function startLoop(row) {
-    cancelAnimationFrame(rafId);
-    (function step() {
-      if (!audio || curRow !== row) return;
-      rafId = requestAnimationFrame(step);
-      const el = audio.currentTime || 0;
-      const dur = audio.duration;
-      const known = dur && isFinite(dur) ? dur : Number(row.dataset.dur) || 0;
-      const pct = known > 0 ? Math.min(1, el / known) : 0;
-      const rowFill = row.querySelector(".track-bar i");
-      const nowFill = $("vaultBar");
-      if (rowFill) rowFill.style.width = (pct * 100).toFixed(2) + "%";
-      if (nowFill) nowFill.style.width = (pct * 100).toFixed(2) + "%";
-      const stamp = $("vaultElapsed");
-      if (stamp) stamp.textContent = fmtTime(el);
-      if (!curScrobbled && dur && isFinite(dur) && el >= dur * SCROBBLE_AT) {
-        curScrobbled = true;
-        fireScrobble(row, el * 1e3);
-      }
-    })();
-  }
-  async function fireScrobble(row, ms) {
-    const id = row && row.dataset.id;
-    if (!id) return;
-    try {
-      await fetch("/api/scrobble", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id,
-          ms: Math.round(ms),
-          nonce: Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-        })
-      });
-    } catch (e) {
-    }
-  }
-  function stopCustomAudio() {
-    cancelAnimationFrame(rafId);
-    if (audio) {
-      audio.pause();
-      audio.src = "";
-      audio = null;
-    }
-    paintRow(curRow, false);
-    paintNow(null, false);
-    curRow = null;
-    curScrobbled = false;
-  }
-  function play(row) {
-    const src = safeUrl(row.dataset.src);
-    if (!src) return;
-    stopCustomAudio();
-    curRow = row;
-    curScrobbled = false;
-    paintRow(row, true);
-    paintNow(row, true);
-    const a = new Audio(src);
-    a.preload = "auto";
-    a.volume = 0.7;
-    audio = a;
-    a.addEventListener("play", () => startLoop(row));
-    a.addEventListener("ended", () => stopCustomAudio());
-    a.addEventListener("error", () => {
-      if (audio !== a) return;
-      stopCustomAudio();
-      toast("preview unavailable for this track", true);
-    });
-    a.play().then(() => {
-      if (audio === a) startLoop(row);
-    }).catch(() => {
-      if (audio !== a) return;
-      stopCustomAudio();
-      toast("playback blocked by the browser", true);
-    });
-  }
-  function toggle(row) {
-    if (curRow === row && audio) {
-      if (audio.paused) audio.play().catch(() => {
-      });
-      else audio.pause();
-      return;
-    }
-    play(row);
-  }
-  function initMusic() {
-    const list = $("customTrackList");
-    if (!list) return;
-    const rows2 = Array.prototype.slice.call(list.querySelectorAll(".track-row"));
-    rows2.forEach((row) => {
-      const nameEl = row.querySelector(".track-name");
-      const artEl = row.querySelector(".track-artist");
-      row.dataset.title = nameEl ? nameEl.textContent.trim() : "";
-      row.dataset.artist = artEl ? artEl.textContent.replace(/\s*·\s*/g, ", ").trim() : "";
-      const durEl = row.querySelector(".track-dur");
-      const parts = (durEl ? durEl.textContent : "").split(":");
-      row.dataset.dur = parts.length === 2 ? String(Number(parts[0]) * 60 + Number(parts[1])) : "0";
-      const img = row.querySelector(".track-art img");
-      setArt(img, "", row.dataset.title);
-      itunesArt(row.dataset.title, row.dataset.artist).then((url) => {
-        if (url) setArt(img, url, row.dataset.title);
-      });
-      row.addEventListener("click", () => toggle(row));
-    });
-    const stop = $("vaultStop");
-    if (stop) stop.addEventListener("click", () => stopCustomAudio());
-    const badge = $("musicStatusBadge");
-    if (badge) badge.textContent = rows2.length + " Tracks";
-  }
-
   // src/navigation.js
   var $stage = typeof document !== "undefined" ? document.querySelector(".stage") : null;
   var SC = { y: 0, target: 0, max: 0, raf: null, active: !TOUCH };
@@ -605,9 +417,6 @@
       }
     }
     if (cur === nxt) return;
-    if (cur && cur.dataset.view === "music" && t !== "music") {
-      stopCustomAudio();
-    }
     document.title = TITLES[t] || "Sativa";
     const go = function() {
       nxt.hidden = false;
@@ -881,6 +690,7 @@
         if (!d || typeof d.count !== "number") return;
         cSet(CK_V, d.count);
         if ($("viewCounter")) $("viewCounter").hidden = false;
+        if ($("railViews")) $("railViews").textContent = d.count.toLocaleString();
         animateCount(d.count);
       }).catch(() => {
       });
@@ -888,6 +698,7 @@
     const cvv = cGet(CK_V, 864e5);
     if (cvv && typeof cvv === "number") {
       if ($("viewCounter")) $("viewCounter").hidden = false;
+      if ($("railViews")) $("railViews").textContent = cvv.toLocaleString();
       animateCount(cvv);
     }
     sendViewPing(true);
@@ -931,8 +742,11 @@
   }
   function tick() {
     const n = /* @__PURE__ */ new Date();
-    $("localTime").textContent = tFmt.format(n);
-    $("localDate").textContent = dFmt.format(n);
+    const t = tFmt.format(n);
+    const lt = $("localTime");
+    if (lt) lt.textContent = t;
+    const ld = $("localDate");
+    if (ld) ld.textContent = dFmt.format(n);
   }
   function fT(v) {
     if (v == null || isNaN(v)) return "\u2014";
@@ -1072,7 +886,7 @@
     }
     return i;
   }
-  function setArt2(url) {
+  function setArt(url) {
     const bg = $("lyricsBg");
     const c = safeUrl(url);
     const lyrArt = $("lyricsArt");
@@ -1391,7 +1205,7 @@
     if (track) updWords(track, idx, sec);
     if (S.modalOpen && list) updWords(list, idx, sec);
   }
-  function startLoop2() {
+  function startLoop() {
     if (!S.raf) S.raf = requestAnimationFrame(loop);
   }
   function stopLoop() {
@@ -1473,7 +1287,7 @@
           nowArt.src = art2;
           nowArt.style.display = "";
         }
-        setArt2(art2);
+        setArt(art2);
         setBgArt(art2);
       } else {
         fetchArtwork(aName, sName, sp.album).then((fetchedArt) => {
@@ -1482,11 +1296,11 @@
               nowArt.src = fetchedArt;
               nowArt.style.display = "";
             }
-            setArt2(fetchedArt);
+            setArt(fetchedArt);
             setBgArt(fetchedArt);
           } else {
             if (nowArt) nowArt.src = FB;
-            setArt2("");
+            setArt("");
             setBgArt(DEF_BG);
           }
         });
@@ -1499,7 +1313,7 @@
       }
       if (sp.timestamps.end) S.spEnd = sp.timestamps.end;
     }
-    startLoop2();
+    startLoop();
     updSongTime();
     setTimeout(scMax, 50);
     if (!isNew) return;
@@ -1532,7 +1346,7 @@
     renderTrack(null);
     const list = $("lyricsList");
     if (list) list.innerHTML = '<p class="lyr-line empty">nothing playing right now</p>';
-    setArt2("");
+    setArt("");
     setBgArt("");
     const nowArt = $("nowArt");
     if (nowArt) nowArt.removeAttribute("src");
@@ -1797,6 +1611,8 @@
     }
     const sd = $("statusDot");
     if (sd) sd.innerHTML = SI[p.discord_status] || SI.offline;
+    const ld = $("linkDiscord");
+    if (ld) ld.textContent = "@" + (u && u.username ? u.username : "zgwf") + (p.discord_status && p.discord_status !== "offline" ? " \\u00b7 " + p.discord_status : "");
     act(getPrimary(p.activities));
     custom(getCustom(p.activities));
     let sp = null;
@@ -1889,6 +1705,281 @@
     }
   }
 
+  // src/music.js
+  var SCROBBLE_AT = 0.5;
+  var ART_SIZE = 400;
+  var LOOKUP_TIMEOUT_MS = 6e3;
+  var PLAY_ICON = '<svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>';
+  var PAUSE_ICON = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+  var audio = null;
+  var curRow = null;
+  var curScrobbled = false;
+  var rafId = null;
+  var scrubbing = false;
+  function upscale(u) {
+    return String(u || "").replace(/\/\d+x\d+(bb)?\.(jpg|png)/, "/" + ART_SIZE + "x" + ART_SIZE + "bb.$1");
+  }
+  function norm(s) {
+    return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+  async function itunesArt(title, artist) {
+    const term = (artist ? artist + " " : "") + title;
+    const ctl = new AbortController();
+    const timer2 = setTimeout(() => ctl.abort(), LOOKUP_TIMEOUT_MS);
+    try {
+      const r = await fetch(
+        "https://itunes.apple.com/search?media=music&entity=song&limit=3&country=US&term=" + encodeURIComponent(term),
+        { signal: ctl.signal }
+      );
+      if (!r.ok) return "";
+      const j = await r.json();
+      const rows = Array.isArray(j && j.results) ? j.results : [];
+      if (!rows.length) return "";
+      const want = norm(title);
+      const hit = rows.find((x) => norm(x.trackName) === want) || rows[0];
+      return safeUrl(upscale(hit.artworkUrl100 || hit.artworkUrl60));
+    } catch (e) {
+      return "";
+    } finally {
+      clearTimeout(timer2);
+    }
+  }
+  function setArt2(img, url, title) {
+    if (!img) return;
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = tile(title, 2);
+    };
+    img.src = url || tile(title, 2);
+  }
+  function fmtTime(s) {
+    const v = Math.max(0, Math.floor(Number(s) || 0));
+    return Math.floor(v / 60) + ":" + String(v % 60).padStart(2, "0");
+  }
+  function setDockIcon(playing) {
+    const btn = $("dockToggle");
+    if (btn) {
+      btn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+      btn.setAttribute("aria-label", playing ? "Pause" : "Play");
+    }
+  }
+  function paintRow(row, playing) {
+    if (!row) return;
+    row.classList.toggle("playing", playing);
+    const mark = row.querySelector(".track-mark svg");
+    if (mark) mark.innerHTML = playing ? '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>' : '<polygon points="6 3 20 12 6 21 6 3"></polygon>';
+    row.setAttribute("aria-label", (playing ? "Playing " : "Play ") + (row.dataset.title || "track"));
+    if (!playing) {
+      const fill = row.querySelector(".track-bar i");
+      if (fill) fill.style.width = "0%";
+    }
+  }
+  function showDock(on) {
+    const dock = $("dock");
+    if (dock) dock.hidden = !on;
+  }
+  function paintDock(row, on) {
+    showDock(on);
+    if (!on || !row) return;
+    const rowImg = row.querySelector(".track-art img");
+    const art2 = $("dockArt");
+    const title = $("dockTitle");
+    const artist = $("dockArtist");
+    const fill = $("dockFill");
+    const time = $("dockTime");
+    const seek = $("dockSeek");
+    if (art2) art2.src = rowImg && rowImg.src || tile(row.dataset.title, 2);
+    if (title) title.textContent = row.dataset.title || "";
+    if (artist) artist.textContent = row.dataset.artist || "";
+    if (fill) fill.style.width = "0%";
+    if (time) time.textContent = "0:00 / " + fmtTime(row.dataset.dur);
+    if (seek) seek.setAttribute("aria-valuenow", "0");
+    setDockIcon(true);
+  }
+  function startLoop2(row) {
+    cancelAnimationFrame(rafId);
+    (function step() {
+      if (!audio || curRow !== row) return;
+      rafId = requestAnimationFrame(step);
+      const el = audio.currentTime || 0;
+      const dur = audio.duration;
+      const known = dur && isFinite(dur) ? dur : Number(row.dataset.dur) || 0;
+      const pct = known > 0 ? Math.min(1, el / known) : 0;
+      if (!scrubbing) {
+        const rowFill = row.querySelector(".track-bar i");
+        const dockFill = $("dockFill");
+        const seek = $("dockSeek");
+        if (rowFill) rowFill.style.width = (pct * 100).toFixed(2) + "%";
+        if (dockFill) dockFill.style.width = (pct * 100).toFixed(2) + "%";
+        if (seek) seek.setAttribute("aria-valuenow", String(Math.round(pct * 100)));
+      }
+      const time = $("dockTime");
+      if (time) time.textContent = fmtTime(el) + " / " + fmtTime(known);
+      if (!curScrobbled && dur && isFinite(dur) && el >= dur * SCROBBLE_AT) {
+        curScrobbled = true;
+        fireScrobble(row, el * 1e3);
+      }
+    })();
+  }
+  async function fireScrobble(row, ms) {
+    const id = row && row.dataset.id;
+    if (!id) return;
+    try {
+      await fetch("/api/scrobble", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          ms: Math.round(ms),
+          nonce: Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+        })
+      });
+    } catch (e) {
+    }
+  }
+  function stopCustomAudio() {
+    cancelAnimationFrame(rafId);
+    if (audio) {
+      audio.pause();
+      audio.src = "";
+      audio = null;
+    }
+    paintRow(curRow, false);
+    paintDock(null, false);
+    showDock(false);
+    curRow = null;
+    curScrobbled = false;
+  }
+  function play(row) {
+    const src = safeUrl(row.dataset.src);
+    if (!src) return;
+    const wasSame = curRow === row;
+    if (!wasSame) {
+      stopCustomAudio();
+      curRow = row;
+      curScrobbled = false;
+      paintRow(row, true);
+      paintDock(row, true);
+    }
+    if (wasSame && audio) {
+      if (audio.paused) {
+        audio.play().catch(() => {
+        });
+        setDockIcon(true);
+        paintRow(row, true);
+      } else {
+        audio.pause();
+        setDockIcon(false);
+      }
+      return;
+    }
+    const a = new Audio(src);
+    a.preload = "auto";
+    a.volume = 0.7;
+    audio = a;
+    a.addEventListener("play", () => startLoop2(row));
+    a.addEventListener("pause", () => setDockIcon(false));
+    a.addEventListener("ended", () => stopCustomAudio());
+    a.addEventListener("error", () => {
+      if (audio !== a) return;
+      stopCustomAudio();
+      toast("preview unavailable for this track", true);
+    });
+    a.play().then(() => {
+      if (audio === a) startLoop2(row);
+    }).catch(() => {
+      if (audio !== a) return;
+      stopCustomAudio();
+      toast("playback blocked by the browser", true);
+    });
+  }
+  function bindSeek() {
+    const seek = $("dockSeek");
+    if (!seek) return;
+    function ratioFrom(e) {
+      const r = seek.getBoundingClientRect();
+      if (!r.width) return 0;
+      return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    }
+    function apply(e) {
+      if (!audio || !curRow) return;
+      const r = ratioFrom(e);
+      const known = audio.duration && isFinite(audio.duration) ? audio.duration : Number(curRow.dataset.dur) || 0;
+      if (known > 0) audio.currentTime = r * known;
+    }
+    seek.addEventListener("pointerdown", function(e) {
+      if (!audio) return;
+      scrubbing = true;
+      seek.setPointerCapture(e.pointerId);
+      apply(e);
+      e.preventDefault();
+    });
+    seek.addEventListener("pointermove", function(e) {
+      if (scrubbing) apply(e);
+    });
+    function end(e) {
+      if (!scrubbing) return;
+      scrubbing = false;
+      apply(e);
+      try {
+        seek.releasePointerCapture(e.pointerId);
+      } catch (err) {
+      }
+    }
+    seek.addEventListener("pointerup", end);
+    seek.addEventListener("pointercancel", end);
+    seek.addEventListener("keydown", function(e) {
+      if (!audio) return;
+      const known = audio.duration && isFinite(audio.duration) ? audio.duration : 0;
+      if (!known) return;
+      if (e.key === "ArrowRight") audio.currentTime = Math.min(known, audio.currentTime + 5);
+      else if (e.key === "ArrowLeft") audio.currentTime = Math.max(0, audio.currentTime - 5);
+      else return;
+      e.preventDefault();
+    });
+  }
+  function initMusic() {
+    const list = $("customTrackList");
+    if (!list) return;
+    const rows = Array.prototype.slice.call(list.querySelectorAll(".track-row"));
+    rows.forEach((row) => {
+      const nameEl = row.querySelector(".track-name");
+      const artEl = row.querySelector(".track-artist");
+      row.dataset.title = nameEl ? nameEl.textContent.trim() : "";
+      row.dataset.artist = artEl ? artEl.textContent.replace(/\s*·\s*/g, ", ").trim() : "";
+      const durEl = row.querySelector(".track-dur");
+      const parts = (durEl ? durEl.textContent : "").split(":");
+      row.dataset.dur = parts.length === 2 ? String(Number(parts[0]) * 60 + Number(parts[1])) : "0";
+      row.setAttribute("role", "button");
+      row.setAttribute("tabindex", "0");
+      const img = row.querySelector(".track-art img");
+      setArt2(img, "", row.dataset.title);
+      itunesArt(row.dataset.title, row.dataset.artist).then((url) => {
+        if (url) setArt2(img, url, row.dataset.title);
+      });
+      row.addEventListener("click", () => play(row));
+      row.addEventListener("keydown", function(e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        play(row);
+      });
+    });
+    const toggle = $("dockToggle");
+    if (toggle) {
+      toggle.addEventListener("click", function() {
+        if (!audio) return;
+        if (audio.paused) audio.play().catch(() => {
+        });
+        else audio.pause();
+      });
+    }
+    const stop = $("dockStop");
+    if (stop) stop.addEventListener("click", () => stopCustomAudio());
+    bindSeek();
+    const badge = $("musicStatusBadge");
+    if (badge) badge.textContent = rows.length + " tracks";
+  }
+
   // src/stats.js
   var API = "/api/scrobble";
   var REFRESH_MS = 3e5;
@@ -1912,6 +2003,13 @@
     const el = $(id);
     if (el) el.textContent = v;
   }
+  function art(seed, cls, url) {
+    const clean = safeUrl(url);
+    if (clean) {
+      return '<img class="' + cls + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(clean) + '">';
+    }
+    return '<span class="' + cls + " " + cls + '-ph" style="background-image:url(' + tile(seed, 1) + ')"></span>';
+  }
   function renderStats(st) {
     set("statScrobbles", fmtNum(st.scrobbles));
     set("statArtists", fmtNum(st.artists));
@@ -1919,57 +2017,48 @@
     set("statAlbums", fmtNum(st.albums));
     set("statAvg", st.avgPerDay != null ? fmtNum(st.avgPerDay) : "\u2014");
     set("statDays", st.days != null ? fmtNum(st.days) : "\u2014");
-    const wrap = $("statTopArtist");
-    const name = $("statTopArtistName");
-    const v = st.topArtist || "";
-    if (wrap && name) {
-      wrap.hidden = !v;
-      name.textContent = v;
-    }
+    set("heroScrobbles", fmtNum(st.scrobbles));
+    set("heroAvg", st.avgPerDay != null ? fmtNum(st.avgPerDay) : "\u2014");
+    set("heroDays", st.days != null ? fmtNum(st.days) : "\u2014");
+    set("statTopArtistName", st.topArtist || "\u2014");
+    const rail = $("railScrobbles");
+    if (rail) rail.textContent = fmtNum(st.scrobbles);
     const grid = $("statGrid");
-    if (grid) grid.classList.add("is-loaded");
+    if (grid) grid.classList.add("on");
   }
-  function art(name, cls) {
-    const url = safeUrl(name && name.art);
-    const seed = String(name && (name.title || name.name) || "");
-    if (url) {
-      return '<img class="' + cls + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(url) + '">';
-    }
-    return '<span class="' + cls + " " + cls + '-ph" style="background-image:url(' + tile(seed, 1) + ')"></span>';
-  }
-  function renderRecent(rows2) {
+  function renderRecent(rows) {
     const el = $("recentList");
     if (!el) return;
-    if (!rows2 || !rows2.length) {
-      el.innerHTML = '<p class="rp-empty">nothing played yet</p>';
+    if (!rows || !rows.length) {
+      el.innerHTML = '<p class="empty">nothing logged yet</p>';
       return;
     }
-    el.innerHTML = rows2.map(function(r) {
+    el.innerHTML = rows.map(function(r) {
       const title = String(r.title || r.name || "").slice(0, 90);
       const artist = String(r.artist || "").slice(0, 90);
-      const live = r.now ? " is-live" : "";
+      const live = r.now ? " live" : "";
       const when = r.now ? "now" : r.ts ? timeAgo(r.ts) : "";
-      return '<div class="rp-row' + live + '">' + art({ title, art: r.art }, "rp-art") + '<span class="rp-txt"><span class="rp-name">' + esc(title) + '</span><span class="rp-artist">' + esc(artist) + '</span></span><span class="rp-when">' + esc(when) + "</span></div>";
+      return '<div class="log-row' + live + '"><span class="log-mark"></span>' + art(title, "log-art", r.art) + '<span class="log-txt"><span class="log-name">' + esc(title) + '</span><span class="log-artist">' + esc(artist) + '</span></span><span class="log-when">' + esc(when) + "</span></div>";
     }).join("");
   }
-  function rows(items) {
-    if (!items || !items.length) return '<p class="rp-empty">no data yet</p>';
+  function rank(items) {
+    if (!items || !items.length) return '<p class="empty">nothing logged yet</p>';
     return items.map(function(r, i) {
       const name = String(r.name || "").slice(0, 80);
-      return '<div class="rk-row"><span class="rk-n">' + (i + 1) + "</span>" + art(r, "rk-art") + '<span class="rk-txt"><span class="rk-name">' + esc(name) + '</span></span><span class="rk-plays">' + esc(fmtNum(r.plays)) + "</span></div>";
+      return '<div class="rk"><span class="rk-n">' + (i + 1) + "</span>" + art(name, "rk-art", r.art) + '<span class="rk-name">' + esc(name) + '</span><span class="rk-plays">' + esc(fmtNum(r.plays)) + "</span></div>";
     }).join("");
   }
   function albums(items) {
     const el = $("topAlbumsList");
     if (!el) return;
     if (!items || !items.length) {
-      el.innerHTML = '<p class="rp-empty">no data yet</p>';
+      el.innerHTML = '<p class="empty">nothing logged yet</p>';
       return;
     }
     el.innerHTML = items.map(function(r) {
       const name = String(r.name || "").slice(0, 70);
       const tail = String(r.artist || "").slice(0, 70);
-      return '<div class="al-card">' + art(r, "al-art") + '<span class="al-name">' + esc(name) + "</span>" + (tail ? '<span class="al-artist">' + esc(tail) + "</span>" : "") + '<span class="al-plays">' + esc(fmtNum(r.plays)) + " plays</span></div>";
+      return '<div class="al">' + art(name, "al-art", r.art) + '<span class="al-name">' + esc(name) + "</span>" + (tail ? '<span class="al-artist">' + esc(tail) + "</span>" : "") + '<span class="al-plays">' + esc(fmtNum(r.plays)) + " plays</span></div>";
     }).join("");
   }
   function markSource(label) {
@@ -1993,16 +2082,15 @@
     renderStats(j.stats);
     renderRecent(j.recent);
     const artistsEl = $("topArtistsList");
-    if (artistsEl) artistsEl.innerHTML = rows(j.topArtists);
-    const albumsEl = $("topAlbumsList");
-    if (albumsEl) albums(j.topAlbums);
+    if (artistsEl) artistsEl.innerHTML = rank(j.topArtists);
+    albums(j.topAlbums);
     setTimeout(scMax, 80);
   }
   function refresh() {
     load().catch(() => toast("could not refresh listening stats", true));
   }
   function initStats() {
-    const section = document.querySelector('[data-view="music"]');
+    const section = document.querySelector('section[data-view="music"]');
     const grid = $("statGrid");
     if (!section || !grid) return;
     function begin() {
@@ -2022,7 +2110,11 @@
             return;
           }
         },
-        { threshold: 0.05 }
+        // threshold must be 0. A threshold of 0.05 asks for 5% of the TARGET to be
+        // visible, and the music section is several thousand pixels tall, so on a phone
+        // only a sliver is ever on screen and the observer never fires -- the hero stayed
+        // blank forever. Any intersection is enough to start the fetch.
+        { threshold: 0, rootMargin: "120px" }
       );
       io.observe(section);
     } else {
@@ -2031,6 +2123,7 @@
   }
 
   // src/games.js
+  var byId = (id) => document.getElementById(id);
   var PADDLE_FRAC = 0.15;
   var BALL_REF_R = 0.021;
   var COLS = 8;
@@ -2047,12 +2140,14 @@
     { hp: 3, pts: 180, c: "#ff2a55" }
   ];
   var POWERS = {
-    expand: { label: "WIDE", c: "#39ff88" },
-    shrink: { label: "SMALL", c: "#ff9f43" },
-    multi: { label: "MULTI", c: "#00f0ff" },
-    slow: { label: "SLOW", c: "#b28dff" },
-    life: { label: "LIFE", c: "#ff2a55" }
+    expand: { label: "wide", c: "#39d98a" },
+    shrink: { label: "small", c: "#d9a441" },
+    multi: { label: "multi", c: "#4cc9f0" },
+    slow: { label: "slow", c: "#b28dff" },
+    life: { label: "life", c: "#ff6b8b" }
   };
+  var CHARGE_MAX_MS = 1100;
+  var CHARGE_SPREAD = 1.15;
   function initGames() {
     const cv = document.getElementById("arcadeCanvas");
     const wrap = document.getElementById("arcadeWrap");
@@ -2066,8 +2161,9 @@
     const livesEl = document.getElementById("arcadeLives");
     const levelEl = document.getElementById("arcadeLevel");
     let W2 = 580;
-    let H = 220;
+    let H = 260;
     let dpr = 1;
+    let hadBox = false;
     let state = "idle";
     let score = 0;
     let lives = START_LIVES;
@@ -2095,34 +2191,57 @@
     function hud() {
       if (scoreEl) scoreEl.textContent = String(score);
       if (bestEl) bestEl.textContent = String(Math.max(best, score));
-      if (livesEl) {
-        livesEl.textContent = "x" + lives;
-      }
+      if (livesEl) livesEl.textContent = String(lives);
       if (levelEl) levelEl.textContent = String(level);
+      paintChannels();
+    }
+    function paintChannels() {
+      const host = byId("arcadeChannels");
+      if (!host) return;
+      const live = [];
+      if (expandT > 0) live.push("expand");
+      if (slowT > 0) live.push("slow");
+      if (balls.length > 1) live.push("multi");
+      const want = live.join(",");
+      if (host.dataset.live === want) return;
+      host.dataset.live = want;
+      host.innerHTML = live.map(function(k) {
+        return '<span class="ch on" data-c="' + k + '">' + POWERS[k].label + "</span>";
+      }).join("");
     }
     function banner(btn) {
-      if (startBtn) startBtn.textContent = btn;
+      if (startBtn) {
+        const bar = byId("arcadeCharge");
+        if (bar) {
+          while (startBtn.firstChild && startBtn.firstChild !== bar) startBtn.removeChild(startBtn.firstChild);
+          startBtn.insertBefore(document.createTextNode(btn), bar);
+        } else {
+          startBtn.textContent = btn;
+        }
+      }
       if (ov) ov.style.display = "flex";
     }
     function resize() {
       const r = wrap.getBoundingClientRect();
+      if (!r.width || !r.height) return;
       const cw = Math.max(240, Math.round(r.width));
       const ch = Math.max(160, Math.round(r.height));
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       cv.width = Math.round(cw * dpr);
       cv.height = Math.round(ch * dpr);
-      const sx = cw / (W2 || cw);
+      const first = !hadBox;
       W2 = cw;
       H = ch;
-      for (let i = 0; i < bricks.length; i++) {
-        bricks[i].x *= sx;
-        bricks[i].w *= sx;
-      }
+      hadBox = true;
       paddle.baseW = Math.max(52, Math.round(W2 * PADDLE_FRAC));
       paddle.w = expandT > 0 ? Math.round(paddle.baseW * 1.45) : paddle.baseW;
       paddle.h = Math.max(9, Math.round(H * 0.045));
       paddle.y = H - paddle.h - Math.round(H * 0.06);
       paddle.x = Math.max(0, Math.min(W2 - paddle.w, paddle.x || (W2 - paddle.w) / 2));
+      if (first || state === "idle" || state === "over" || state === "clear") {
+        buildLevel();
+        resetBall();
+      }
     }
     function makeBall(x, y, vx, vy) {
       return { x, y, vx, vy, r: Math.max(4, Math.round(H * BALL_REF_R)), trail: [] };
@@ -2545,6 +2664,7 @@
       if (dt > 1 / 30) dt = 1 / 30;
       if (shake > 0) shake = Math.max(0, shake - dt * 26);
       if (flash > 0) flash = Math.max(0, flash - dt * 2.6);
+      chargeTick(now);
       if (state !== "paused") step(dt);
       draw();
     }
@@ -2599,35 +2719,116 @@
       else if (state === "clear") advance();
       else if (state === "over" || state === "idle") start();
     }
-    function launchBall() {
+    let charge = 0;
+    let charging = false;
+    function paintCharge() {
+      const bar = byId("arcadeCharge");
+      if (bar) bar.style.width = (charge * 100).toFixed(1) + "%";
+      if (startBtn) startBtn.classList.toggle("charging", charging);
+    }
+    function beginCharge() {
+      if (state !== "launch") return;
+      charging = true;
+      charge = 0;
+      paintCharge();
+    }
+    function endCharge() {
+      if (!charging) return;
+      charging = false;
+      launchBall(charge);
+      charge = 0;
+      paintCharge();
+      window.addEventListener("pointerup", releaseGuard, { once: true });
+      window.addEventListener("pointercancel", releaseGuard, { once: true });
+    }
+    function releaseGuard() {
+      if (charging) endCharge();
+    }
+    function launchBall(power) {
       state = "play";
       const b = balls[0];
       if (!b) return;
-      const sp = H * 1.08;
-      const ang = -Math.PI / 2 + (Math.random() - 0.5) * 0.7;
+      const p = Math.max(0, Math.min(1, Number(power) || 0));
+      const sp = H * (1.02 + p * 0.42);
+      const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2 * CHARGE_SPREAD * p;
       b.vx = Math.cos(ang) * sp;
       b.vy = Math.sin(ang) * sp;
     }
-    if (startBtn) startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      activate();
-    });
+    if (startBtn) {
+      startBtn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (state === "paused") {
+          togglePause();
+          return;
+        }
+        if (state !== "launch") start();
+        try {
+          startBtn.setPointerCapture(e.pointerId);
+        } catch (err) {
+        }
+        beginCharge();
+      });
+      startBtn.addEventListener("pointerup", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          startBtn.releasePointerCapture(e.pointerId);
+        } catch (err) {
+        }
+        if (charging) {
+          endCharge();
+          return;
+        }
+        activate();
+      });
+      startBtn.addEventListener("pointercancel", () => {
+        if (charging) endCharge();
+      });
+      startBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (state === "launch") return;
+        activate();
+      });
+    }
     if (ov) ov.addEventListener("click", () => activate());
+    let lastChargePaint = performance.now();
+    function chargeTick(now) {
+      if (!charging) {
+        lastChargePaint = now;
+        return;
+      }
+      const delta = Math.min(250, Math.max(0, now - lastChargePaint));
+      lastChargePaint = now;
+      charge = Math.min(1, charge + delta / CHARGE_MAX_MS);
+      paintCharge();
+    }
     let rt = null;
     window.addEventListener("resize", () => {
       clearTimeout(rt);
-      rt = setTimeout(() => {
-        resize();
-        if (state === "idle" || state === "over") draw();
-      }, 120);
+      rt = setTimeout(fitToBox, 120);
     });
+    function fitToBox() {
+      resize();
+      if (state === "idle" || state === "over" || state === "clear") draw();
+    }
+    if (typeof ResizeObserver === "function") {
+      try {
+        const ro = new ResizeObserver(() => {
+          if (!wrap.clientWidth) return;
+          fitToBox();
+        });
+        ro.observe(wrap);
+      } catch (e) {
+      }
+    }
     resize();
     buildLevel();
     resetBall();
     hud();
     draw();
-    banner("START");
+    banner("Start");
   }
 
   // src/turnstile.js
@@ -2744,6 +2945,9 @@
     const tsMount = $("gbTurnstile");
     const trap = $("gbTrap");
     const hint = $("gbHint");
+    const count = $("gbCount");
+    const rate = $("gbRate");
+    const fill = $("gbFill");
     if (!list || !form || !nameInput || !msgInput) return;
     if (nameInput) nameInput.maxLength = NAME_MAX;
     if (msgInput) msgInput.maxLength = MSG_MAX;
@@ -2751,25 +2955,66 @@
     let renderedAt = Date.now();
     let offline = false;
     let inFlight = false;
+    let cooldownUntil = 0;
+    let cooldownTimer = null;
     if (btn) btn.disabled = true;
+    const BURST_SECONDS = 15;
+    function paintCooldown() {
+      const left = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1e3));
+      if (fill) fill.style.width = left > 0 ? Math.min(100, left / BURST_SECONDS * 100).toFixed(0) + "%" : "0%";
+      if (rate) {
+        rate.classList.toggle("hot", left > 0);
+        rate.textContent = left > 0 ? "ready in " + left + "s" : "4 per hour";
+      }
+      if (btn && !offline && !inFlight) btn.disabled = left > 0;
+      if (left > 0 && !cooldownTimer) {
+        cooldownTimer = setInterval(paintCooldown, 250);
+      } else if (left <= 0 && cooldownTimer) {
+        clearInterval(cooldownTimer);
+        cooldownTimer = null;
+      }
+    }
+    function startCooldown(seconds) {
+      cooldownUntil = Date.now() + Math.max(1, Math.round(seconds || BURST_SECONDS)) * 1e3;
+      paintCooldown();
+    }
+    function paintCount() {
+      if (!count) return;
+      const n = msgInput.value.length;
+      count.textContent = n + "/" + MSG_MAX;
+      count.classList.toggle("warn", n > MSG_MAX - 40);
+    }
+    if (msgInput) {
+      msgInput.addEventListener("input", paintCount);
+      paintCount();
+    }
+    paintCooldown();
     function setBusy(on) {
       inFlight = on;
-      if (btn) {
-        btn.disabled = on;
-        btn.textContent = on ? "Signing\u2026" : "Sign Guestbook";
+      setLabel(on ? "Signing" : "Sign");
+      if (btn) btn.disabled = on || offline || cooldownUntil > Date.now();
+    }
+    function setLabel(text) {
+      if (!btn) return;
+      const bar = fill;
+      if (bar) {
+        while (btn.firstChild && btn.firstChild !== bar) btn.removeChild(btn.firstChild);
+        btn.insertBefore(document.createTextNode(text), bar);
+      } else {
+        btn.textContent = text;
       }
     }
     function renderNotes(notes) {
       if (!list) return;
       if (!notes.length) {
-        list.innerHTML = '<p class="gb-empty">no notes yet \u2014 be the first</p>';
+        list.innerHTML = '<p class="empty">no notes yet \u2014 sign the first one</p>';
         return;
       }
       list.innerHTML = notes.map(function(n) {
         const who = String(n.n || "").slice(0, NAME_MAX);
         const body = String(n.m || "").slice(0, MSG_MAX);
         if (!who || !body) return "";
-        return '<article class="gb-entry"><div class="gb-entry-head"><span class="gb-entry-name">' + esc(who) + '</span><time class="gb-entry-time" datetime="' + esc(new Date(Number(n.t) || 0).toISOString()) + '">' + esc(timeAgo(n.t)) + '</time></div><p class="gb-entry-msg">' + esc(body) + "</p></article>";
+        return '<article class="gb"><div class="gb-head"><span class="gb-name">' + esc(who) + '</span><time class="gb-time" datetime="' + esc(new Date(Number(n.t) || 0).toISOString()) + '">' + esc(timeAgo(n.t)) + '</time></div><p class="gb-msg">' + esc(body) + "</p></article>";
       }).join("");
       setTimeout(scMax, 60);
     }
@@ -2782,7 +3027,13 @@
         hint.textContent = msg || "";
         hint.hidden = !msg;
       }
-      if (btn) btn.disabled = on || inFlight;
+      if (rate && on) {
+        rate.classList.add("hot");
+        rate.textContent = "unavailable";
+      } else if (rate && !on) {
+        paintCooldown();
+      }
+      if (btn) btn.disabled = on || inFlight || cooldownUntil > Date.now();
       form.classList.toggle("is-offline", on);
     }
     async function load2(quiet) {
@@ -2809,7 +3060,7 @@
       renderBadges(j.total || 0);
       if (!quiet || !list.childElementCount) renderNotes(Array.isArray(j.notes) ? j.notes : []);
       mountTurnstile(tsMount, j.turnstile && j.turnstile.siteKey || "", "dark").then(function(armed) {
-        if (btn) btn.disabled = false;
+        if (btn) btn.disabled = offline || cooldownUntil > Date.now();
         if (armed) form.classList.add("is-armed");
         else form.classList.remove("is-armed");
       });
@@ -2817,6 +3068,10 @@
     form.addEventListener("submit", async function(e) {
       e.preventDefault();
       if (inFlight || offline) return;
+      if (cooldownUntil > Date.now()) {
+        toast("one signature every " + BURST_SECONDS + "s \u2014 wait for the timer", true);
+        return;
+      }
       const name = nameInput.value.trim().replace(/\s+/g, " ");
       const msg = msgInput.value.trim().replace(/\s+/g, " ");
       if (trap && trap.value.trim() !== "") return;
@@ -2854,9 +3109,12 @@
         if (!r.ok || !j || j.ok !== true) {
           const code = j && j.error || "submit_failed";
           if (code === "rate_limited") {
-            toast(j.detail || "too many signatures \u2014 slow down", true);
+            const retry = parseInt(r.headers && r.headers.get && r.headers.get("retry-after"), 10);
+            startCooldown(isFinite(retry) && retry > 0 ? retry : BURST_SECONDS);
+            toast(j.detail || "too many signatures \u2014 try again shortly", true);
           } else if (code === "duplicate") {
-            toast("you already signed with this message", true);
+            startCooldown(BURST_SECONDS);
+            toast("you already signed with this exact message", true);
           } else if (code === "turnstile_failed") {
             toast("verification failed \u2014 try again", true);
             resetTurnstile();
@@ -2870,10 +3128,12 @@
         if (trap) trap.value = "";
         renderedAt = Date.now();
         resetTurnstile();
+        paintCount();
+        startCooldown(BURST_SECONDS);
         const note = j.note;
-        const existing = Array.prototype.slice.call(list.querySelectorAll(".gb-entry"));
+        const existing = Array.prototype.slice.call(list.querySelectorAll(".gb"));
         renderNotes(note ? [note].concat(existing.map(remap)) : []);
-        toast("signed the guestbook");
+        toast("signed");
         load2(true);
       } catch (e2) {
         toast("network error \u2014 signature not saved", true);
@@ -2882,10 +3142,13 @@
       }
     });
     function remap(el) {
+      const nameEl = el.querySelector(".gb-name");
+      const msgEl = el.querySelector(".gb-msg");
+      const timeEl = el.querySelector("time");
       return {
-        n: (el.querySelector(".gb-entry-name") || {}).textContent || "",
-        m: (el.querySelector(".gb-entry-msg") || {}).textContent || "",
-        t: Date.parse((el.querySelector("time") || {}).getAttribute("datetime") || "") || Date.now()
+        n: nameEl ? nameEl.textContent : "",
+        m: msgEl ? msgEl.textContent : "",
+        t: timeEl && Date.parse(timeEl.getAttribute("datetime") || "") || Date.now()
       };
     }
     load2(false);
@@ -2927,7 +3190,7 @@
         if (v) copy(v, this);
       });
     }
-    setArt2("");
+    setArt("");
     setBgArt("");
     clearNow();
     boot(initScroll);
