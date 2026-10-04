@@ -2,14 +2,11 @@
   "cleanUrls": true,
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/(home|music|games|guestbook)", "destination": "/index.html" },
-    { "source": "/chronicle", "destination": "/chronicle/index.html" },
-    { "source": "/chronicle/tos", "destination": "/chronicle/tos/index.html" },
-    { "source": "/chronicle/policy", "destination": "/chronicle/policy/index.html" }
+    { "source": "/:slug", "destination": "/index.html" }
   ],
   "headers": [
     {
-      "source": "/api/(guestbook|scrobble|lastfm)",
+      "source": "/api/(guestbook|scrobble)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },

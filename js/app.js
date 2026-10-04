@@ -107,6 +107,16 @@
     const s = String(u || "").trim();
     return /^(https?:|data:image\/|blob:)/i.test(s) ? s : "";
   }
+  function tile(text, letters) {
+    const words = String(text || "?").replace(/[^A-Za-z0-9\s\u0400-\u04FF]/g, " ").split(/\s+/).filter(Boolean);
+    const n = letters || 1;
+    const txt = (words.length > 1 && n > 1 ? words[0][0] + words[1][0] : (words[0] || "?").slice(0, n)).toUpperCase().slice(0, 2);
+    let h = 0;
+    const seed = String(text || "x");
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 360;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(' + h + ' 58% 32%)"/><stop offset="1" stop-color="hsl(' + (h + 46) % 360 + ' 54% 14%)"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="52" font-family="Satoshi,system-ui,sans-serif" font-size="' + (n > 1 ? 34 : 46) + '" font-weight="700" fill="rgba(255,255,255,.92)" text-anchor="middle">' + txt + "</text></svg>";
+    return "data:image/svg+xml," + encodeURIComponent(svg);
+  }
   function cGet(k, mx) {
     try {
       const v = JSON.parse(localStorage.getItem(k) || "null");
@@ -178,19 +188,6 @@
   var curRow = null;
   var curScrobbled = false;
   var rafId = null;
-  function hashHue(s) {
-    let h = 0;
-    const v = String(s || "x");
-    for (let i = 0; i < v.length; i++) h = (h * 31 + v.charCodeAt(i)) % 360;
-    return h;
-  }
-  function monogram(title) {
-    const words = String(title || "?").replace(/[^A-Za-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
-    const txt = (words.length > 1 ? words[0][0] + words[1][0] : (words[0] || "?").slice(0, 2)).toUpperCase();
-    const h = hashHue(title);
-    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(' + h + ' 60% 33%)"/><stop offset="1" stop-color="hsl(' + (h + 48) % 360 + ' 56% 15%)"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="52" font-family="Satoshi,system-ui,sans-serif" font-size="36" font-weight="700" fill="rgba(255,255,255,.9)" text-anchor="middle">' + txt + "</text></svg>";
-    return "data:image/svg+xml," + encodeURIComponent(svg);
-  }
   function upscale(u) {
     return String(u || "").replace(/\/\d+x\d+(bb)?\.(jpg|png)/, "/" + ART_SIZE + "x" + ART_SIZE + "bb.$1");
   }
@@ -208,10 +205,10 @@
       );
       if (!r.ok) return "";
       const j = await r.json();
-      const rows = Array.isArray(j && j.results) ? j.results : [];
-      if (!rows.length) return "";
+      const rows2 = Array.isArray(j && j.results) ? j.results : [];
+      if (!rows2.length) return "";
       const want = norm(title);
-      const hit = rows.find((x) => norm(x.trackName) === want) || rows[0];
+      const hit = rows2.find((x) => norm(x.trackName) === want) || rows2[0];
       return safeUrl(upscale(hit.artworkUrl100 || hit.artworkUrl60));
     } catch (e) {
       return "";
@@ -223,9 +220,9 @@
     if (!img) return;
     img.onerror = function() {
       this.onerror = null;
-      this.src = monogram(title);
+      this.src = tile(title, 2);
     };
-    img.src = url || monogram(title);
+    img.src = url || tile(title, 2);
   }
   function paintRow(row, playing) {
     if (!row) return;
@@ -246,11 +243,11 @@
     wrap.hidden = !on;
     if (!on || !row) return;
     const rowImg = row.querySelector(".track-art img");
-    const art = $("vaultArt");
+    const art2 = $("vaultArt");
     const title = $("vaultTitle");
     const artist = $("vaultArtist");
     const bar = $("vaultBar");
-    if (art) art.src = rowImg && rowImg.src || monogram(row.dataset.title);
+    if (art2) art2.src = rowImg && rowImg.src || tile(row.dataset.title, 2);
     if (title) title.textContent = row.dataset.title || "";
     if (artist) artist.textContent = row.dataset.artist || "";
     if (bar) bar.style.width = "0%";
@@ -347,8 +344,8 @@
   function initMusic() {
     const list = $("customTrackList");
     if (!list) return;
-    const rows = Array.prototype.slice.call(list.querySelectorAll(".track-row"));
-    rows.forEach((row) => {
+    const rows2 = Array.prototype.slice.call(list.querySelectorAll(".track-row"));
+    rows2.forEach((row) => {
       const nameEl = row.querySelector(".track-name");
       const artEl = row.querySelector(".track-artist");
       row.dataset.title = nameEl ? nameEl.textContent.trim() : "";
@@ -366,7 +363,7 @@
     const stop = $("vaultStop");
     if (stop) stop.addEventListener("click", () => stopCustomAudio());
     const badge = $("musicStatusBadge");
-    if (badge) badge.textContent = rows.length + " Tracks";
+    if (badge) badge.textContent = rows2.length + " Tracks";
   }
 
   // src/navigation.js
@@ -1234,9 +1231,9 @@
         return "";
       })
     ]).then((r) => {
-      const art = r[0] || r[1] || "";
-      if (art) artCache[ck] = art;
-      return art;
+      const art2 = r[0] || r[1] || "";
+      if (art2) artCache[ck] = art2;
+      return art2;
     }).catch(() => "");
   }
   function lyricsMatch(it, artist, track, album, dur) {
@@ -1470,14 +1467,14 @@
       S.spEnd = 0;
       S.lastTs = "";
       const nowArt = $("nowArt");
-      const art = safeUrl(sp.album_art_url);
-      if (art) {
+      const art2 = safeUrl(sp.album_art_url);
+      if (art2) {
         if (nowArt) {
-          nowArt.src = art;
+          nowArt.src = art2;
           nowArt.style.display = "";
         }
-        setArt2(art);
-        setBgArt(art);
+        setArt2(art2);
+        setBgArt(art2);
       } else {
         fetchArtwork(aName, sName, sp.album).then((fetchedArt) => {
           if (fetchedArt && S.songKey === k) {
@@ -1893,8 +1890,7 @@
   }
 
   // src/stats.js
-  var API = "/api/lastfm";
-  var VAULT = "/api/scrobble";
+  var API = "/api/scrobble";
   var REFRESH_MS = 3e5;
   var loaded = false;
   var timer = null;
@@ -1916,100 +1912,75 @@
     const el = $(id);
     if (el) el.textContent = v;
   }
-  function renderStats(st, counts, exact) {
-    const plus = exact ? "" : "+";
+  function renderStats(st) {
     set("statScrobbles", fmtNum(st.scrobbles));
-    set("statArtists", counts && counts.artists != null ? fmtNum(counts.artists) + plus : "\u2014");
-    set("statTracks", counts && counts.tracks != null ? fmtNum(counts.tracks) + plus : "\u2014");
-    set("statAlbums", counts && counts.albums != null ? fmtNum(counts.albums) + plus : "\u2014");
+    set("statArtists", fmtNum(st.artists));
+    set("statTracks", fmtNum(st.tracks));
+    set("statAlbums", fmtNum(st.albums));
     set("statAvg", st.avgPerDay != null ? fmtNum(st.avgPerDay) : "\u2014");
     set("statDays", st.days != null ? fmtNum(st.days) : "\u2014");
     const wrap = $("statTopArtist");
     const name = $("statTopArtistName");
+    const v = st.topArtist || "";
     if (wrap && name) {
-      const v = st.topArtist || "";
       wrap.hidden = !v;
       name.textContent = v;
     }
     const grid = $("statGrid");
-    if (grid) grid.classList.toggle("is-loaded", true);
-    const exactNote = $("statsExact");
-    if (exactNote) {
-      exactNote.hidden = exact === true;
-      exactNote.textContent = "distinct counts are a lower bound";
-    }
+    if (grid) grid.classList.add("is-loaded");
   }
-  function renderRecent(rows) {
+  function art(name, cls) {
+    const url = safeUrl(name && name.art);
+    const seed = String(name && (name.title || name.name) || "");
+    if (url) {
+      return '<img class="' + cls + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(url) + '">';
+    }
+    return '<span class="' + cls + " " + cls + '-ph" style="background-image:url(' + tile(seed, 1) + ')"></span>';
+  }
+  function renderRecent(rows2) {
     const el = $("recentList");
     if (!el) return;
-    if (!rows || !rows.length) {
+    if (!rows2 || !rows2.length) {
       el.innerHTML = '<p class="rp-empty">nothing played yet</p>';
       return;
     }
-    el.innerHTML = rows.map(function(r) {
+    el.innerHTML = rows2.map(function(r) {
+      const title = String(r.title || r.name || "").slice(0, 90);
+      const artist = String(r.artist || "").slice(0, 90);
       const live = r.now ? " is-live" : "";
-      const art = safeUrl(r.art) ? '<img class="rp-art" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(safeUrl(r.art)) + '">' : '<span class="rp-art rp-art-ph" aria-hidden="true"></span>';
-      const when = r.now ? "now" : timeAgo(r.ts);
-      return '<a class="rp-row' + live + '"' + (safeUrl(r.url) ? ' href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener noreferrer"' : "") + ">" + art + '<span class="rp-txt"><span class="rp-name">' + esc(String(r.name || "").slice(0, 90)) + '</span><span class="rp-artist">' + esc(String(r.artist || "").slice(0, 90)) + '</span></span><span class="rp-when">' + esc(when) + "</span></a>";
+      const when = r.now ? "now" : r.ts ? timeAgo(r.ts) : "";
+      return '<div class="rp-row' + live + '">' + art({ title, art: r.art }, "rp-art") + '<span class="rp-txt"><span class="rp-name">' + esc(title) + '</span><span class="rp-artist">' + esc(artist) + '</span></span><span class="rp-when">' + esc(when) + "</span></div>";
     }).join("");
   }
-  function rankRows(rows) {
-    if (!rows || !rows.length) return '<p class="rp-empty">no data</p>';
-    return rows.map(function(r, i) {
-      const art = safeUrl(r.art) ? '<img alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(safeUrl(r.art)) + '">' : '<span class="rk-art rk-art-ph" aria-hidden="true"></span>';
-      const tag = safeUrl(r.url) ? '<a class="rk-row" href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener noreferrer">' : '<div class="rk-row">';
-      const end = safeUrl(r.url) ? "</a>" : "</div>";
-      return tag + '<span class="rk-n">' + (i + 1) + '</span><span class="rk-art">' + art + '</span><span class="rk-txt"><span class="rk-name">' + esc(String(r.name || "").slice(0, 80)) + "</span>" + (r.artist ? '<span class="rk-sub">' + esc(String(r.artist).slice(0, 80)) + "</span>" : "") + '</span><span class="rk-plays">' + esc(fmtNum(r.plays)) + "</span>" + end;
+  function rows(items) {
+    if (!items || !items.length) return '<p class="rp-empty">no data yet</p>';
+    return items.map(function(r, i) {
+      const name = String(r.name || "").slice(0, 80);
+      return '<div class="rk-row"><span class="rk-n">' + (i + 1) + "</span>" + art(r, "rk-art") + '<span class="rk-txt"><span class="rk-name">' + esc(name) + '</span></span><span class="rk-plays">' + esc(fmtNum(r.plays)) + "</span></div>";
     }).join("");
   }
-  function renderAlbums(rows) {
+  function albums(items) {
     const el = $("topAlbumsList");
     if (!el) return;
-    if (!rows || !rows.length) {
-      el.innerHTML = '<p class="rp-empty">no data</p>';
+    if (!items || !items.length) {
+      el.innerHTML = '<p class="rp-empty">no data yet</p>';
       return;
     }
-    el.innerHTML = rows.map(function(r) {
-      const art = safeUrl(r.art) ? '<img alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(safeUrl(r.art)) + '">' : '<span class="al-art al-art-ph" aria-hidden="true"></span>';
-      const inner = '<span class="al-art">' + art + '</span><span class="al-name">' + esc(String(r.name || "").slice(0, 70)) + '</span><span class="al-artist">' + esc(String(r.artist || "").slice(0, 70)) + '</span><span class="al-plays">' + esc(fmtNum(r.plays)) + " plays</span>";
-      return safeUrl(r.url) ? '<a class="al-card" href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener noreferrer">' + inner + "</a>" : '<div class="al-card">' + inner + "</div>";
+    el.innerHTML = items.map(function(r) {
+      const name = String(r.name || "").slice(0, 70);
+      const tail = String(r.artist || "").slice(0, 70);
+      return '<div class="al-card">' + art(r, "al-art") + '<span class="al-name">' + esc(name) + "</span>" + (tail ? '<span class="al-artist">' + esc(tail) + "</span>" : "") + '<span class="al-plays">' + esc(fmtNum(r.plays)) + " plays</span></div>";
     }).join("");
   }
   function markSource(label) {
     const el = $("statsSource");
-    if (el) {
-      el.textContent = label;
-      el.dataset.src = label === "last.fm" ? "lf" : "vault";
-    }
+    if (!el) return;
+    el.textContent = label;
+    el.dataset.src = label === "read-only" ? "off" : "live";
   }
   async function load() {
-    const parts = await Promise.all([
-      getJSON(API + "?part=stats"),
-      getJSON(API + "?part=counts"),
-      getJSON(API + "?part=artists"),
-      getJSON(API + "?part=albums"),
-      getJSON(API + "?part=recent")
-    ]);
-    const statsPart = parts[0];
-    if (statsPart && statsPart.stats) {
-      markSource("last.fm");
-      const counts = parts[1] && parts[1].counts ? parts[1].counts : {};
-      const exact = parts[1] ? parts[1].exact === true : false;
-      const topArtist = parts[2] && parts[2].topArtists && parts[2].topArtists[0];
-      renderStats(
-        Object.assign({}, statsPart.stats, { topArtist: topArtist ? topArtist.name : "" }),
-        Object.assign({ artists: 0, tracks: 0, albums: 0 }, counts),
-        exact
-      );
-      renderRecent(parts[4] && parts[4].recent);
-      const artistsEl2 = $("topArtistsList");
-      if (artistsEl2) artistsEl2.innerHTML = rankRows(parts[2] && parts[2].topArtists);
-      renderAlbums(parts[3] && parts[3].topAlbums);
-      setTimeout(scMax, 80);
-      return;
-    }
-    const vault = await getJSON(VAULT);
-    if (!vault || !vault.stats) {
+    const j = await getJSON(API);
+    if (!j || !j.stats) {
       const el = $("statsEmpty");
       if (el) {
         el.hidden = false;
@@ -2018,12 +1989,13 @@
       markSource("unavailable");
       return;
     }
-    markSource("this site");
-    renderStats(vault.stats, { artists: vault.stats.artists, tracks: vault.stats.tracks, albums: 0 }, true);
+    markSource(j.offline ? "read-only" : "live");
+    renderStats(j.stats);
+    renderRecent(j.recent);
     const artistsEl = $("topArtistsList");
-    if (artistsEl) artistsEl.innerHTML = rankRows(vault.topArtists);
-    renderAlbums([]);
-    renderRecent(vault.recent);
+    if (artistsEl) artistsEl.innerHTML = rows(j.topArtists);
+    const albumsEl = $("topAlbumsList");
+    if (albumsEl) albums(j.topAlbums);
     setTimeout(scMax, 80);
   }
   function refresh() {
@@ -2088,8 +2060,6 @@
     const ctx = cv.getContext("2d");
     if (!ctx) return;
     const ov = document.getElementById("arcadeOverlay");
-    const ovTitle = document.getElementById("arcadeTitle");
-    const ovHint = document.getElementById("arcadeHint");
     const startBtn = document.getElementById("arcadeStartBtn");
     const scoreEl = document.getElementById("arcadeScore");
     const bestEl = document.getElementById("arcadeBest");
@@ -2130,9 +2100,7 @@
       }
       if (levelEl) levelEl.textContent = String(level);
     }
-    function banner(title, hint, btn) {
-      if (ovTitle) ovTitle.textContent = title;
-      if (ovHint) ovHint.textContent = hint;
+    function banner(btn) {
       if (startBtn) startBtn.textContent = btn;
       if (ov) ov.style.display = "flex";
     }
@@ -2220,7 +2188,7 @@
     function togglePause() {
       if (state === "play") {
         state = "paused";
-        banner("PAUSED", "Press P or click to resume", "RESUME");
+        banner("RESUME");
       } else if (state === "paused") {
         state = "play";
         if (ov) ov.style.display = "none";
@@ -2242,7 +2210,7 @@
           } catch (e) {
           }
         }
-        banner("GAME OVER", "Score " + score + " \xB7 press to run it back", "PLAY AGAIN");
+        banner("PLAY AGAIN");
         hud();
         return;
       }
@@ -2446,7 +2414,7 @@
         state = "clear";
         score += 250 * level;
         hud();
-        banner("LEVEL " + level + " CLEAR", "Next level is faster", "CONTINUE");
+        banner("CONTINUE");
       }
     }
     function roundRect(x, y, w, h, r) {
@@ -2659,7 +2627,7 @@
     resetBall();
     hud();
     draw();
-    banner("NEON BREAKER", "Drag or A / D to move \xB7 Space to launch \xB7 P to pause", "START GAME");
+    banner("START");
   }
 
   // src/turnstile.js

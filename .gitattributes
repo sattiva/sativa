@@ -1,0 +1,17 @@
+# core.autocrlf=true rewrites files on checkout/add. It must never touch binaries or
+# it silently corrupts them (it clobbered new/images/*.gif before this file existed).
+*.gif binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Keep committed source in LF so the bundle is byte-stable across machines.
+*.js text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf

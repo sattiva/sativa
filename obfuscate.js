@@ -68,6 +68,13 @@ function main() {
   write(final, path.join(__dirname, 'js', 'app.js'));
   write(final, path.join(__dirname, 'new', 'js', 'app.js'));
   if (!OBFUSCATE) console.log('   (clean output — run `npm run build:obf` to obfuscate)');
+
+  // 404.html is the SPA safety net. Vercel serves it for any path that matches no file
+  // and no rewrite, so a refresh on /music or /guestbook hydrates the app and shows the
+  // right view instead of the host's error page. It must stay byte-identical to
+  // index.html, so it is regenerated here rather than maintained by hand.
+  const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  write(html, path.join(__dirname, '404.html'));
 }
 
 main();

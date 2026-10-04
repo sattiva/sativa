@@ -126,6 +126,37 @@ export function safeUrl(u) {
   return /^(https?:|data:image\/|blob:)/i.test(s) ? s : '';
 }
 
+// Deterministic gradient tile with a monogram. Used wherever we have a title but no
+// artwork: vault track covers, and every tile in the stats panels (Redis stores no
+// image URLs, so an empty <img> would leave a blank box).
+export function tile(text, letters) {
+  const words = String(text || '?')
+    .replace(/[^A-Za-z0-9\s\u0400-\u04FF]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+  const n = letters || 1;
+  const txt = (
+    words.length > 1 && n > 1
+      ? words[0][0] + words[1][0]
+      : (words[0] || '?').slice(0, n)
+  )
+    .toUpperCase()
+    .slice(0, 2);
+  let h = 0;
+  const seed = String(text || 'x');
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 360;
+  const svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="hsl(' + h + ' 58% 32%)"/>' +
+    '<stop offset="1" stop-color="hsl(' + ((h + 46) % 360) + ' 54% 14%)"/>' +
+    '</linearGradient></defs>' +
+    '<rect width="100" height="100" fill="url(#g)"/>' +
+    '<text x="50" y="52" font-family="Satoshi,system-ui,sans-serif" font-size="' + (n > 1 ? 34 : 46) +
+    '" font-weight="700" fill="rgba(255,255,255,.92)" text-anchor="middle">' + txt + '</text></svg>';
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
 export function cGet(k, mx) {
   try {
     const v = JSON.parse(localStorage.getItem(k) || 'null');

@@ -170,17 +170,18 @@ export const parseToken = (raw: string): string[] => {
 npm run build      # bundle src/*.js -> js/app.js (clean). Run after ANY src/ change.
 npm run build:obf  # same, obfuscated. Opt-in: flattening+dead-code froze the page 3x.
 npm test           # id cross-check + api integration + jsdom smoke
+npm run test:browser  # playwright: deep-link refresh + mobile scroll + layout
 ```
 
-`js/app.js` is committed, not built by Vercel. A `src/` edit without a rebuild never ships.
+`js/app.js` and `404.html` are committed, not built by Vercel. A `src/` or `index.html`
+edit without a rebuild never ships.
 
 ### Env (see .env.example)
 | Var | Effect when absent |
 | --- | --- |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Guestbook + view counter return 503. Vault and arcade still work. |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Guestbook returns 503 and the form stays disabled. Stats render the baseline read-only and do not count. Vault and arcade still work. |
+| `BASELINE_STATS` | Every stat starts at zero. One JSON blob, seeded into Redis on first read. |
 | `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Widget hidden; honeypot + dwell + origin pinning + rate limits remain. |
-| `LASTFM_API_KEY` / `_USERNAME` | Stats fall back to locally tracked vault plays. |
-| `LASTFM_COUNTS` | Distinct artist/track/album totals shown as a bounded lower bound with a `+` suffix. |
 
 ### Invariants
 - `api/` is CommonJS (no `"type": "module"`); `src/` is ESM bundled by esbuild.
@@ -189,5 +190,10 @@ npm test           # id cross-check + api integration + jsdom smoke
   rate limiter all surface 503. Never a silent success.
 - Track identity is resolved from the manifest inside `api/scrobble.js`, never from a
   request body, so counters cannot be inflated with invented tracks.
-- `vercel.json` rewrites `/home|/music|/games|/guestbook` to `/index.html`. Removing that
-  rewrite is what made the guestbook form 404 on submit.
+- Stats are Redis-only. There is no music API dependency; `BASELINE_STATS` seeds lifetime
+  totals once behind an `sx:seeded` NX flag, local plays are additive.
+- `vercel.json` rewrites `/:slug` to `/index.html` for SPA deep links, and `404.html` is a
+  byte-identical copy of `index.html` as the fallback. Without one of those, refreshing on
+  `/music` or `/guestbook` returns the host's error page instead of the app.
+- `index.html` must NOT hardcode `class="smooth-scroll"`. That class sets
+  `body{overflow:hidden}` and is only safe when the custom scroller is actually driving.

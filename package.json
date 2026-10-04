@@ -9,7 +9,8 @@
     "test": "node scratch/verify_ids.js && node scratch/api_test.js && node scratch/smoke.js",
     "test:ids": "node scratch/verify_ids.js",
     "test:api": "node scratch/api_test.js",
-    "test:ui": "node scratch/smoke.js"
+    "test:ui": "node scratch/smoke.js",
+    "test:browser": "python scratch/deeplink.py && python scratch/v2.py"
   },
   "dependencies": {
     "javascript-obfuscator": "^4.1.1"

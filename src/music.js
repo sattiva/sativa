@@ -3,7 +3,7 @@
 // the now-playing strip, and scrobbles to /api/scrobble once a play passes the halfway
 // mark. The server re-validates the track id against its own manifest.
 
-import { $, toast, safeUrl } from './config.js';
+import { $, toast, safeUrl, tile } from './config.js';
 
 const SCROBBLE_AT = 0.5;
 const ART_SIZE = 400;
@@ -16,33 +16,6 @@ let audio = null;
 let curRow = null;
 let curScrobbled = false;
 let rafId = null;
-
-function hashHue(s) {
-  let h = 0;
-  const v = String(s || 'x');
-  for (let i = 0; i < v.length; i++) h = (h * 31 + v.charCodeAt(i)) % 360;
-  return h;
-}
-
-// Inline SVG so the fallback is a real <img> source rather than a dead gradient string.
-function monogram(title) {
-  const words = String(title || '?')
-    .replace(/[^A-Za-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-  const txt = (words.length > 1 ? words[0][0] + words[1][0] : (words[0] || '?').slice(0, 2)).toUpperCase();
-  const h = hashHue(title);
-  const svg =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
-    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0" stop-color="hsl(' + h + ' 60% 33%)"/>' +
-    '<stop offset="1" stop-color="hsl(' + ((h + 48) % 360) + ' 56% 15%)"/>' +
-    '</linearGradient></defs>' +
-    '<rect width="100" height="100" fill="url(#g)"/>' +
-    '<text x="50" y="52" font-family="Satoshi,system-ui,sans-serif" font-size="36" font-weight="700" ' +
-    'fill="rgba(255,255,255,.9)" text-anchor="middle">' + txt + '</text></svg>';
-  return 'data:image/svg+xml,' + encodeURIComponent(svg);
-}
 
 function upscale(u) {
   return String(u || '').replace(/\/\d+x\d+(bb)?\.(jpg|png)/, '/' + ART_SIZE + 'x' + ART_SIZE + 'bb.$1');
@@ -82,9 +55,9 @@ function setArt(img, url, title) {
   if (!img) return;
   img.onerror = function () {
     this.onerror = null;
-    this.src = monogram(title);
+    this.src = tile(title, 2);
   };
-  img.src = url || monogram(title);
+  img.src = url || tile(title, 2);
 }
 
 function paintRow(row, playing) {
@@ -111,7 +84,7 @@ function paintNow(row, on) {
   const title = $('vaultTitle');
   const artist = $('vaultArtist');
   const bar = $('vaultBar');
-  if (art) art.src = (rowImg && rowImg.src) || monogram(row.dataset.title);
+  if (art) art.src = (rowImg && rowImg.src) || tile(row.dataset.title, 2);
   if (title) title.textContent = row.dataset.title || '';
   if (artist) artist.textContent = row.dataset.artist || '';
   if (bar) bar.style.width = '0%';

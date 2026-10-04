@@ -37,8 +37,6 @@ export function initGames() {
   if (!ctx) return;
 
   const ov = document.getElementById('arcadeOverlay');
-  const ovTitle = document.getElementById('arcadeTitle');
-  const ovHint = document.getElementById('arcadeHint');
   const startBtn = document.getElementById('arcadeStartBtn');
   const scoreEl = document.getElementById('arcadeScore');
   const bestEl = document.getElementById('arcadeBest');
@@ -86,9 +84,9 @@ export function initGames() {
     if (levelEl) levelEl.textContent = String(level);
   }
 
-  function banner(title, hint, btn) {
-    if (ovTitle) ovTitle.textContent = title;
-    if (ovHint) ovHint.textContent = hint;
+  // Overlay is button-only by design: no title, no instructions. State is carried by the
+  // button label and the score/lives/level bar underneath.
+  function banner(btn) {
     if (startBtn) startBtn.textContent = btn;
     if (ov) ov.style.display = 'flex';
   }
@@ -186,7 +184,7 @@ export function initGames() {
   function togglePause() {
     if (state === 'play') {
       state = 'paused';
-      banner('PAUSED', 'Press P or click to resume', 'RESUME');
+      banner('RESUME');
     } else if (state === 'paused') {
       state = 'play';
       if (ov) ov.style.display = 'none';
@@ -208,7 +206,7 @@ export function initGames() {
           localStorage.setItem('sat-arcade-best', String(best));
         } catch (e) {}
       }
-      banner('GAME OVER', 'Score ' + score + ' · press to run it back', 'PLAY AGAIN');
+      banner('PLAY AGAIN');
       hud();
       return;
     }
@@ -436,7 +434,7 @@ export function initGames() {
       state = 'clear';
       score += 250 * level;
       hud();
-      banner('LEVEL ' + level + ' CLEAR', 'Next level is faster', 'CONTINUE');
+      banner('CONTINUE');
     }
   }
 
@@ -678,5 +676,5 @@ function activate() {
   resetBall();
   hud();
   draw();
-  banner('NEON BREAKER', 'Drag or A / D to move · Space to launch · P to pause', 'START GAME');
+  banner('START');
 }
