@@ -190,9 +190,8 @@ npm test             # id cross-check + api integration + jsdom smoke
 - Every handler meters through `G.applyLimits`, which prepends `GLOBAL_LIMITS` so one IP
   cannot rotate between endpoints. With Redis absent it falls back to an in-process
   bucket for reads; writes still 503.
-- `middleware.js` (project root) meters static assets and unmatched paths. Its
-  `request.headers` is a `Headers` object: use `headers.get(name)` or every visitor
-  collapses into one `anon` bucket and the site locks itself out.
+- Static assets are **not** rate limited: Vercel does not run a root `middleware.js` for
+  this project shape. Use Cloudflare rate limiting rules for that layer.
 - No `Access-Control-Allow-Origin` anywhere. Cross-origin is refused in `G.preflight`.
 - CSP lives in `vercel.json`; a new external origin that is not listed fails silently.
   `/spitari/*` is excluded from the strict rule via the `((?!spitari).*)` lookahead.

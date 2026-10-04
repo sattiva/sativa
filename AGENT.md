@@ -195,12 +195,15 @@ edit without a rebuild never ships. `npm test` boots the bundle that is currentl
 - With Redis absent, the guard meters from its own in-process bucket so read paths and
   the Lanyard fallback stay up. That is per-lambda and resets on cold start; it is not
   a distributed limit. Writes still fail closed on `!store.READY`.
-- `middleware.js` at the project root is the outer ring for static assets and unknown
-  paths. `request.headers` there is a `Headers` instance, so read it with
-  `headers.get(name)`. Plain property access returns `undefined` and silently collapses
-  every visitor into one shared `anon` bucket, which locks the site out.
+- **Static assets are not rate limited.** A root `middleware.js` was tried and Vercel does
+  not run it for this project shape (framework preset "Other" + `outputDirectory`), so
+  it was removed rather than left in as a control that does nothing. Measured: 600
+  requests to `/js/boot.js` in 4.8s and 300 to an unknown path, zero 429s. Asset-level
+  protection has to come from Cloudflare rate limiting rules in front of the site.
 - Nothing anywhere sends `Access-Control-Allow-Origin`. Cross-origin requests are
-  refused in `G.preflight`, same-origin or not. Do not reintroduce a wildcard.
+  refused in `G.preflight`, same-origin or not. Do not reintroduce a wildcard. Note
+  Cloudflare injects `access-control-allow-origin: *` on static responses; that is a
+  zone setting, not this repo.
 - The CSP lives in `vercel.json`. A new external origin that is not listed there fails
   silently at runtime: fonts, artwork, Lanyard's socket and the Turnstile iframe all
   depend on it. `/spitari/*` gets its own looser rule and is excluded by the
