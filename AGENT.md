@@ -211,6 +211,17 @@ edit without a rebuild never ships. `npm test` boots the bundle that is currentl
 - `src/protect.js` is the content lock and the selection/print CSS is duplicated in
   `index.html` so it holds before the bundle runs. `navigator.clipboard` is left alone
   on purpose: the handle-copy button is a real feature.
+- **The page is still.** No motion prompt, no motion toggle, no reveal stagger, no
+  view slide, no tilt, and one static WebGL frame instead of a render loop. `index.html`
+  sets `class="motion-off"` on `<html>` and a global `animation:none;transition:none`
+  rule, so anything added later is still by default. Do not reintroduce a prompt.
+- **`<main class="stage">` wraps the three views and is load-bearing.** `navigation.js`
+  does `document.querySelector('.stage')` once at module scope; without the wrapper
+  `$stage` is null, `scMax()` silently returns, the wheel handler still calls
+  `preventDefault()` (so the page cannot scroll at all on desktop) and the
+  `padding:104px` that keeps the hero out from under the fixed 80px topbar never
+  applies, which hides the avatar behind the header. It went missing once already and
+  every symptom looked like a styling problem.
 - Nothing in `navigation.js` may navigate on a timer. Motion on means reveals animate,
   the view you asked for is the view you get.
 - The tab icon is `#siteIcon` and `#appleIcon`, swapped from the Lanyard avatar by

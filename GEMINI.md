@@ -197,6 +197,11 @@ npm test             # id cross-check + api integration + jsdom smoke
   `/spitari/*` is excluded from the strict rule via the `((?!spitari).*)` lookahead.
 - `src/protect.js` plus the lock CSS in `index.html` block selection, copy, drag, print,
   devtools shortcuts and speech. `navigator.clipboard` stays live for the handle button.
+- The page is still: no motion prompt, no toggle, no stagger, no tilt, one static WebGL
+  frame. `index.html` hardcodes `class="motion-off"` and kills all transitions.
+- `<main class="stage">` must wrap the three views. `navigation.js` resolves it once at
+  module scope; lose it and desktop scrolling dies while the wheel keeps swallowing
+  events, and the hero slides under the fixed topbar so the avatar disappears.
 - Nothing navigates on a timer. `src/lanyard.js#setIcons` owns `#siteIcon`/`#appleIcon`.
 - Chrome rejects `ry = 0` arcs in SVG path data and truncates the path. Use `l`/`L`.
 - Track identity is resolved from the manifest inside `api/scrobble.js`, never from a

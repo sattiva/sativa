@@ -1,5 +1,5 @@
 import { $, S, C, SI, CK_P, cGet, copy } from './config.js';
-import { initScroll, initNavigation, initTilt, initBg, initViewCounter, playReveal, scMax } from './navigation.js';
+import { initScroll, initNavigation, initBg, initViewCounter, playReveal, scMax } from './navigation.js';
 import { initWeather } from './weather.js';
 import { initLyricsModal, setArt, setBgArt, clearNow } from './lyrics.js';
 import { connect, presence } from './lanyard.js';
@@ -53,7 +53,6 @@ function init() {
 
   boot(initProtect);
   boot(initScroll);
-  boot(initTilt);
   boot(initBg);
   boot(initWeather);
   boot(initLyricsModal);

@@ -1,4 +1,4 @@
-import { $, S, C, TITLES, PATH, VIEW, MOB, TOUCH, CK_V, cGet, cSet } from './config.js';
+import { $, S, TITLES, PATH, VIEW, MOB, TOUCH, CK_V, cGet, cSet } from './config.js';
 
 const $stage = typeof document !== 'undefined' ? document.querySelector('.stage') : null;
 
@@ -93,79 +93,11 @@ export function initScroll() {
   scApply();
 }
 
-export function motionPreference() {
-  try {
-    return localStorage.getItem('sat-motion') || localStorage.getItem('kast-motion') || '';
-  } catch (e) {
-    return '';
-  }
-}
-
-export function shouldReduceMotion() {
-  const choice = motionPreference();
-  if (choice === 'on') return false;
-  if (choice === 'off') return true;
-  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches);
-}
-
 let rvItems = [];
-let motionPrompt = null;
-let motionControl = null;
-let motionChoicePending = true;
 
 export function playReveal(items) {
   items = items || rvItems;
-  if (motionChoicePending) return;
-  if (shouldReduceMotion()) {
-    for (let i = 0; i < items.length; i++) items[i].classList.add('in');
-    return;
-  }
-  const start = 300, stagger = 900;
-  for (let i = 0; i < items.length; i++) {
-    setTimeout(((el) => () => el.classList.add('in'))(items[i]), start + i * stagger);
-  }
-}
-
-function updateMotionControl(enabled) {
-  if (!motionControl) return;
-  motionControl.hidden = false;
-  motionControl.setAttribute('aria-checked', enabled ? 'true' : 'false');
-  motionControl.setAttribute('aria-label', enabled ? 'Turn motion off' : 'Turn motion on');
-}
-
-export function stopAllMotion() {
-  try {
-    localStorage.setItem('sat-motion', 'off');
-  } catch (e) {}
-  document.documentElement.classList.remove('motion-on', 'motion-paused');
-  document.documentElement.classList.add('motion-off');
-  rvItems.forEach(el => el.classList.add('in'));
-  updateMotionControl(false);
-}
-
-// Motion on means the reveals animate on the view you asked for. Nothing navigates
-// on its own: no timed tour, no sliding to another tab.
-export function chooseMotion(choice) {
-  try {
-    localStorage.setItem('sat-motion', choice);
-  } catch (e) {}
-  document.documentElement.classList.remove('motion-choice-required', 'motion-paused');
-  document.documentElement.classList.toggle('motion-on', choice === 'on');
-  document.documentElement.classList.toggle('motion-off', choice === 'off');
-  motionChoicePending = false;
-  if (motionPrompt) motionPrompt.classList.remove('show');
-  const req = initialRequestedView();
-  setActive(req);
-  if (req !== 'home') showView(req, false, true);
-  else if (choice === 'on') {
-    if (motionControl) motionControl.hidden = false;
-    rvItems.forEach(el => el.classList.remove('in'));
-    void document.body.offsetWidth;
-    playReveal();
-  } else {
-    updateMotionControl(false);
-    playReveal();
-  }
+  for (let i = 0; i < items.length; i++) items[i].classList.add('in');
 }
 
 export function initialRequestedView() {
@@ -180,7 +112,7 @@ export function setActive(t) {
   });
 }
 
-export function showView(t, push, instant) {
+export function showView(t, push) {
   const cur = document.querySelector('.view:not([hidden])');
   const nxt = document.querySelector('.view[data-view="' + t + '"]');
   if (!nxt) return;
@@ -192,34 +124,16 @@ export function showView(t, push, instant) {
   }
   if (cur === nxt) return;
 
-
   document.title = TITLES[t] || 'Sativa';
 
-  const go = function() {
-    nxt.hidden = false;
-    if (t === 'home') playReveal();
-    nxt.classList.remove('view-enter');
-    void nxt.offsetWidth;
-    nxt.classList.add('view-enter');
-    setTimeout(scMax, 50);
-  };
-
-  const reduce = shouldReduceMotion();
-  if (cur && !reduce && !instant) {
-    cur.classList.add('view-out');
-    clearTimeout(S.vT);
-    S.vT = setTimeout(function() {
-      cur.hidden = true;
-      cur.classList.remove('view-out');
-      go();
-    }, 260);
-  } else {
-    if (cur) {
-      cur.hidden = true;
-      cur.classList.remove('view-out');
-    }
-    go();
+  if (cur) {
+    cur.hidden = true;
+    cur.classList.remove('view-out', 'view-enter');
   }
+  nxt.hidden = false;
+  nxt.classList.remove('view-out');
+  if (t === 'home') playReveal();
+  setTimeout(scMax, 50);
 
   scTo(0, true);
   if (SC.active) {
@@ -228,61 +142,14 @@ export function showView(t, push, instant) {
     scApply();
   } else {
     try {
-      window.scrollTo({ top: 0, behavior: instant ? 'auto' : 'smooth' });
+      window.scrollTo(0, 0);
     } catch (e) {}
   }
 }
 
 export function initNavigation() {
   rvItems = [].slice.call(document.querySelectorAll('[data-rv]')).filter(el => !el.hidden);
-  motionPrompt = $('motionPrompt');
-  motionControl = $('motionControl');
-  const motionOnChoice = $('motionOn');
-  const motionOffChoice = $('motionOff');
-  const motionDialog = motionPrompt ? motionPrompt.querySelector('.motion-prompt') : null;
-
-  if (motionPrompt) motionPrompt.classList.add('show');
-
-  if (motionOnChoice) {
-    motionOnChoice.addEventListener('click', () => chooseMotion('on'));
-  }
-  if (motionOffChoice) {
-    motionOffChoice.addEventListener('click', () => chooseMotion('off'));
-  }
-
-  if (motionChoicePending && motionDialog && motionPrompt) {
-    setTimeout(() => motionDialog.focus(), 0);
-    motionPrompt.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        return;
-      }
-      if (e.key !== 'Tab') return;
-      if (e.shiftKey && document.activeElement === motionOffChoice) {
-        e.preventDefault();
-        motionOnChoice.focus();
-      } else if (!e.shiftKey && document.activeElement === motionOnChoice) {
-        e.preventDefault();
-        motionOffChoice.focus();
-      }
-    });
-  }
-
-  if (motionControl) {
-    motionControl.addEventListener('click', function() {
-      const enabled = motionControl.getAttribute('aria-checked') === 'true';
-      if (enabled) {
-        stopAllMotion();
-        return;
-      }
-      try {
-        localStorage.setItem('sat-motion', 'on');
-      } catch (e) {}
-      document.documentElement.classList.remove('motion-off', 'motion-paused');
-      document.documentElement.classList.add('motion-on');
-      updateMotionControl(true);
-    });
-  }
+  playReveal();
 
   document.querySelectorAll('.nav-btn[data-view]').forEach(b => {
     b.addEventListener('click', () => {
@@ -341,60 +208,14 @@ export function initNavigation() {
     setActive(v);
     showView(v, false);
   });
-
-  const prev = motionPreference();
-  if (prev) {
-    chooseMotion(prev);
-  }
 }
 
-export function initTilt() {
-  function tilt(el) {
-    if (!el || !(window.matchMedia && window.matchMedia('(hover:hover)').matches)) return;
-    el.addEventListener('mouseenter', function() {
-      el.style.transition = 'transform .12s linear,box-shadow .35s var(--e),border-color .35s var(--e)';
-    });
-    el.addEventListener('mousemove', function(e) {
-      const r = el.getBoundingClientRect();
-      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      let dx = (e.clientX - cx) / (r.width / 2), dy = (e.clientY - cy) / (r.height / 2);
-      dx = Math.max(-1, Math.min(1, dx));
-      dy = Math.max(-1, Math.min(1, dy));
-      el.style.transform = 'perspective(900px) translate3d(' + (dx * 14).toFixed(2) + 'px,' + (dy * 10).toFixed(2) + 'px,0) rotateY(' + (dx * 6).toFixed(2) + 'deg) rotateX(' + (-dy * 6).toFixed(2) + 'deg)';
-    });
-    el.addEventListener('mouseleave', function() {
-      el.style.transition = 'transform .6s var(--e),box-shadow .35s var(--e),border-color .35s var(--e)';
-      el.style.transform = '';
-    });
-  }
-
-  tilt(document.querySelector('#motionPrompt .motion-prompt'));
-  const w = $('weatherWidget');
-  if (w && window.matchMedia && window.matchMedia('(hover:hover)').matches) {
-    w.addEventListener('mouseenter', function() {
-      w.style.transition = 'transform .1s linear,box-shadow .35s var(--e)';
-    });
-    w.addEventListener('mousemove', function(e) {
-      if (!w.classList.contains('in')) return;
-      const r = w.getBoundingClientRect();
-      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      let dx = (e.clientX - cx) / (r.width / 2), dy = (e.clientY - cy) / (r.height / 2);
-      dx = Math.max(-1, Math.min(1, dx));
-      dy = Math.max(-1, Math.min(1, dy));
-      w.style.transform = 'perspective(900px) translate3d(' + (dx * 30).toFixed(2) + 'px,' + (dy * 20).toFixed(2) + 'px,0) rotateY(' + (dx * 10).toFixed(2) + 'deg) rotateX(' + (-dy * 10).toFixed(2) + 'deg)';
-    });
-    w.addEventListener('mouseleave', function() {
-      w.style.transition = 'transform .55s var(--e),box-shadow .35s var(--e)';
-      w.style.transform = '';
-    });
-  }
-}
-
+// One static frame. The shader is a drifting tint; without a loop it is just a
+// background, which is the whole point of a still page.
 export function initBg() {
   if (MOB) return;
   const cv = $('bgCanvas');
   if (!cv) return;
-  const rm = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
   const gl = cv.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'low-power' }) || cv.getContext('experimental-webgl');
   if (!gl) return;
 
@@ -439,10 +260,8 @@ export function initBg() {
     cv.height = Math.max(1, Math.floor(h * dpr));
     gl.viewport(0, 0, cv.width, cv.height);
     gl.uniform2f(uR, w, h);
-    if (rm) {
-      gl.uniform1f(uT, 12);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
+    gl.uniform1f(uT, 12);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
   let rt = null;
@@ -452,29 +271,6 @@ export function initBg() {
   });
   window.addEventListener('orientationchange', () => setTimeout(resize, 200));
   resize();
-
-  if (rm) return;
-  const start = performance.now();
-  let raf = null;
-  function render(now) {
-    raf = requestAnimationFrame(render);
-    gl.uniform1f(uT, (now - start) * 0.001);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  }
-  function play() {
-    if (!raf) raf = requestAnimationFrame(render);
-  }
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-      if (raf) {
-        cancelAnimationFrame(raf);
-        raf = null;
-      }
-    } else {
-      play();
-    }
-  });
-  play();
 }
 
 export function animateCount(target) {
