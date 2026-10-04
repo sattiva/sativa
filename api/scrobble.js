@@ -1,20 +1,12 @@
-// PREREQ: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
-// Single source of truth for Music Vault listening stats. No external music API.
-//
-// Lifetime totals are seeded once from the BASELINE_STATS env var (your real
-// historical numbers), then every vault play increments them. Track identity is
-// resolved from the server-side manifest below, never from the request body, so
-// counters cannot be inflated with invented tracks.
-//
-// BASELINE_STATS='{"scrobbles":45700,"artists":1200,"tracks":3900,"albums":2600,
-//                  "days":658,"topArtist":"$uicideboy$","topArtistPlays":4100}'
 
 const crypto = require('crypto');
 const store = require('./_lib/store');
 const G = require('./_lib/guard');
 
-// Only albums defensible from the track listings are recorded. The rest stay empty
-// rather than being guessed, so the album count stays honest.
+const LANYARD = 'https://api.lanyard.rest/v1/users/';
+const LANYARD_TTL = 45;
+const DISCORD_ID = process.env.DISCORD_ID || '430766308662050817';
+
 const MANIFEST = {
   bounce_out: { title: 'Bounce Out x Limerence', artist: 'Limerence, Yves Tumor', album: '' },
   dream: { title: 'Dream', artist: 'knive ♱', album: '' },
@@ -61,6 +53,92 @@ function dayKey(ts) {
   return new Date(ts).toISOString().slice(0, 10);
 }
 
+let lanyardCache = 0;
+let lanyardData = null;
+
+function fetchLanyard() {
+  const now = Date.now();
+  if (lanyardData && now - lanyardCache < LANYARD_TTL * 1000) return Promise.resolve(lanyardData);
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 4000);
+  return fetch(LANYARD + encodeURIComponent(DISCORD_ID), {
+    headers: { Accept: 'application/json' },
+    signal: ctl.signal
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => {
+      if (!j || j.success !== true || !j.data) return null;
+      lanyardData = j.data;
+      lanyardCache = now;
+      return j.data;
+    })
+    .catch(() => null)
+    .then((v) => {
+      clearTimeout(timer);
+      return v;
+    });
+}
+
+function vaultView(lanyard) {
+  const ids = Object.keys(MANIFEST);
+  const artists = [];
+  const seenArtist = {};
+  const albums = [];
+  const seenAlbum = {};
+  for (const id of ids) {
+    const t = MANIFEST[id];
+    if (!seenArtist[t.artist]) {
+      seenArtist[t.artist] = true;
+      artists.push({ name: t.artist, plays: 0, artist: t.artist });
+    }
+    if (t.album) {
+      const key = t.artist + ' — ' + t.album;
+      if (!seenAlbum[key]) {
+        seenAlbum[key] = true;
+        albums.push({ name: t.album, artist: t.artist, plays: 0 });
+      }
+    }
+  }
+  const tracks = ids.map((id) => ({
+    name: MANIFEST[id].artist + ' — ' + MANIFEST[id].title,
+    plays: 0
+  }));
+
+  const recent = [];
+  const sp = lanyard && lanyard.spotify;
+  if (sp && sp.song) {
+    recent.push({
+      title: sp.song,
+      artist: sp.artist || '',
+      album: sp.album || '',
+      ts: Date.now(),
+      now: true
+    });
+  }
+
+  const total = BASELINE.scrobbles;
+  const days = BASELINE.days;
+  return {
+    ok: true,
+    offline: true,
+    source: 'lanyard',
+    live: !!(lanyard && lanyard.spotify && lanyard.spotify.song),
+    stats: {
+      scrobbles: total,
+      artists: BASELINE.artists || artists.length,
+      tracks: BASELINE.tracks || tracks.length,
+      albums: BASELINE.albums || albums.length,
+      days: days,
+      avgPerDay: days > 0 ? Math.round((total / days) * 10) / 10 : 0,
+      topArtist: BASELINE.topArtist || ''
+    },
+    topArtists: artists,
+    topTracks: tracks,
+    topAlbums: albums,
+    recent: recent
+  };
+}
+
 function pairsWithScores(raw) {
   const out = [];
   if (!Array.isArray(raw)) return out;
@@ -86,7 +164,6 @@ function ztop(zset, keyName) {
     .catch(() => []);
 }
 
-// Seeding is guarded by a NX flag so concurrent cold starts cannot double-apply it.
 let seedPromise = null;
 function ensureSeeded() {
   if (seedPromise) return seedPromise;
@@ -95,11 +172,9 @@ function ensureSeeded() {
     .then((won) => {
       if (!won) return null;
       const cmds = [
-        // SET..NX, not SETNX: SETNX answers 1/0 while the client wrapper keys off "OK".
         ['SET', K_TOTAL, String(BASELINE.scrobbles), 'NX'],
         ['SET', K_TOP, JSON.stringify({ name: BASELINE.topArtist, plays: BASELINE.topArtistPlays })]
       ];
-      // Seed a couple of albums so the Top Albums panel is not empty on day one.
       if (BASELINE.albums > 0) {
         cmds.push(['ZINCRBY', K_ALBUMS, String(BASELINE.albums), 'seeded']);
       }
@@ -131,7 +206,6 @@ function handleGet(req, res) {
         .then((r) => {
           const localScrobbles = parseInt(r[0], 10) || 0;
           const localDays = parseInt(r[1], 10) || 0;
-          // Distinct totals = seeded lifetime baseline + everything tracked here.
           const total = localScrobbles;
           const days = BASELINE.days + localDays;
           const artists = BASELINE.artists + (parseInt(r[2], 10) || 0);
@@ -210,8 +284,6 @@ function handlePost(req, res) {
       const track = MANIFEST[id];
       const now = Date.now();
 
-      // Dedupe: one count per track per client per 20 minutes, so replaying a short
-      // preview legitimately re-counts but a loop script does not.
       const nonce = G.text(body.nonce, 40);
       const dedupe = 'sx:n:' + crypto
         .createHash('sha256')
@@ -275,27 +347,9 @@ module.exports = async function handler(req, res) {
 
   if (!store.READY) {
     if (req.method === 'GET' || req.method === 'HEAD') {
-      // Report the seeded baseline even with no store so the panel is not blank. Counts
-      // simply will not move until the store is configured.
-      G.send(res, 200, {
-        ok: true,
-        offline: true,
-        stats: {
-          scrobbles: BASELINE.scrobbles,
-          artists: BASELINE.artists,
-          tracks: BASELINE.tracks,
-          albums: BASELINE.albums,
-          days: BASELINE.days,
-          avgPerDay:
-            BASELINE.days > 0 ? Math.round((BASELINE.scrobbles / BASELINE.days) * 10) / 10 : 0,
-          topArtist: BASELINE.topArtist
-        },
-        topArtists: [],
-        topTracks: [],
-        topAlbums: [],
-        recent: []
-      });
-      return;
+      return fetchLanyard()
+        .then((l) => G.send(res, 200, vaultView(l)))
+        .catch(() => G.send(res, 200, vaultView(null)));
     }
     G.fail(res, 503, 'stats_unavailable', 'Stats storage is not configured.');
     return;

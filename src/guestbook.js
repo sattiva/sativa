@@ -1,7 +1,3 @@
-// Guestbook module. Notes live in Redis via /api/guestbook; nothing is stored locally.
-// Submit is Turnstile-gated (when a site key is configured), honeypot-gated, dwell-gated
-// and rate-limited server-side. This module never trusts server text -- every value that
-// reaches innerHTML goes through esc().
 
 import { $, esc, toast, timeAgo } from './config.js';
 import { scMax } from './navigation.js';
@@ -26,7 +22,6 @@ export function initGuestbook() {
   const rate = $('gbRate');
   const fill = $('gbFill');
 
-  // Every id is required; bail loudly in dev rather than silently dead-ending again.
   if (!list || !form || !nameInput || !msgInput) return;
 
   if (nameInput) nameInput.maxLength = NAME_MAX;
@@ -39,12 +34,8 @@ export function initGuestbook() {
   let cooldownUntil = 0;
   let cooldownTimer = null;
 
-  // Nothing is submittable until the endpoint has confirmed it is reachable, so a
-  // dead backend can never present the user with a button that silently drops writes.
   if (btn) btn.disabled = true;
 
-  // The server allows one write per 15s. Surfacing that as a live cooldown turns a
-  // frustrating rejection into a legible rule.
   const BURST_SECONDS = 15;
 
   function paintCooldown() {
@@ -87,7 +78,6 @@ export function initGuestbook() {
     if (btn) btn.disabled = on || offline || cooldownUntil > Date.now();
   }
 
-  // The submit button holds a cooldown bar child, so only the text node is replaced.
   function setLabel(text) {
     if (!btn) return;
     const bar = fill;
@@ -186,7 +176,6 @@ export function initGuestbook() {
 
     const name = nameInput.value.trim().replace(/\s+/g, ' ');
     const msg = msgInput.value.trim().replace(/\s+/g, ' ');
-    // Bot trap: hidden from humans, reachable to naive scrapers.
     if (trap && trap.value.trim() !== '') return;
 
     if (name.length < 2) {
@@ -225,7 +214,6 @@ export function initGuestbook() {
       if (!r.ok || !j || j.ok !== true) {
         const code = (j && j.error) || 'submit_failed';
         if (code === 'rate_limited') {
-          // Honour the server's own Retry-After so the countdown reflects the real rule.
           const retry = parseInt(r.headers && r.headers.get && r.headers.get('retry-after'), 10);
           startCooldown(isFinite(retry) && retry > 0 ? retry : BURST_SECONDS);
           toast(j.detail || 'too many signatures — try again shortly', true);
@@ -259,8 +247,6 @@ export function initGuestbook() {
     }
   });
 
-  // Re-render from a live DOM node keeps optimistic inserts consistent with the
-  // server shape without a second round trip.
   function remap(el) {
     const nameEl = el.querySelector('.gb-name');
     const msgEl = el.querySelector('.gb-msg');
@@ -272,8 +258,6 @@ export function initGuestbook() {
     };
   }
 
-  // renderedAt is stamped at init, so the dwell check measures time since the page
-  // rendered -- which is exactly the signal a too-fast bot cannot fake for free.
   load(false);
   setTimeout(function () {
     load(true);

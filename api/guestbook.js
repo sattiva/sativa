@@ -1,7 +1,3 @@
-// PREREQ: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN (writes fail closed without them)
-// GET  -> recent notes + lifetime signature count
-// POST -> create a note. Guarded by Turnstile (when configured), a honeypot, a
-//         minimum dwell time, URL/size caps, dedupe, and three stacked rate limits.
 
 const crypto = require('crypto');
 const store = require('./_lib/store');
@@ -22,7 +18,6 @@ const DEDUPE_TTL = 86400;
 
 const READ_LIMITS = [{ scope: 'gb:read', max: 90, windowMs: 60000 }];
 
-// burst + sustained + daily, all per IP and all evaluated together.
 const WRITE_LIMITS = [
   { scope: 'gb:burst', max: 1, windowMs: 15000 },
   { scope: 'gb:hour', max: 4, windowMs: 3600000 },
@@ -53,7 +48,6 @@ function parseNotes(raw) {
       continue;
     }
     if (!v || typeof v !== 'object') continue;
-    // Re-normalise on read: a stored row must never reach the DOM unchecked.
     out.push({
       id: G.text(v.id, 32) || id(),
       n: G.text(v.n, NAME_MAX),
@@ -89,8 +83,6 @@ function handleGet(req, res) {
         PAGE_MAX,
         Math.max(1, parseInt((req.query && req.query.limit) || '60', 10) || 60)
       );
-      // Seeding must complete before the read, otherwise a cold database returns an
-      // empty guestbook to the very first visitor who triggers the seed.
       return seedOnce()
         .then(() => Promise.all([store.lrange(NOTES_KEY, 0, want - 1), store.get(COUNT_KEY)]))
         .then((r) => {
@@ -103,8 +95,6 @@ function handleGet(req, res) {
             count: notes.length,
             notes,
             limit: want,
-            // Public site key + active mode so the widget follows env changes
-            // without requiring a rebuild of the bundle.
             turnstile: { mode: G.turnstileMode(), siteKey: G.turnstileSiteKey() }
           });
         })
@@ -130,8 +120,6 @@ function handlePost(req, res) {
       const body = G.readJson(req, res);
       if (!body) return;
 
-      // Honeypot: a real person never sees or fills a field that is visually hidden and
-      // aria-hidden. Any value at all means a bot, so reject without echoing a reason.
       if (G.text(body.website, 64) !== '') {
         G.fail(res, 400, 'rejected', 'Submission rejected.');
         return;
@@ -204,8 +192,6 @@ module.exports = async function handler(req, res) {
   if (G.preflight(req, res)) return;
   if (!G.method(req, res, ['GET', 'HEAD', 'POST'])) return;
 
-  // Fail closed: an unconfigured store must surface as 503, never as an empty guestbook
-  // that silently swallows every write.
   if (!store.READY) {
     G.fail(res, 503, 'guestbook_unavailable', 'Guestbook storage is not configured.');
     return;

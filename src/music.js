@@ -1,7 +1,3 @@
-// Music Vault player. Artwork resolved per track from the iTunes Search API with a
-// generated monogram fallback, playback driven from a docked player that persists across
-// views, and a scrobble to /api/scrobble once a play passes the halfway mark. The server
-// re-validates the track id against its own manifest.
 
 import { $, toast, safeUrl, tile } from './config.js';
 
@@ -19,7 +15,12 @@ let rafId = null;
 let scrubbing = false;
 
 function upscale(u) {
-  return String(u || '').replace(/\/\d+x\d+(bb)?\.(jpg|png)/, '/' + ART_SIZE + 'x' + ART_SIZE + 'bb.$1');
+  return String(u || '').replace(
+    /\/(\d+)x(\d+)(bb)?((?:\.[a-z0-9]+)?)$/i,
+    function (m, w, h, bb, ext) {
+      return '/' + ART_SIZE + 'x' + ART_SIZE + 'bb' + (ext || '');
+    }
+  );
 }
 
 function norm(s) {
@@ -150,7 +151,6 @@ async function fireScrobble(row, ms) {
       })
     });
   } catch (e) {
-    // Best effort -- a dropped scrobble must never interrupt playback.
   }
 }
 
@@ -215,7 +215,6 @@ function play(row) {
     });
 }
 
-// Seek by dragging anywhere on the dock progress rail.
 function bindSeek() {
   const seek = $('dockSeek');
   if (!seek) return;

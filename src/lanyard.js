@@ -1,4 +1,3 @@
-// Lanyard Presence, Discord Activities & Spotify Linkage
 import { $, S, SI, VB, FB, C, CK_P, esc, safeUrl, cSet } from './config.js';
 import { applySp, clearNow } from './lyrics.js';
 import { scMax } from './navigation.js';
@@ -173,22 +172,33 @@ export function custom(s) {
   setTimeout(scMax, 50);
 }
 
+function setAll(sel, fn) {
+  const nodes = document.querySelectorAll(sel);
+  for (let i = 0; i < nodes.length; i++) fn(nodes[i]);
+}
+
 export function presence(p) {
   const u = p.discord_user;
   if (u) {
     const avUrl = u.avatar ? 'https://cdn.discordapp.com/avatars/' + encodeURIComponent(u.id) + '/' + encodeURIComponent(u.avatar) + (u.avatar.indexOf('a_') === 0 ? '.gif' : '.png') + '?size=512' : FB;
-    const av = $('avatar');
-    if (av) av.src = avUrl;
-    const dn = $('displayName');
-    if (dn) dn.textContent = u.global_name || u.display_name || 'Sativa';
-    const ht = $('handleText');
-    if (ht) ht.textContent = '@' + u.username;
+    const name = u.global_name || u.display_name || 'Sativa';
+    const handle = '@' + u.username;
+    setAll('.js-avatar', (n) => {
+      n.src = avUrl;
+    });
+    setAll('.js-name', (n) => {
+      n.textContent = name;
+    });
+    setAll('.js-handle', (n) => {
+      n.textContent = handle;
+    });
   }
-  const sd = $('statusDot');
-  if (sd) sd.innerHTML = SI[p.discord_status] || SI.offline;
-  // Discord card subtitle mirrors presence, so the link card carries live state.
+  const status = SI[p.discord_status] || SI.offline;
+  setAll('.js-status', (n) => {
+    n.innerHTML = status;
+  });
   const ld = $('linkDiscord');
-  if (ld) ld.textContent = '@' + (u && u.username ? u.username : 'zgwf') + (p.discord_status && p.discord_status !== 'offline' ? ' \\u00b7 ' + p.discord_status : '');
+  if (ld) ld.textContent = '@' + (u && u.username ? u.username : 'zgwf') + (p.discord_status && p.discord_status !== 'offline' ? ' · ' + p.discord_status : '');
   act(getPrimary(p.activities));
   custom(getCustom(p.activities));
 
@@ -214,6 +224,30 @@ export function presence(p) {
     applySp(sp);
   } else {
     if (S.sp) clearNow();
+  }
+
+  const hp = $('homePresence');
+  const hpt = $('homePresenceText');
+  const hpe = $('homePresenceEmoji');
+  const cs = getCustom(p.activities);
+  if (hp && hpt) {
+    if (cs && (cs.state || cs.emoji)) {
+      hp.hidden = false;
+      hpt.textContent = cs.state || '';
+      if (hpe) {
+        if (cs.emoji && cs.emoji.id) {
+          hpe.src = 'https://cdn.discordapp.com/emojis/' + encodeURIComponent(cs.emoji.id) + (cs.emoji.animated ? '.gif' : '.png');
+          hpe.hidden = false;
+        } else if (cs.emoji && cs.emoji.name) {
+          hpe.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><text x="0" y="13" font-size="13">' + esc(cs.emoji.name) + '</text></svg>');
+          hpe.hidden = false;
+        } else {
+          hpe.hidden = true;
+        }
+      }
+    } else {
+      hp.hidden = true;
+    }
   }
 
   cSet(CK_P, p);

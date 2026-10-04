@@ -1,9 +1,7 @@
-// Navigation, Smooth Scroll, Reveal, Motion Preferences, Tilt & WebGL Background
 import { $, S, C, TITLES, PATH, VIEW, MOB, TOUCH, CK_V, cGet, cSet } from './config.js';
 
 const $stage = typeof document !== 'undefined' ? document.querySelector('.stage') : null;
 
-// Smooth Scrolling State & Engine
 export const SC = { y: 0, target: 0, max: 0, raf: null, active: !TOUCH };
 
 export function scMax() {
@@ -95,7 +93,6 @@ export function initScroll() {
   scApply();
 }
 
-// Reveal System & Motion Preferences
 export function motionPreference() {
   try {
     return localStorage.getItem('sat-motion') || localStorage.getItem('kast-motion') || '';
@@ -250,8 +247,6 @@ export function showView(t, push, instant) {
   }
   if (cur === nxt) return;
 
-  // Playback deliberately survives navigation: the dock is global, so leaving the
-  // music view no longer tears down audio.
 
   document.title = TITLES[t] || 'Sativa';
 
@@ -352,6 +347,50 @@ export function initNavigation() {
     });
   });
 
+  const burger = $('burger');
+  const drawer = $('ident');
+  const scrim = $('scrim');
+
+  function setDrawer(on) {
+    if (!drawer || !burger) return;
+    drawer.classList.toggle('on', on);
+    if (scrim) {
+      if (on) {
+        scrim.hidden = false;
+        requestAnimationFrame(() => scrim.classList.add('on'));
+      } else {
+        scrim.classList.remove('on');
+        setTimeout(() => {
+          if (!drawer.classList.contains('on')) scrim.hidden = true;
+        }, 320);
+      }
+    }
+    burger.setAttribute('aria-expanded', on ? 'true' : 'false');
+    burger.setAttribute('aria-label', on ? 'Close profile menu' : 'Open profile menu');
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    if (on) {
+      const first = drawer.querySelector('a,button');
+      if (first) setTimeout(() => first.focus(), 60);
+    }
+  }
+
+  if (burger && drawer) {
+    burger.addEventListener('click', () => {
+      setDrawer(!drawer.classList.contains('on'));
+    });
+  }
+  if (scrim) scrim.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (drawer && drawer.classList.contains('on')) {
+      setDrawer(false);
+      if (burger) burger.focus();
+    }
+  });
+  document.querySelectorAll('.nav-btn[data-view]').forEach((b) => {
+    b.addEventListener('click', () => setDrawer(false));
+  });
+
   window.addEventListener('popstate', function() {
     const p = location.pathname.replace(/\/+$/, '') || '/';
     const v = VIEW[p] || 'home';
@@ -365,7 +404,6 @@ export function initNavigation() {
   }
 }
 
-// Interactive 3D Tilt
 export function initTilt() {
   function tilt(el) {
     if (!el || !(window.matchMedia && window.matchMedia('(hover:hover)').matches)) return;
@@ -408,7 +446,6 @@ export function initTilt() {
   }
 }
 
-// WebGL Background Canvas
 export function initBg() {
   if (MOB) return;
   const cv = $('bgCanvas');
@@ -496,7 +533,6 @@ export function initBg() {
   play();
 }
 
-// View Counter Animation & Pings
 export function animateCount(target) {
   const el = $('viewCount');
   if (!el) return;

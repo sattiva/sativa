@@ -1,6 +1,3 @@
-// Music Vault statistics. Redis is the only source: GET /api/scrobble returns the
-// lifetime baseline plus everything tracked locally. Nothing renders until the fetch
-// resolves, so the meter never flashes placeholder zeros as if they were real readings.
 
 import { $, esc, toast, safeUrl, fmtNum, timeAgo, tile } from './config.js';
 import { scMax } from './navigation.js';
@@ -31,8 +28,6 @@ function set(id, v) {
   if (el) el.textContent = v;
 }
 
-// Redis stores no image URLs, so every tile is a generated gradient monogram. If an
-// artwork URL ever does appear it wins, so this is a floor rather than a hardcode.
 function art(seed, cls, url) {
   const clean = safeUrl(url);
   if (clean) {
@@ -49,7 +44,6 @@ function renderStats(st) {
   set('statAvg', st.avgPerDay != null ? fmtNum(st.avgPerDay) : '—');
   set('statDays', st.days != null ? fmtNum(st.days) : '—');
 
-  // hero readout repeats the three numbers that matter, at a different scale
   set('heroScrobbles', fmtNum(st.scrobbles));
   set('heroAvg', st.avgPerDay != null ? fmtNum(st.avgPerDay) : '—');
   set('heroDays', st.days != null ? fmtNum(st.days) : '—');
@@ -128,11 +122,16 @@ function albums(items) {
     .join('');
 }
 
-function markSource(label) {
+function markSource(j) {
   const el = $('statsSource');
   if (!el) return;
-  el.textContent = label;
-  el.dataset.src = label === 'read-only' ? 'off' : 'live';
+  if (j && j.source === 'lanyard') {
+    el.textContent = j.live ? 'now playing' : 'lanyard';
+    el.dataset.src = 'live';
+    return;
+  }
+  el.textContent = j && j.offline ? 'read-only' : 'live';
+  el.dataset.src = j && j.offline ? 'off' : 'live';
 }
 
 async function load() {
@@ -143,11 +142,15 @@ async function load() {
       el.hidden = false;
       el.textContent = 'listening stats are unavailable right now';
     }
-    markSource('unavailable');
+    const src = $('statsSource');
+    if (src) {
+      src.textContent = 'offline';
+      src.dataset.src = 'unavailable';
+    }
     return;
   }
 
-  markSource(j.offline ? 'read-only' : 'live');
+  markSource(j);
   renderStats(j.stats);
   renderRecent(j.recent);
 
@@ -163,9 +166,6 @@ function refresh() {
 }
 
 export function initStats() {
-  // Must be scoped to the section. The nav buttons also carry data-view and appear
-  // earlier in the DOM, so an unscoped selector returns a zero-height button and the
-  // observer never fires -- the stats silently never load.
   const section = document.querySelector('section[data-view="music"]');
   const grid = $('statGrid');
   if (!section || !grid) return;
@@ -188,10 +188,6 @@ export function initStats() {
           return;
         }
       },
-      // threshold must be 0. A threshold of 0.05 asks for 5% of the TARGET to be
-      // visible, and the music section is several thousand pixels tall, so on a phone
-      // only a sliver is ever on screen and the observer never fires -- the hero stayed
-      // blank forever. Any intersection is enough to start the fetch.
       { threshold: 0, rootMargin: '120px' }
     );
     io.observe(section);

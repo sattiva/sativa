@@ -1,4 +1,3 @@
-// Sativa Site Configuration & Core State
 
 export const $ = (id) => document.getElementById(id);
 
@@ -87,8 +86,6 @@ export const SI = {
 
 export const VB = { 0: 'Playing', 1: 'Streaming', 2: 'Listening to', 3: 'Watching', 5: 'Competing in' };
 
-// 45700 -> "45.7K", 1200 -> "1.2K", 658 -> "658", 69.5 -> "69.5". Stats read as
-// magnitudes, but a fractional avg/day keeps its decimal below the K threshold.
 export function fmtNum(n) {
   const v = Number(n) || 0;
   if (v >= 1e9) return trim1(v / 1e9) + 'B';
@@ -126,9 +123,6 @@ export function safeUrl(u) {
   return /^(https?:|data:image\/|blob:)/i.test(s) ? s : '';
 }
 
-// Deterministic gradient tile with a monogram. Used wherever we have a title but no
-// artwork: vault track covers, and every tile in the stats panels (Redis stores no
-// image URLs, so an empty <img> would leave a blank box).
 export function tile(text, letters) {
   const words = String(text || '?')
     .replace(/[^A-Za-z0-9\s\u0400-\u04FF]/g, ' ')

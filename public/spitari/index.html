@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spitari | sativa/cfd</title>
+    <meta name="description" content="Spitari — Discord utility and security bot by sativa. Moderation, logging, AI interaction.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09080c;
+            --fg: #f1f5f9;
+            --acc: #ff3b30;
+            --border: rgba(255, 255, 255, 0.08);
+            --card: rgba(15, 13, 20, 0.25);
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Plus Jakarta Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 10% 10%, #200d11 0%, var(--bg) 60%), radial-gradient(circle at 90% 90%, #120917 0%, var(--bg) 60%);
+            color: var(--fg);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glowing-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--acc);
+            top: 10%;
+            left: 10%;
+            animation: float-orb-1 25s infinite alternate ease-in-out;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--acc);
+            bottom: 10%;
+            right: 10%;
+            animation: float-orb-2 30s infinite alternate ease-in-out;
+        }
+        @keyframes float-orb-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(120px, 60px) scale(1.15); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        @keyframes float-orb-2 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-140px, -70px) scale(0.85); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        nav {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 80px);
+            max-width: 1100px;
+            height: 60px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-brand {
+            font-family: var(--mono);
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: #fafafa;
+            text-decoration: none;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .nav-links { display: flex; align-items: center; gap: 28px; }
+        .nav-links a { color: #64748b; font-size: 0.8rem; text-decoration: none; font-family: var(--sans); font-weight: 800; transition: color 0.2s; }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a.active { color: var(--acc); }
+        .nav-socials { display: flex; gap: 10px; }
+        .nav-btn {
+            display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px;
+            border-radius: 8px; font-size: 0.75rem; font-family: var(--sans); font-weight: 800;
+            text-decoration: none; border: 1px solid var(--border); color: #cbd5e1;
+            background: rgba(255,255,255,0.01); transition: all 0.2s;
+        }
+        .nav-btn:hover { border-color: rgba(255,255,255,0.12); color: #fff; }
+        .hero {
+            position: relative; z-index: 1;
+            padding: 200px 24px 120px;
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem); 
+            font-weight: 900;
+            letter-spacing: -0.04em; 
+            line-height: 0.95; 
+            margin-bottom: 24px;
+            color: #fafafa;
+            text-shadow: 0 0 50px rgba(255,59,48,0.35), 0 0 100px rgba(255,59,48,0.15);
+            transform: perspective(500px) rotateX(4deg);
+        }
+        .hero-sub { 
+            max-width: 520px; 
+            font-size: 0.95rem; 
+            font-weight: 700;
+            color: #94a3b8; 
+            line-height: 1.6; 
+            margin: 0 auto 40px; 
+            letter-spacing: -0.01em;
+        }
+        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px; padding: 14px 30px;
+            border-radius: 12px; font-size: 0.85rem; font-weight: 800; font-family: var(--sans);
+            text-decoration: none; background: var(--acc); color: #fff; border: none; cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 25px rgba(255,59,48,0.3);
+        }
+        .btn-primary:hover { background: #ff453a; transform: translateY(-3px) scale(1.02); box-shadow: 0 0 35px rgba(255,59,48,0.5); }
+        .btn-ghost {
+            display: inline-block; padding: 14px 30px;
+            border-radius: 12px; font-size: 0.85rem; font-weight: 800; font-family: var(--sans);
+            text-decoration: none; background: rgba(255, 255, 255, 0.01); color: #94a3b8;
+            border: 1px solid var(--border); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: #fff; transform: translateY(-3px) scale(1.02); background: rgba(255, 255, 255, 0.03); }
+        .btn-disabled { cursor: not-allowed; opacity: 0.4; pointer-events: none; }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .modal {
+            background-color: rgba(18, 15, 24, 0.45);
+            border: 1px solid var(--border);
+            padding: 2.2rem;
+            border-radius: 16px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(255, 59, 48, 0.05);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            color: #fafafa;
+            letter-spacing: -0.02em;
+        }
+
+        .modal p {
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .modal button {
+            background-color: var(--acc);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.85rem;
+            font-weight: 800;
+            font-family: var(--sans);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.3);
+        }
+
+        .modal button:hover {
+            background-color: #ff453a;
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+        }
+
+        footer {
+            position: relative; z-index: 1; border-top: 1px solid var(--border);
+            padding: 28px 24px; display: flex; align-items: center;
+            justify-content: space-between; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; gap: 12px;
+            background: rgba(9, 8, 12, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        footer span { font-family: var(--sans); font-weight: 800; font-size: 0.75rem; color: #64748b; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--sans); font-weight: 800; font-size: 0.75rem; color: #64748b; text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: #fff; }
+        @media (max-width: 700px) {
+            nav { width: calc(100% - 32px); padding: 0 18px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glowing-orb orb-1"></div>
+    <div class="glowing-orb orb-2"></div>
+
+    <nav>
+        <a href="https://sativa.cfd/spitari/" class="nav-brand">spitari</a>
+        <div class="nav-links">
+            <a href="https://sativa.cfd/spitari/" class="active">home</a>
+            <a href="https://sativa.cfd/spitari/commands/">commands</a>
+            <a href="https://sativa.cfd/spitari/tos/">terms</a>
+            <a href="https://sativa.cfd/spitari/policy/">privacy</a>
+        </div>
+        <div class="nav-socials">
+            <a href="https://github.com/sativacdf" class="nav-btn" target="_blank">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                github
+            </a>
+            <a href="https://discord.com/users/423953946827161610" class="nav-btn" target="_blank">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963a.074.074 0 0 0-.041-.104 13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
+                discord
+            </a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Spitari</h1>
+        <p class="hero-sub">A utility and security bot built for Discord guilds. Moderation, structured logging, AI interaction, and anti-abuse &mdash; all in one.</p>
+        <div class="hero-actions">
+            <a href="https://discord.com/users/423953946827161610" class="btn-primary" target="_blank">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963a.074.074 0 0 0-.041-.104 13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
+                contact
+            </a>
+            <span class="btn-ghost btn-disabled">coming soon</span>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2>Notice</h2>
+            <p>The bot's new site will be moved to spitari.win soon.</p>
+            <button onclick="closeModal()">Got it</button>
+        </div>
+    </div>
+
+    <footer>
+        <span>&copy; 2026 sativa.cfd &middot; spitari</span>
+        <div class="footer-links">
+            <a href="https://sativa.cfd/spitari/tos/">terms of service</a>
+            <a href="https://sativa.cfd/spitari/policy/">privacy policy</a>
+            <a href="https://sativa.cfd/spitari/">&larr; home</a>
+        </div>
+    </footer>
+
+    <script>
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

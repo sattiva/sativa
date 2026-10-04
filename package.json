@@ -5,12 +5,11 @@
   "main": "src/script.js",
   "scripts": {
     "build": "node obfuscate.js",
-    "build:obf": "node obfuscate.js --obf",
-    "test": "node scratch/verify_ids.js && node scratch/api_test.js && node scratch/smoke.js",
-    "test:ids": "node scratch/verify_ids.js",
+    "build:clean": "node obfuscate.js --clean",
+    "test": "node scratch/verify_ids.js && node scratch/api_test.js && node scratch/smoke.js --clean",
     "test:api": "node scratch/api_test.js",
-    "test:ui": "node scratch/smoke.js",
-    "test:browser": "python scratch/deeplink.py && python scratch/v2.py"
+    "test:ui": "node scratch/smoke.js --clean",
+    "test:browser": "python scratch/deeplink.py && python scratch/drawer.py && python scratch/play.py"
   },
   "dependencies": {
     "javascript-obfuscator": "^4.1.1"

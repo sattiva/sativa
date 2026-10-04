@@ -1,5 +1,3 @@
-// Shared request guard: method routing, bounded body parsing, input normalisation,
-// origin pinning, Cloudflare Turnstile verification, and stacked rate limits.
 
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY || '';
 const TURNSTILE_SITE = process.env.TURNSTILE_SITE_KEY || '';
@@ -9,8 +7,6 @@ const TURNSTILE_TIMEOUT_MS = 5000;
 const MAX_BODY_BYTES = 4096;
 const VERIFY_TIMEOUT_MS = 5000;
 
-// 'enforce'  -> TURNSTILE_SECRET_KEY present, every write must carry a valid token
-// 'honeypot' -> no secret configured; turnstile() hardens with bot traps + tighter limits
 function turnstileMode() {
   return TURNSTILE_SECRET.length > 20 ? 'enforce' : 'honeypot';
 }
@@ -28,8 +24,6 @@ function clientIp(req) {
     h['x-real-ip'] ||
     '';
   const first = String(v).split(',')[0].trim();
-  // WHY: an attacker-controlled XFF must not become a rate-limit bucket, so only accept
-  // a syntactically valid address and never fall back to a shared bucket.
   return /^[0-9a-f:.]{3,45}$/i.test(first) ? first : 'anon';
 }
 
@@ -45,8 +39,6 @@ function send(res, status, payload, extraHeaders) {
   res.end(body);
 }
 
-// Uniform error envelope. `detail` is caller-safe text only -- internal messages are
-// logged server-side and never serialised back to the client.
 function fail(res, status, code, detail, extraHeaders) {
   send(res, status, { ok: false, error: code, detail: detail || '' }, extraHeaders);
 }
@@ -70,8 +62,6 @@ function method(req, res, allowed) {
   return false;
 }
 
-// Strict bound enforced before any field is read. Vercel pre-parses JSON bodies, so
-// content-length is the only lever that stops an oversized payload being materialised.
 function readJson(req, res) {
   const len = parseInt((req.headers || {})['content-length'] || '0', 10);
   if (len > MAX_BODY_BYTES) {
@@ -106,9 +96,6 @@ function readJson(req, res) {
   return b;
 }
 
-// Normalise user text: strip C0/C1 controls plus bidi-override codepoints (used to
-// spoof a name into looking like a system message), collapse runs of whitespace,
-// hard-truncate at max so a caller cannot smuggle a megabyte through a "32 char" field.
 const CTRL = /[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u206F\uFEFF]/g;
 
 function text(v, max) {
@@ -118,8 +105,6 @@ function text(v, max) {
   return s;
 }
 
-// Fail closed on any non-allowlisted host. In honeypot mode this is the only thing
-// standing between the endpoint and a cross-origin scripted flood.
 function sameOrigin(req) {
   const h = req.headers || {};
   const origin = h.origin || h.referer || '';
@@ -158,8 +143,6 @@ function verifyTurnstile(token, ip) {
     });
 }
 
-// limits: [{ scope, max, windowMs }] -- every bucket must pass, so an attacker cannot
-// spread volume across buckets to stay under a single ceiling.
 function applyLimits(store, req, res, limits, ident) {
   const ip = clientIp(req);
   return limits.reduce((chain, l) => {
@@ -167,8 +150,6 @@ function applyLimits(store, req, res, limits, ident) {
       if (!acc.ok) return acc;
       return store.rateLimit(l.scope + ':' + ip, l.max, l.windowMs, ident).then((rl) => {
         if (rl.error) {
-          // The limiter itself failed, not the caller. Tracked separately so a broken
-          // store is never reported to a legitimate visitor as "you sent too much".
           acc.broken = rl.error;
           acc.ok = false;
         } else if (!rl.ok) {
@@ -180,8 +161,6 @@ function applyLimits(store, req, res, limits, ident) {
     });
   }, Promise.resolve({ ok: true, retryAfterMs: 0, broken: '' })).then((acc) => {
     if (acc.ok) return true;
-    // A limiter that could not reach its store is a service failure, not client
-    // overage -- reporting 429 would tell a legitimate visitor to back off for nothing.
     if (acc.broken) {
       fail(res, 503, 'limiter_unavailable', 'Request throttling is temporarily unavailable.');
       return false;

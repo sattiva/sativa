@@ -1,14 +1,8 @@
-// PREREQ: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
-// Upstash exposes a plain REST command endpoint, so the serverless path needs no SDK
-// and no node_modules install. Single command -> POST url, body is a JSON arg array.
 
 const BASE = process.env.UPSTASH_REDIS_REST_URL || '';
 const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
 const TLS_READY = /^https:\/\//i.test(BASE) && TOKEN.length > 8;
-// Loopback http is allowed so `vercel dev` and the integration test can point at a
-// local Upstash emulator. Everything else must be https so the bearer token is never
-// sent in the clear.
 const LOCAL_READY = /^http:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\/?$/i.test(BASE) && TOKEN.length > 8;
 const READY = TLS_READY || LOCAL_READY;
 const TIMEOUT_MS = 4000;
@@ -49,8 +43,6 @@ async function cmd(parts) {
   }
 }
 
-// Pipeline issues every command in one round trip and always resolves.
-// Used where a partial failure should degrade rather than abort the whole request.
 async function pipe(cmds) {
   if (!READY) throw new StoreErr('store_unconfigured');
   const ctl = new AbortController();
@@ -78,8 +70,6 @@ async function pipe(cmds) {
   }
 }
 
-// WHY: prune + count + insert must be one indivisible step, otherwise N concurrent
-// requests all read the pre-insert count and N of them slip past the ceiling.
 const RL_SCRIPT = [
   "local k=KEYS[1]",
   "local now=tonumber(ARGV[1])",
@@ -101,8 +91,6 @@ const RL_SCRIPT = [
 
 let rlSeq = 0;
 
-// Sliding-window limiter. Returns { ok, count, remaining, retryAfterMs }.
-// member must be unique per attempt or duplicate adds collapse into one entry.
 function rateLimit(key, limit, windowMs, ident) {
   const now = Date.now();
   const member = now + '-' + (rlSeq++).toString(36) + '-' + Math.random().toString(36).slice(2, 8);
@@ -118,7 +106,6 @@ function rateLimit(key, limit, windowMs, ident) {
       };
     })
     .catch((e) => {
-      // Fail closed: an unreachable limiter must not become an unlimited limiter.
       return { ok: false, count: limit, remaining: 0, retryAfterMs: windowMs, error: e && e.code };
     });
 }
@@ -131,7 +118,6 @@ function setex(key, ttl, value) {
   return cmd(['SET', key, value, 'EX', String(ttl)]);
 }
 
-// Returns true only for the caller that won the race. Used for dedupe and one-shot seeds.
 function setnx(key, ttl, value) {
   if (!ttl) return cmd(['SET', key, value, 'NX']).then((r) => r === 'OK');
   return cmd(['SET', key, value, 'NX', 'EX', String(ttl)]).then((r) => r === 'OK');

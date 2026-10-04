@@ -1,27 +1,24 @@
-// Build: src/*.js -> js/app.js (the single script index.html loads).
-//
-// Obfuscation is opt-in via `npm run build:obf`. The default output is a plain esbuild
-// bundle because three commits (10d4282, 6597906, d8f060c) had to revert an obfuscated
-// bundle because control-flow flattening + dead-code injection wedged the page. Keeping
-// the obfuscated path available but non-default stops that regression from recurring.
-//
-// The bundle is committed, not built by Vercel, so it must be rebuilt and committed for
-// any src/ change to reach production.
 
 const fs = require('fs');
 const path = require('path');
 
-const OBFUSCATE = process.argv.includes('--obf');
+const CLEAN = process.argv.includes('--clean');
+const ROOT = __dirname;
+const PUB = path.join(ROOT, 'public');
+const STATIC = path.join(ROOT, 'static');
 
 function bundle() {
   const esbuild = require('esbuild');
-  console.log('1. Bundling modular ES code from src/main.js...');
+  console.log('1. Bundling src/main.js');
   const out = esbuild.buildSync({
-    entryPoints: ['src/main.js'],
+    entryPoints: [path.join(ROOT, 'src', 'main.js')],
     bundle: true,
     write: false,
     format: 'iife',
     target: ['es2018'],
+    sourcemap: false,
+    minify: !CLEAN,
+    legalComments: 'none',
     logLevel: 'warning'
   });
   return out.outputFiles[0].text;
@@ -29,10 +26,12 @@ function bundle() {
 
 function obfuscate(code) {
   const JavaScriptObfuscator = require('javascript-obfuscator');
-  console.log('2. Applying anti-tamper obfuscation...');
+  console.log('2. Obfuscating');
   return JavaScriptObfuscator
     .obfuscate(code, {
       compact: true,
+      identifierNamesGenerator: 'mangled',
+      renameGlobals: true,
       controlFlowFlattening: true,
       controlFlowFlatteningThreshold: 0.75,
       deadCodeInjection: true,
@@ -46,35 +45,85 @@ function obfuscate(code) {
       splitStrings: true,
       splitStringsChunkLength: 6,
       transformObjectKeys: true,
-      // WHY: selfDefending re-parses the bundle at runtime and, in this bundle shape,
-      // sends the page into an unbounded recursion loop that freezes the tab.
+      unicodeEscapeSequence: false,
       selfDefending: false
     })
     .getObfuscatedCode();
 }
 
-function write(code, target) {
-  const dir = path.dirname(target);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(target, code, 'utf8');
-  console.log(`   -> ${path.relative(__dirname, target)} (${code.length} bytes)`);
+function stripModuleBanners(code) {
+  return code.replace(/^\/\/ src\/[^\n]*\n/gm, '');
+}
+
+function write(file, data) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, data);
+  console.log('   -> ' + path.relative(ROOT, file) + '  (' + (Buffer.byteLength(data) / 1024).toFixed(1) + ' KB)');
+}
+
+function copyInto(from, to) {
+  if (!fs.existsSync(from)) return;
+  fs.mkdirSync(to, { recursive: true });
+  for (const e of fs.readdirSync(from, { withFileTypes: true })) {
+    const s = path.join(from, e.name);
+    const d = path.join(to, e.name);
+    if (e.isDirectory()) copyInto(s, d);
+    else {
+      fs.copyFileSync(s, d);
+      console.log('   -> ' + path.relative(ROOT, d) + '  (' + (fs.statSync(d).size / 1024).toFixed(1) + ' KB)');
+    }
+  }
+}
+
+function cleanPublishRoot() {
+  for (const e of fs.readdirSync(PUB, { withFileTypes: true })) {
+    if (e.name === 'index.html' || e.name === '404.html') continue;
+    fs.rmSync(path.join(PUB, e.name), { recursive: true, force: true });
+  }
 }
 
 function main() {
-  const raw = bundle();
-  console.log(`   bundled: ${raw.length} bytes`);
-  const final = OBFUSCATE ? obfuscate(raw) : raw;
+  cleanPublishRoot();
 
-  write(final, path.join(__dirname, 'js', 'app.js'));
-  write(final, path.join(__dirname, 'new', 'js', 'app.js'));
-  if (!OBFUSCATE) console.log('   (clean output — run `npm run build:obf` to obfuscate)');
+  const raw = stripModuleBanners(bundle());
+  console.log('   bundled ' + (Buffer.byteLength(raw) / 1024).toFixed(1) + ' KB');
+  write(path.join(PUB, 'js', 'app.js'), CLEAN ? raw : obfuscate(raw));
 
-  // 404.html is the SPA safety net. Vercel serves it for any path that matches no file
-  // and no rewrite, so a refresh on /music or /guestbook hydrates the app and shows the
-  // right view instead of the host's error page. It must stay byte-identical to
-  // index.html, so it is regenerated here rather than maintained by hand.
-  const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-  write(html, path.join(__dirname, '404.html'));
+  const html = fs.readFileSync(path.join(PUB, 'index.html'), 'utf8');
+  write(path.join(PUB, '404.html'), html);
+
+  console.log('3. Copying static assets');
+  copyInto(STATIC, PUB);
+  copyInto(path.join(ROOT, 'images'), path.join(PUB, 'images'));
+  copyInto(path.join(ROOT, 'spitari'), path.join(PUB, 'spitari'));
+
+  verifyReferences();
+
+  if (CLEAN) console.log('   CLEAN build -- do not deploy, this one is readable');
+  console.log('4. Done. Deploy public/ only.');
+}
+
+function verifyReferences() {
+  const html = fs.readFileSync(path.join(PUB, 'index.html'), 'utf8');
+  const refs = new Set();
+  const patterns = [/(?<![-\w])(?:src|href)\s*=\s*"([^"]+)"/g];
+  for (const re of patterns) {
+    let m;
+    while ((m = re.exec(html))) refs.add(m[1]);
+  }
+  const missing = [];
+  for (const ref of refs) {
+    if (/^(https?:|data:|\/\/|#|mailto:|javascript:)/i.test(ref)) continue;
+    const clean = ref.split(/[?#]/)[0];
+    if (!clean) continue;
+    if (!fs.existsSync(path.join(PUB, clean))) missing.push(clean);
+  }
+  if (missing.length) {
+    console.error('\nBUILD FAILED: published HTML references files that do not exist:');
+    for (const m of missing) console.error('   ' + m);
+    process.exit(1);
+  }
+  console.log('   verified ' + refs.size + ' references, all present');
 }
 
 main();

@@ -1,7 +1,3 @@
-// View counter. Counts unique visits in Redis when UPSTASH_REDIS_REST_URL/TOKEN are
-// present, otherwise falls back to the public dwyl counter offset by a static floor.
-// Visit-level dedupe rides on the client-supplied visitId so a reload refreshes the
-// number but a refresh loop cannot inflate it.
 
 const crypto = require('crypto');
 const store = require('./_lib/store');
@@ -45,13 +41,9 @@ async function total() {
 }
 
 async function bump(visitId) {
-  // A 30-minute window means a genuine return visit still counts, but a refresh loop
-  // inside the same window does not.
   const key = K_SEEN + (visitId || 'anon').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
   const fresh = await store.setnx(key, VISIT_TTL, '1').catch(() => true);
   if (!fresh) return total();
-  // WHY: the stored counter must start at the floor, otherwise the persisted value and
-  // the reported value diverge (stored 1, reported 1453) and the next read regresses.
   await store.setnx(K_TOTAL, 0, String(BASE_COUNT)).catch(() => {});
   const n = await store.incr(K_TOTAL).catch(() => null);
   const parsed = parseInt(n, 10);

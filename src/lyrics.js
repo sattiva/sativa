@@ -1,4 +1,3 @@
-// Spotify Sync, Lyrics Engine, Word-by-Word Timings & Modal
 import { $, S, C, FB, DEF_BG, safeUrl, esc } from './config.js';
 import { scMax } from './navigation.js';
 

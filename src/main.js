@@ -1,4 +1,3 @@
-// Sativa Main Entry Point
 import { $, S, C, SI, CK_P, cGet, copy } from './config.js';
 import { initScroll, initNavigation, initTilt, initBg, initViewCounter, playReveal, scMax } from './navigation.js';
 import { initWeather } from './weather.js';
@@ -17,10 +16,6 @@ function boot(fn) {
   }
 }
 
-// Registered at module scope in the capture phase, deliberately outside initGuestbook.
-// If the guestbook module throws or bails on a missing node, a native form GET would
-// still fire: the browser would navigate the SPA to /guestbook?... and Vercel would 404,
-// losing the note. This makes that unrepresentable regardless of module state.
 if (typeof document !== 'undefined') {
   document.addEventListener(
     'submit',
@@ -35,33 +30,27 @@ if (typeof document !== 'undefined') {
 let booted = false;
 
 function init() {
-  // Idempotent: a double DOMContentLoaded would otherwise attach every listener twice,
-  // double-fetch every endpoint and double-count every guestbook entry.
   if (booted) return;
   booted = true;
-  // Bio & Status setup
   const bio = $('bioText');
   if (bio) bio.innerHTML = C.bio;
   const status = $('statusDot');
   if (status) status.innerHTML = SI.offline;
 
-  // Discord handle copy
-  const handle = $('handle');
-  if (handle) {
-    handle.addEventListener('click', function() {
-      const v = $('handleText') ? $('handleText').textContent.trim() : '';
-      if (v) copy(v, this);
+  document.querySelectorAll('.js-handle-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const v = document.querySelector('.js-handle');
+      if (v) {
+        const t = v.textContent.trim();
+        if (t) copy(t, btn);
+      }
     });
-  }
+  });
 
-  // Clear music/bg state
   setArt('');
   setBgArt('');
   clearNow();
 
-  // Each module is isolated: one bad init (a canvas that will not getContext, a missing
-  // node) must not cascade into every module after it staying dead. This is exactly how
-  // the guestbook shipped broken with nobody noticing.
   boot(initScroll);
   boot(initTilt);
   boot(initBg);
@@ -74,7 +63,6 @@ function init() {
   boot(initViewCounter);
   boot(initNavigation);
 
-  // Cached Discord presence recovery
   try {
     const cp = cGet(CK_P, 300000);
     if (cp && cp.discord_user && cp.discord_user.id === C.id) {
@@ -82,14 +70,11 @@ function init() {
     }
   } catch (e) {}
 
-  // Connect real-time Lanyard
   connect();
 
-  // Scroll recalculation
   setTimeout(scMax, 300);
   setTimeout(scMax, 1200);
 
-  // Initial reveal animation
   if (document.readyState === 'complete') {
     setTimeout(playReveal, 40);
   } else {

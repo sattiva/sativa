@@ -1,6 +1,3 @@
-// Cloudflare Turnstile loader. Explicit render mode, loaded once, promise-cached.
-// When the site key is absent the widget is skipped entirely and the server falls back
-// to honeypot + tighter rate limits, so local dev never needs a secret.
 
 import { toast } from './config.js';
 
@@ -31,7 +28,6 @@ function scriptReady() {
     }
     s.onload = () => {
       cleanup();
-      // The api.js callback can land after the load event; poll briefly for the global.
       let tries = 0;
       (function wait() {
         if (window.turnstile) return resolve(window.turnstile);
@@ -55,8 +51,6 @@ function clearToken() {
   token = '';
 }
 
-// Renders the widget into `mount` if a site key is configured.
-// Returns true when a token will be required before submit.
 export async function mountTurnstile(mount, siteKey, theme) {
   if (!mount) return false;
   if (!siteKey || siteKey.length < 10) {

@@ -1,8 +1,3 @@
-// Gaming Hub arcade: Neon Breaker.
-// Breakout with per-row brick health, paddle-angle english, combo multipliers,
-// four power-ups, ball trails, brick debris and screen shake. Logical units are CSS
-// pixels; the canvas backing store is DPR-scaled so it stays sharp on retina without
-// distorting the playfield.
 
 const byId = (id) => document.getElementById(id);
 
@@ -31,8 +26,6 @@ const POWERS = {
   life: { label: 'life', c: '#ff6b8b' }
 };
 
-// Charge meter: holding START before launch trades accuracy for raw speed, and the
-// angle offset is what you actually control. A tap launches straight up.
 const CHARGE_MAX_MS = 1100;
 const CHARGE_SPREAD = 1.15;
 
@@ -91,8 +84,6 @@ export function initGames() {
     paintChannels();
   }
 
-  // Active power-ups are shown as lit channels rather than icons floating in the play
-  // area, so the playfield stays readable.
   function paintChannels() {
     const host = byId('arcadeChannels');
     if (!host) return;
@@ -110,11 +101,8 @@ export function initGames() {
       .join('');
   }
 
-  // Overlay is button-only by design: no title, no instructions. State is carried by the
-  // button label, the charge meter and the readout underneath.
   function banner(btn) {
     if (startBtn) {
-      // startBtn holds the charge bar as a child, so set text on a text node only.
       const bar = byId('arcadeCharge');
       if (bar) {
         while (startBtn.firstChild && startBtn.firstChild !== bar) startBtn.removeChild(startBtn.firstChild);
@@ -128,8 +116,6 @@ export function initGames() {
 
   function resize() {
     const r = wrap.getBoundingClientRect();
-    // Hidden views measure 0x0. Bail rather than baking a 240px fallback into the
-    // geometry; ResizeObserver calls back with the real box once the view is shown.
     if (!r.width || !r.height) return;
     const cw = Math.max(240, Math.round(r.width));
     const ch = Math.max(160, Math.round(r.height));
@@ -145,9 +131,6 @@ export function initGames() {
     paddle.h = Math.max(9, Math.round(H * 0.045));
     paddle.y = H - paddle.h - Math.round(H * 0.06);
     paddle.x = Math.max(0, Math.min(W - paddle.w, paddle.x || (W - paddle.w) / 2));
-    // Rebuilding is correct whenever no round is in flight. Proportionally scaling brick
-    // x/width to fit a new box stretches them, because height and row pitch do not scale
-    // with it.
     if (first || state === 'idle' || state === 'over' || state === 'clear') {
       buildLevel();
       resetBall();
@@ -168,7 +151,6 @@ export function initGames() {
   function buildLevel() {
     const { bw, bh, top } = brickGeom();
     bricks = [];
-    // Odd levels indent every other row for a different silhouette each stage.
     for (let r = 0; r < ROWS; r++) {
       const spec = ROWS_SPEC[ROWS - 1 - r];
       const inset = level % 2 === 1 && r % 2 === 1 ? bw * 0.5 : 0;
@@ -349,7 +331,6 @@ export function initGames() {
       }
     }
 
-    // Paddle input: keys accelerate, pointer/steer sets position directly.
     const accel = W * 3.4;
     let dir = 0;
     if (keys.ArrowLeft || keys.KeyA) dir -= 1;
@@ -391,7 +372,6 @@ export function initGames() {
       b.trail.push({ x: b.x, y: b.y });
       if (b.trail.length > TRAIL) b.trail.shift();
 
-      // Walls. Top and sides are hard; the ceiling too, so a ball can never stall.
       if (b.x - b.r < 0) {
         b.x = b.r;
         b.vx = Math.abs(b.vx);
@@ -404,7 +384,6 @@ export function initGames() {
         b.vy = Math.abs(b.vy);
       }
 
-      // Paddle: reflect using the contact offset so edge hits angle away sharply.
       if (b.vy > 0 && b.y + b.r >= paddle.y && b.y - b.r <= paddle.y + paddle.h) {
         if (b.x >= paddle.x - b.r && b.x <= paddle.x + paddle.w + b.r) {
           const rel = (b.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
@@ -422,7 +401,6 @@ export function initGames() {
         const k = bricks[j];
         if (!k.alive) continue;
         if (b.x + b.r < k.x || b.x - b.r > k.x + k.w || b.y + b.r < k.y || b.y - b.r > k.y + k.h) continue;
-        // Choose the shallower overlap axis so corner hits resolve predictably.
         const ox = Math.min(b.x + b.r - k.x, k.x + k.w - (b.x - b.r));
         const oy = Math.min(b.y + b.r - k.y, k.y + k.h - (b.y - b.r));
         if (ox < oy) b.vx = -b.vx;
@@ -505,7 +483,6 @@ export function initGames() {
       ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
     }
 
-    // Grid backdrop
     ctx.strokeStyle = 'rgba(255,255,255,0.028)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -617,7 +594,6 @@ export function initGames() {
     raf = requestAnimationFrame(frame);
     let dt = (now - last) / 1000;
     last = now;
-    // A backgrounded tab returns a multi-second delta; clamp so nothing teleports.
     if (!isFinite(dt) || dt < 0) dt = 0;
     if (dt > 1 / 30) dt = 1 / 30;
     if (shake > 0) shake = Math.max(0, shake - dt * 26);
@@ -674,22 +650,16 @@ export function initGames() {
   window.addEventListener('keydown', (e) => onKey(e, true));
   window.addEventListener('keyup', (e) => onKey(e, false));
 
-  // Losing focus mid-flight is the classic way to lose a run unfairly.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && state === 'play') togglePause();
   });
 
-// One dispatcher for every entry point (button, overlay click, Space/Enter) so the
-  // overlay can never claim an action the state machine does not agree with.
   function activate() {
     if (state === 'paused') togglePause();
     else if (state === 'clear') advance();
     else if (state === 'over' || state === 'idle') start();
   }
 
-  // Charge replaces the random launch angle. charge 0 -> straight up; charge 1 -> the
-  // widest angle the clamp allows. Holding longer is a real trade: faster ball, harder
-  // to recover from a bad angle.
   let charge = 0;
   let charging = false;
 
@@ -712,8 +682,6 @@ export function initGames() {
     launchBall(charge);
     charge = 0;
     paintCharge();
-    // Safety net: if the pointerup is lost entirely (browser chrome stole it, the tab
-    // was switched mid-hold) the charge cannot stay stuck open.
     window.addEventListener('pointerup', releaseGuard, { once: true });
     window.addEventListener('pointercancel', releaseGuard, { once: true });
   }
@@ -734,9 +702,6 @@ export function initGames() {
   }
 
   if (startBtn) {
-    // One gesture does both: pressing from idle/over/clear starts the round AND begins
-    // the charge, so a single press-and-hold is the whole launch. Previously the first
-    // press only started the round and a second press was needed to charge.
     startBtn.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -745,9 +710,6 @@ export function initGames() {
         return;
       }
       if (state !== 'launch') start();
-      // start() hides the overlay, so the button vanishes from under the cursor and an
-      // uncaptured pointerup would land on some other element and never release the
-      // charge. Capturing the pointer keeps every subsequent event bound to this button.
       try {
         startBtn.setPointerCapture(e.pointerId);
       } catch (err) {}
@@ -768,7 +730,6 @@ export function initGames() {
     startBtn.addEventListener('pointercancel', () => {
       if (charging) endCharge();
     });
-    // Keyboard and assistive activation still work; they just launch straight up.
     startBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -778,7 +739,6 @@ export function initGames() {
   }
   if (ov) ov.addEventListener('click', () => activate());
 
-  // charge fills in step with the game loop so it animates at frame rate
   let lastChargePaint = performance.now();
   function chargeTick(now) {
     if (!charging) {
@@ -797,9 +757,6 @@ export function initGames() {
     rt = setTimeout(fitToBox, 120);
   });
 
-  // The arcade view is hidden at init, so the first getBoundingClientRect() is 0x0 and
-  // the canvas ends up sized for a 240px box. A ResizeObserver catches the moment it
-  // actually becomes visible, which a window resize listener never would.
   function fitToBox() {
     resize();
     if (state === 'idle' || state === 'over' || state === 'clear') draw();
