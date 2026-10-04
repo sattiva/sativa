@@ -112,10 +112,6 @@ let rvItems = [];
 let motionPrompt = null;
 let motionControl = null;
 let motionChoicePending = true;
-let autoTour = false;
-let tourIndex = 0;
-let tourTimer = null;
-const tourViews = ['home', 'music', 'guestbook'];
 
 export function playReveal(items) {
   items = items || rvItems;
@@ -130,22 +126,6 @@ export function playReveal(items) {
   }
 }
 
-function tourDuration(view) {
-  if (view === 'home') return 300 + Math.max(0, rvItems.length - 1) * 900 + 1000;
-  return { music: 2800, guestbook: 2800 }[view] || 3000;
-}
-
-function scheduleTourStep() {
-  clearTimeout(tourTimer);
-  tourTimer = setTimeout(advanceTour, tourDuration(tourViews[tourIndex]));
-}
-
-function setTourRoute(view) {
-  try {
-    history.replaceState({ v: view }, '', PATH[view] || '/');
-  } catch (e) {}
-}
-
 function updateMotionControl(enabled) {
   if (!motionControl) return;
   motionControl.hidden = false;
@@ -153,55 +133,18 @@ function updateMotionControl(enabled) {
   motionControl.setAttribute('aria-label', enabled ? 'Turn motion off' : 'Turn motion on');
 }
 
-export function endAutoTour() {
-  autoTour = false;
-  clearTimeout(tourTimer);
-  try { sessionStorage.removeItem('sat-tour-active'); } catch (e) {}
-  updateMotionControl(true);
-}
-
-export function beginAutoTour() {
-  autoTour = true;
-  if (motionControl) motionControl.hidden = true;
-  try { sessionStorage.setItem('sat-tour-active', '1'); } catch (e) {}
-  tourIndex = 0;
-  setActive('home');
-  setTourRoute('home');
-  const current = document.querySelector('.view:not([hidden])');
-  if (current && current.dataset.view !== 'home') showView('home', false, true);
-  rvItems.forEach(el => el.classList.remove('in'));
-  void document.body.offsetWidth;
-  playReveal();
-  scheduleTourStep();
-}
-
-function advanceTour() {
-  if (!autoTour) return;
-  tourIndex++;
-  if (tourIndex >= tourViews.length) {
-    endAutoTour();
-    return;
-  }
-  const view = tourViews[tourIndex];
-  setActive(view);
-  setTourRoute(view);
-  showView(view, false, false);
-  scheduleTourStep();
-}
-
 export function stopAllMotion() {
   try {
     localStorage.setItem('sat-motion', 'off');
   } catch (e) {}
-  try { sessionStorage.removeItem('sat-tour-active'); } catch (e) {}
-  autoTour = false;
-  clearTimeout(tourTimer);
   document.documentElement.classList.remove('motion-on', 'motion-paused');
   document.documentElement.classList.add('motion-off');
   rvItems.forEach(el => el.classList.add('in'));
   updateMotionControl(false);
 }
 
+// Motion on means the reveals animate on the view you asked for. Nothing navigates
+// on its own: no timed tour, no sliding to another tab.
 export function chooseMotion(choice) {
   try {
     localStorage.setItem('sat-motion', choice);
@@ -211,16 +154,18 @@ export function chooseMotion(choice) {
   document.documentElement.classList.toggle('motion-off', choice === 'off');
   motionChoicePending = false;
   if (motionPrompt) motionPrompt.classList.remove('show');
-  if (choice === 'on') {
-    if (motionControl) motionControl.hidden = true;
-    beginAutoTour();
-    return;
-  }
-  updateMotionControl(false);
   const req = initialRequestedView();
   setActive(req);
   if (req !== 'home') showView(req, false, true);
-  else playReveal();
+  else if (choice === 'on') {
+    if (motionControl) motionControl.hidden = false;
+    rvItems.forEach(el => el.classList.remove('in'));
+    void document.body.offsetWidth;
+    playReveal();
+  } else {
+    updateMotionControl(false);
+    playReveal();
+  }
 }
 
 export function initialRequestedView() {
@@ -252,7 +197,7 @@ export function showView(t, push, instant) {
 
   const go = function() {
     nxt.hidden = false;
-    if (t === 'home' && !autoTour) playReveal();
+    if (t === 'home') playReveal();
     nxt.classList.remove('view-enter');
     void nxt.offsetWidth;
     nxt.classList.add('view-enter');
@@ -341,7 +286,6 @@ export function initNavigation() {
 
   document.querySelectorAll('.nav-btn[data-view]').forEach(b => {
     b.addEventListener('click', () => {
-      if (autoTour) endAutoTour();
       setActive(b.dataset.view);
       showView(b.dataset.view, true);
     });

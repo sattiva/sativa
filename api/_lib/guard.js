@@ -7,6 +7,46 @@ const TURNSTILE_TIMEOUT_MS = 5000;
 const MAX_BODY_BYTES = 4096;
 const VERIFY_TIMEOUT_MS = 5000;
 
+// Every endpoint runs these tiers before its own. One IP cannot mint an unbounded
+// number of requests by rotating between /views, /scrobble and /guestbook.
+const GLOBAL_LIMITS = [
+  { scope: 'gz:sec', max: 60, windowMs: 10000 },
+  { scope: 'gz:min', max: 300, windowMs: 60000 },
+  { scope: 'gz:hr', max: 8000, windowMs: 3600000 },
+  { scope: 'gz:day', max: 40000, windowMs: 86400000 }
+];
+
+// Rate limiter state when no Redis is configured. Per-instance, so it only needs to
+// blunt a single warm lambda, not coordinate a fleet. Bounded and swept.
+const LOCAL_SLOTS = 8192;
+const local = new Map();
+const sweep = setInterval(() => {
+  const now = Date.now();
+  for (const [k, e] of local) if (now >= e.reset) local.delete(k);
+}, 30000);
+if (sweep && typeof sweep.unref === 'function') sweep.unref();
+
+function localLimit(key, max, windowMs) {
+  const now = Date.now();
+  const k = 'rl:' + key;
+  let e = local.get(k);
+  if (!e || now >= e.reset) {
+    if (local.size >= LOCAL_SLOTS) {
+      for (const [ok, oe] of local) {
+        if (now >= oe.reset) local.delete(ok);
+      }
+      if (local.size >= LOCAL_SLOTS) local.clear();
+    }
+    e = { n: 0, reset: now + windowMs };
+    local.set(k, e);
+  }
+  if (e.n >= max) {
+    return Promise.resolve({ ok: false, count: e.n, remaining: 0, retryAfterMs: e.reset - now });
+  }
+  e.n++;
+  return Promise.resolve({ ok: true, count: e.n, remaining: max - e.n, retryAfterMs: 0 });
+}
+
 function turnstileMode() {
   return TURNSTILE_SECRET.length > 20 ? 'enforce' : 'honeypot';
 }
@@ -44,10 +84,17 @@ function fail(res, status, code, detail, extraHeaders) {
 }
 
 function preflight(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  // No Access-Control-Allow-Origin. Nothing on the site is fetched cross-origin, so a
+  // wildcard would only hand third-party pages a readable API. Preflights that do
+  // arrive therefore come from someone else's origin and get refused.
+  if (!sameOrigin(req)) {
+    fail(res, 403, 'bad_origin', 'Cross-origin requests are not accepted.');
+    return true;
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Vary', 'Origin');
   if (req.method === 'OPTIONS') {
     res.status(204).end();
     return true;
@@ -145,36 +192,48 @@ function verifyTurnstile(token, ip) {
 
 function applyLimits(store, req, res, limits, ident) {
   const ip = clientIp(req);
-  return limits.reduce((chain, l) => {
-    return chain.then((acc) => {
-      if (!acc.ok) return acc;
-      return store.rateLimit(l.scope + ':' + ip, l.max, l.windowMs, ident).then((rl) => {
-        if (rl.error) {
-          acc.broken = rl.error;
-          acc.ok = false;
-        } else if (!rl.ok) {
-          acc.ok = false;
-          acc.retryAfterMs = rl.retryAfterMs;
-        }
-        return acc;
-      });
-    });
-  }, Promise.resolve({ ok: true, retryAfterMs: 0, broken: '' })).then((acc) => {
-    if (acc.ok) return true;
-    if (acc.broken) {
+  const tiers = GLOBAL_LIMITS.concat(Array.isArray(limits) ? limits : []);
+  const shared = store && store.READY;
+  // Every tier is evaluated concurrently. Chaining them cost one Upstash round trip per
+  // tier on the critical path, which showed up as hundreds of milliseconds of latency
+  // on the guestbook POST.
+  return Promise.all(
+    tiers.map((l) =>
+      (shared
+        ? store.rateLimit(l.scope + ':' + ip, l.max, l.windowMs, ident)
+        : localLimit(l.scope + ':' + ip, l.max, l.windowMs)
+      ).catch((e) => ({ ok: false, retryAfterMs: l.windowMs, error: (e && e.code) || 'limiter_error' }))
+    )
+  ).then((tally) => {
+    const broken = tally.find((r) => r && r.error);
+    if (broken) {
       fail(res, 503, 'limiter_unavailable', 'Request throttling is temporarily unavailable.');
       return false;
     }
-    const retry = Math.max(1, Math.ceil((acc.retryAfterMs || 1000) / 1000));
-    fail(res, 429, 'rate_limited', 'Too many requests. Try again in ' + retry + 's.', {
-      'Retry-After': String(retry)
-    });
-    return false;
+    const blocked = tally.filter((r) => !r || !r.ok);
+    if (blocked.length) {
+      let retry = 0;
+      for (const b of blocked) retry = Math.max(retry, (b && b.retryAfterMs) || 0);
+      const secs = Math.max(1, Math.ceil((retry || 1000) / 1000));
+      fail(res, 429, 'rate_limited', 'Too many requests. Try again in ' + secs + 's.', {
+        'Retry-After': String(secs),
+        'RateLimit-Remaining': '0'
+      });
+      return false;
+    }
+    let remaining = Infinity;
+    for (const r of tally) remaining = Math.min(remaining, r && typeof r.remaining === 'number' ? r.remaining : Infinity);
+    if (remaining !== Infinity) {
+      res.setHeader('RateLimit-Remaining', String(Math.max(0, remaining)));
+      res.setHeader('RateLimit-Policy', String(tiers.length) + ' tiers per ip');
+    }
+    return true;
   });
 }
 
 module.exports = {
   MAX_BODY_BYTES,
+  GLOBAL_LIMITS,
   turnstileMode,
   turnstileSiteKey,
   clientIp,

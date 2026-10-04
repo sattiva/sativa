@@ -6,6 +6,7 @@ import { connect, presence } from './lanyard.js';
 import { initMusic } from './music.js';
 import { initStats } from './stats.js';
 import { initGuestbook } from './guestbook.js';
+import { initProtect } from './protect.js';
 
 function boot(fn) {
   try {
@@ -50,6 +51,7 @@ function init() {
   setBgArt('');
   clearNow();
 
+  boot(initProtect);
   boot(initScroll);
   boot(initTilt);
   boot(initBg);

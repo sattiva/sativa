@@ -19,7 +19,10 @@ const TRACK_MIN = 1;
 const TRACK_MAX = 80;
 const ARTIST_MAX = 80;
 const WHY_MAX = 140;
-const READ_LIMITS = [{ scope: 'gb:read', max: 90, windowMs: 60000 }];
+const READ_LIMITS = [
+  { scope: 'gb:read', max: 90, windowMs: 60000 },
+  { scope: 'gb:readhour', max: 1500, windowMs: 3600000 }
+];
 
 const WRITE_LIMITS = [
   { scope: 'gb:burst', max: 1, windowMs: 15000 },

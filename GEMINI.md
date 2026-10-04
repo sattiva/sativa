@@ -167,9 +167,9 @@ export const parseToken = (raw: string): string[] => {
 
 ### Commands
 ```
-npm run build      # bundle src/*.js -> js/app.js (clean). Run after ANY src/ change.
-npm run build:obf  # same, obfuscated. Opt-in: flattening+dead-code froze the page 3x.
-npm test           # id cross-check + api integration + jsdom smoke
+npm run build        # bundle src/*.js -> js/app.js, obfuscated. This is the shipping build.
+npm run build:clean  # same, readable. For debugging only, never deploy it.
+npm test             # id cross-check + api integration + jsdom smoke
 ```
 
 `js/app.js` is committed, not built by Vercel. A `src/` edit without a rebuild never ships.
@@ -187,6 +187,19 @@ npm test           # id cross-check + api integration + jsdom smoke
 - `api/_lib/` is not routed by Vercel (underscore prefix) - shared handlers only.
 - Every write endpoint fails closed: unconfigured store, unreachable store, or broken
   rate limiter all surface 503. Never a silent success.
+- Every handler meters through `G.applyLimits`, which prepends `GLOBAL_LIMITS` so one IP
+  cannot rotate between endpoints. With Redis absent it falls back to an in-process
+  bucket for reads; writes still 503.
+- `middleware.js` (project root) meters static assets and unmatched paths. Its
+  `request.headers` is a `Headers` object: use `headers.get(name)` or every visitor
+  collapses into one `anon` bucket and the site locks itself out.
+- No `Access-Control-Allow-Origin` anywhere. Cross-origin is refused in `G.preflight`.
+- CSP lives in `vercel.json`; a new external origin that is not listed fails silently.
+  `/spitari/*` is excluded from the strict rule via the `((?!spitari).*)` lookahead.
+- `src/protect.js` plus the lock CSS in `index.html` block selection, copy, drag, print,
+  devtools shortcuts and speech. `navigator.clipboard` stays live for the handle button.
+- Nothing navigates on a timer. `src/lanyard.js#setIcons` owns `#siteIcon`/`#appleIcon`.
+- Chrome rejects `ry = 0` arcs in SVG path data and truncates the path. Use `l`/`L`.
 - Track identity is resolved from the manifest inside `api/scrobble.js`, never from a
   request body, so counters cannot be inflated with invented tracks.
 - `vercel.json` rewrites `/home|/music|/games|/guestbook` to `/index.html`. Removing that

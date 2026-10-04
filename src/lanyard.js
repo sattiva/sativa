@@ -1,4 +1,4 @@
-import { $, S, SI, VB, FB, C, CK_P, esc, safeUrl, cSet } from './config.js';
+import { $, S, SI, VB, C, CK_P, esc, cSet } from './config.js';
 import { applySp, clearNow } from './lyrics.js';
 import { scMax } from './navigation.js';
 
@@ -177,12 +177,40 @@ function setAll(sel, fn) {
   for (let i = 0; i < nodes.length; i++) fn(nodes[i]);
 }
 
+export function avatarUrl(u, size) {
+  const id = encodeURIComponent(u.id);
+  const h = String(u.avatar || '');
+  const base = h
+    ? 'https://cdn.discordapp.com/avatars/' + id + '/' + encodeURIComponent(h) + (h.indexOf('a_') === 0 ? '.gif' : '.png')
+    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+  return base + '?size=' + (size || 512);
+}
+
+// The tab icon is the Discord avatar, same source as the hero portrait. The hash is in
+// the path, so a new avatar is a new URL and browsers pick it up on their own.
+function setIcons(u) {
+  const pairs = [
+    ['siteIcon', 128],
+    ['appleIcon', 180]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const el = $(pairs[i][0]);
+    if (!el) continue;
+    const url = avatarUrl(u, pairs[i][1]);
+    if (el.getAttribute('href') !== url) {
+      el.setAttribute('href', url);
+      el.setAttribute('type', /\.gif$/.test(url) ? 'image/gif' : 'image/png');
+    }
+  }
+}
+
 export function presence(p) {
   const u = p.discord_user;
   if (u) {
-    const avUrl = u.avatar ? 'https://cdn.discordapp.com/avatars/' + encodeURIComponent(u.id) + '/' + encodeURIComponent(u.avatar) + (u.avatar.indexOf('a_') === 0 ? '.gif' : '.png') + '?size=512' : FB;
+    const avUrl = avatarUrl(u, 512);
     const name = u.global_name || u.display_name || 'Sativa';
     const handle = '@' + u.username;
+    setIcons(u);
     setAll('.js-avatar', (n) => {
       n.src = avUrl;
     });

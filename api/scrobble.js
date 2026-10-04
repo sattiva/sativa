@@ -19,9 +19,13 @@ const MIN_LISTEN_MS = 5000;
 const RECENT_CAP = 20;
 const WRITE_LIMITS = [
   { scope: 'sx:burst', max: 30, windowMs: 60000 },
-  { scope: 'sx:hour', max: 120, windowMs: 3600000 }
+  { scope: 'sx:hour', max: 120, windowMs: 3600000 },
+  { scope: 'sx:day', max: 500, windowMs: 86400000 }
 ];
-const READ_LIMITS = [{ scope: 'sx:read', max: 120, windowMs: 60000 }];
+const READ_LIMITS = [
+  { scope: 'sx:read', max: 120, windowMs: 60000 },
+  { scope: 'sx:hour', max: 2000, windowMs: 3600000 }
+];
 
 const K_TOTAL = 'sx:total';
 const K_DAYS = 'sx:days';
@@ -360,9 +364,14 @@ module.exports = async function handler(req, res) {
 
   if (!store.READY) {
     if (req.method === 'GET' || req.method === 'HEAD') {
-      return fetchLanyard()
-        .then((l) => G.send(res, 200, vaultView(l)))
-        .catch(() => G.send(res, 200, vaultView(null)));
+      // The Lanyard fallback is still a public endpoint, so it stays behind the
+      // limiter. Without Redis that means the per-instance bucket in the guard.
+      return G.applyLimits(store, req, res, READ_LIMITS, rand()).then((ok) => {
+        if (!ok) return;
+        return fetchLanyard()
+          .then((l) => G.send(res, 200, vaultView(l)))
+          .catch(() => G.send(res, 200, vaultView(null)));
+      });
     }
     G.fail(res, 503, 'stats_unavailable', 'Stats storage is not configured.');
     return;

@@ -12,9 +12,14 @@ const K_SEEN = 'views:seen:';
 
 const PING_LIMITS = [
   { scope: 'vw:burst', max: 4, windowMs: 30000 },
-  { scope: 'vw:min', max: 30, windowMs: 60000 }
+  { scope: 'vw:min', max: 30, windowMs: 60000 },
+  { scope: 'vw:hour', max: 200, windowMs: 3600000 },
+  { scope: 'vw:day', max: 600, windowMs: 86400000 }
 ];
-const READ_LIMITS = [{ scope: 'vw:read', max: 120, windowMs: 60000 }];
+const READ_LIMITS = [
+  { scope: 'vw:read', max: 120, windowMs: 60000 },
+  { scope: 'vw:hour', max: 2000, windowMs: 3600000 }
+];
 
 async function dwyl() {
   const ctl = new AbortController();

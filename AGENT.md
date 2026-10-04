@@ -167,14 +167,15 @@ export const parseToken = (raw: string): string[] => {
 
 ### Commands
 ```
-npm run build      # bundle src/*.js -> js/app.js (clean). Run after ANY src/ change.
-npm run build:obf  # same, obfuscated. Opt-in: flattening+dead-code froze the page 3x.
-npm test           # id cross-check + api integration + jsdom smoke
+npm run build        # bundle src/*.js -> js/app.js, obfuscated. This is the shipping build.
+npm run build:clean  # same, readable. For debugging only, never deploy it.
+npm test             # id cross-check + api integration + jsdom smoke
 npm run test:browser  # playwright: deep-link refresh + mobile scroll + layout
 ```
 
 `js/app.js` and `404.html` are committed, not built by Vercel. A `src/` or `index.html`
-edit without a rebuild never ships.
+edit without a rebuild never ships. `npm test` boots the bundle that is currently in
+`public/js/app.js`, so run `npm run build:clean` first or you are testing the last commit.
 
 ### Env (see .env.example)
 | Var | Effect when absent |
@@ -188,6 +189,31 @@ edit without a rebuild never ships.
 - `api/_lib/` is not routed by Vercel (underscore prefix) - shared handlers only.
 - Every write endpoint fails closed: unconfigured store, unreachable store, or broken
   rate limiter all surface 503. Never a silent success.
+- Every request that reaches a handler goes through `G.applyLimits`, which prepends
+  `GLOBAL_LIMITS` to the endpoint's own tiers. Adding an endpoint without that call
+  leaves it unmetered.
+- With Redis absent, the guard meters from its own in-process bucket so read paths and
+  the Lanyard fallback stay up. That is per-lambda and resets on cold start; it is not
+  a distributed limit. Writes still fail closed on `!store.READY`.
+- `middleware.js` at the project root is the outer ring for static assets and unknown
+  paths. `request.headers` there is a `Headers` instance, so read it with
+  `headers.get(name)`. Plain property access returns `undefined` and silently collapses
+  every visitor into one shared `anon` bucket, which locks the site out.
+- Nothing anywhere sends `Access-Control-Allow-Origin`. Cross-origin requests are
+  refused in `G.preflight`, same-origin or not. Do not reintroduce a wildcard.
+- The CSP lives in `vercel.json`. A new external origin that is not listed there fails
+  silently at runtime: fonts, artwork, Lanyard's socket and the Turnstile iframe all
+  depend on it. `/spitari/*` gets its own looser rule and is excluded by the
+  `((?!spitari).*)` negative lookahead, so keep that exclusion if the path changes.
+- `src/protect.js` is the content lock and the selection/print CSS is duplicated in
+  `index.html` so it holds before the bundle runs. `navigator.clipboard` is left alone
+  on purpose: the handle-copy button is a real feature.
+- Nothing in `navigation.js` may navigate on a timer. Motion on means reveals animate,
+  the view you asked for is the view you get.
+- The tab icon is `#siteIcon` and `#appleIcon`, swapped from the Lanyard avatar by
+  `setIcons()` in `src/lanyard.js`. Both ids must exist in `index.html`.
+- Chrome rejects arcs with `ry = 0` in a `d` attribute and stops parsing the path there,
+  which truncates the icon and logs a console error. Collapse those arcs to `l`/`L`.
 - Track identity is resolved from the manifest inside `api/scrobble.js`, never from a
   request body, so counters cannot be inflated with invented tracks.
 - Stats are Redis-only. There is no music API dependency; `BASELINE_STATS` seeds lifetime
