@@ -2,36 +2,37 @@ const fs = require('fs');
 const path = require('path');
 const JavaScriptObfuscator = require('javascript-obfuscator');
 
-const srcDir = path.join(__dirname, 'src');
-const distDir = path.join(__dirname, 'dist');
+function obfuscateFile(inputPath, outputPath) {
+  if (!fs.existsSync(inputPath)) {
+    console.log(`Input file not found: ${inputPath}`);
+    return;
+  }
+  const code = fs.readFileSync(inputPath, 'utf8');
+  console.log(`Obfuscating ${inputPath} (${code.length} bytes)...`);
 
-if (!fs.existsSync(distDir)) {
-    fs.mkdirSync(distDir);
+  const obfs = JavaScriptObfuscator.obfuscate(code, {
+    compact: true,
+    controlFlowFlattening: true,
+    controlFlowFlatteningThreshold: 0.8,
+    deadCodeInjection: true,
+    deadCodeInjectionThreshold: 0.25,
+    numbersToExpressions: true,
+    simplify: true,
+    stringArray: true,
+    stringArrayEncoding: ['base64', 'rc4'],
+    stringArrayThreshold: 0.85,
+    stringArrayShuffle: true,
+    splitStrings: true,
+    splitStringsChunkLength: 5,
+    transformObjectKeys: true,
+    selfDefending: true
+  });
+
+  fs.writeFileSync(outputPath, obfs.getObfuscatedCode(), 'utf8');
+  console.log(`Saved obfuscated code to ${outputPath} (${obfs.getObfuscatedCode().length} bytes)`);
 }
 
-function processFile(filename) {
-    const srcPath = path.join(srcDir, filename);
-    const distPath = path.join(distDir, filename);
-    
-    if (fs.existsSync(srcPath)) {
-        const code = fs.readFileSync(srcPath, 'utf8');
-        const obfsResult = JavaScriptObfuscator.obfuscate(code, {
-            compact: true,
-            controlFlowFlattening: true,
-            controlFlowFlatteningThreshold: 0.75,
-            numbersToExpressions: true,
-            simplify: true,
-            stringArrayShuffle: true,
-            splitStrings: true,
-            stringArrayThreshold: 0.75
-        });
-        fs.writeFileSync(distPath, obfsResult.getObfuscatedCode(), 'utf8');
-        console.log(`Obfuscated: ${filename}`);
-    } else {
-        console.log(`Not found: ${srcPath}`);
-    }
+const jsApp = path.join(__dirname, 'js', 'app.js');
+if (fs.existsSync(jsApp)) {
+  obfuscateFile(jsApp, jsApp);
 }
-
-processFile('mapData.js');
-processFile('ascii.js');
-processFile('script.js');
