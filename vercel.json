@@ -5,5 +5,14 @@
     { "source": "/chronicle", "destination": "/chronicle/index.html" },
     { "source": "/chronicle/tos", "destination": "/chronicle/tos/index.html" },
     { "source": "/chronicle/policy", "destination": "/chronicle/policy/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" }
+      ]
+    }
   ]
 }

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+  <defs>
+    <linearGradient id="tbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140a17"/>
+      <stop offset="100%" stop-color="#241026"/>
+    </linearGradient>
+    <linearGradient id="ttxt" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <rect width="88" height="31" fill="url(#tbg)" stroke="#ec4899" stroke-width="1"/>
+  <rect x="2" y="2" width="84" height="27" fill="none" stroke="rgba(236, 72, 153, 0.4)" stroke-width="1"/>
+  <text x="44" y="16" font-family="'Consolas', 'Courier New', monospace" font-size="11" font-weight="900" fill="url(#ttxt)" text-anchor="middle" letter-spacing="1">THIGHS</text>
+  <text x="44" y="25" font-family="'Consolas', 'Courier New', monospace" font-size="8" font-weight="700" fill="#fbcfe8" text-anchor="middle" letter-spacing="0.5">WE &lt;3 THIGHS</text>
+  <circle cx="6" cy="6" r="1.5" fill="#f472b6"/>
+  <circle cx="82" cy="25" r="1.5" fill="#fb7185"/>
+</svg>

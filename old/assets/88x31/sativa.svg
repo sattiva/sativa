@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070c09"/>
+      <stop offset="100%" stop-color="#121f15"/>
+    </linearGradient>
+    <linearGradient id="txt" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+  </defs>
+  <rect width="88" height="31" fill="url(#bg)" stroke="#22c55e" stroke-width="1"/>
+  <rect x="2" y="2" width="84" height="27" fill="none" stroke="rgba(34, 197, 94, 0.4)" stroke-width="1"/>
+  <text x="44" y="20" font-family="'Consolas', 'Courier New', monospace" font-size="12" font-weight="900" fill="url(#txt)" text-anchor="middle" letter-spacing="2">SATIVA</text>
+  <circle cx="6" cy="6" r="1.5" fill="#4ade80"/>
+  <circle cx="82" cy="25" r="1.5" fill="#a3e635"/>
+</svg>

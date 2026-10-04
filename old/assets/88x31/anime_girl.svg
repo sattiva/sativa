@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+  <defs>
+    <linearGradient id="abg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a14"/>
+      <stop offset="100%" stop-color="#14142b"/>
+    </linearGradient>
+    <linearGradient id="atxt" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="88" height="31" fill="url(#abg)" stroke="#8b5cf6" stroke-width="1"/>
+  <rect x="2" y="2" width="84" height="27" fill="none" stroke="rgba(139, 92, 246, 0.3)" stroke-width="1"/>
+  <text x="44" y="16" font-family="'Consolas', 'Courier New', monospace" font-size="10" font-weight="900" fill="url(#atxt)" text-anchor="middle" letter-spacing="1">WAIFU // 2D</text>
+  <text x="44" y="25" font-family="'Consolas', 'Courier New', monospace" font-size="7" font-weight="700" fill="#ddd6fe" text-anchor="middle" letter-spacing="0.5">ANIME GIRLS ONLY</text>
+  <circle cx="7" cy="7" r="1.5" fill="#a78bfa"/>
+  <circle cx="81" cy="24" r="1.5" fill="#c084fc"/>
+</svg>
