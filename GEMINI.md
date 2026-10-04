@@ -160,3 +160,34 @@ export const parseToken = (raw: string): string[] => {
 };
 
 ```
+
+---
+
+## Site Operations
+
+### Commands
+```
+npm run build      # bundle src/*.js -> js/app.js (clean). Run after ANY src/ change.
+npm run build:obf  # same, obfuscated. Opt-in: flattening+dead-code froze the page 3x.
+npm test           # id cross-check + api integration + jsdom smoke
+```
+
+`js/app.js` is committed, not built by Vercel. A `src/` edit without a rebuild never ships.
+
+### Env (see .env.example)
+| Var | Effect when absent |
+| --- | --- |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Guestbook + view counter return 503. Vault and arcade still work. |
+| `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Widget hidden; honeypot + dwell + origin pinning + rate limits remain. |
+| `LASTFM_API_KEY` / `_USERNAME` | Stats fall back to locally tracked vault plays. |
+| `LASTFM_COUNTS` | Distinct artist/track/album totals shown as a bounded lower bound with a `+` suffix. |
+
+### Invariants
+- `api/` is CommonJS (no `"type": "module"`); `src/` is ESM bundled by esbuild.
+- `api/_lib/` is not routed by Vercel (underscore prefix) - shared handlers only.
+- Every write endpoint fails closed: unconfigured store, unreachable store, or broken
+  rate limiter all surface 503. Never a silent success.
+- Track identity is resolved from the manifest inside `api/scrobble.js`, never from a
+  request body, so counters cannot be inflated with invented tracks.
+- `vercel.json` rewrites `/home|/music|/games|/guestbook` to `/index.html`. Removing that
+  rewrite is what made the guestbook form 404 on submit.

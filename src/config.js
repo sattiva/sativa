@@ -87,6 +87,34 @@ export const SI = {
 
 export const VB = { 0: 'Playing', 1: 'Streaming', 2: 'Listening to', 3: 'Watching', 5: 'Competing in' };
 
+// 45700 -> "45.7K", 1200 -> "1.2K", 658 -> "658", 69.5 -> "69.5". Stats read as
+// magnitudes, but a fractional avg/day keeps its decimal below the K threshold.
+export function fmtNum(n) {
+  const v = Number(n) || 0;
+  if (v >= 1e9) return trim1(v / 1e9) + 'B';
+  if (v >= 1e6) return trim1(v / 1e6) + 'M';
+  if (v >= 1e3) return trim1(v / 1e3) + 'K';
+  if (Number.isInteger(v)) return String(v);
+  return trim1(v);
+}
+
+function trim1(v) {
+  return v.toFixed(1).replace(/\.0$/, '');
+}
+
+export function timeAgo(ms) {
+  const d = Date.now() - Number(ms || 0);
+  if (!isFinite(d) || d < 0) return '';
+  if (d < 45000) return 'just now';
+  const mins = Math.floor(d / 60000);
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return days + 'd ago';
+  return new Date(Number(ms)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 export function esc(s) {
   return String(s || '').replace(/[&<>"']/g, function(c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];

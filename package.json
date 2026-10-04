@@ -4,7 +4,12 @@
   "description": "Premium interactive portfolio website",
   "main": "src/script.js",
   "scripts": {
-    "build": "node obfuscate.js"
+    "build": "node obfuscate.js",
+    "build:obf": "node obfuscate.js --obf",
+    "test": "node scratch/verify_ids.js && node scratch/api_test.js && node scratch/smoke.js",
+    "test:ids": "node scratch/verify_ids.js",
+    "test:api": "node scratch/api_test.js",
+    "test:ui": "node scratch/smoke.js"
   },
   "dependencies": {
     "javascript-obfuscator": "^4.1.1"

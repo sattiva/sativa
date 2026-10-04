@@ -5,10 +5,40 @@ import { initWeather } from './weather.js';
 import { initLyricsModal, setArt, setBgArt, clearNow } from './lyrics.js';
 import { connect, presence } from './lanyard.js';
 import { initMusic } from './music.js';
+import { initStats } from './stats.js';
 import { initGames } from './games.js';
 import { initGuestbook } from './guestbook.js';
 
+function boot(fn) {
+  try {
+    fn();
+  } catch (e) {
+    if (window.console && console.warn) console.warn('[init] ' + (fn && fn.name) + ' failed:', e);
+  }
+}
+
+// Registered at module scope in the capture phase, deliberately outside initGuestbook.
+// If the guestbook module throws or bails on a missing node, a native form GET would
+// still fire: the browser would navigate the SPA to /guestbook?... and Vercel would 404,
+// losing the note. This makes that unrepresentable regardless of module state.
+if (typeof document !== 'undefined') {
+  document.addEventListener(
+    'submit',
+    function (e) {
+      const f = e.target;
+      if (f && f.id === 'gbForm') e.preventDefault();
+    },
+    true
+  );
+}
+
+let booted = false;
+
 function init() {
+  // Idempotent: a double DOMContentLoaded would otherwise attach every listener twice,
+  // double-fetch every endpoint and double-count every guestbook entry.
+  if (booted) return;
+  booted = true;
   // Bio & Status setup
   const bio = $('bioText');
   if (bio) bio.innerHTML = C.bio;
@@ -29,17 +59,20 @@ function init() {
   setBgArt('');
   clearNow();
 
-  // Initialize modules
-  initScroll();
-  initTilt();
-  initBg();
-  initWeather();
-  initLyricsModal();
-  initMusic();
-  initGames();
-  initGuestbook();
-  initViewCounter();
-  initNavigation();
+  // Each module is isolated: one bad init (a canvas that will not getContext, a missing
+  // node) must not cascade into every module after it staying dead. This is exactly how
+  // the guestbook shipped broken with nobody noticing.
+  boot(initScroll);
+  boot(initTilt);
+  boot(initBg);
+  boot(initWeather);
+  boot(initLyricsModal);
+  boot(initMusic);
+  boot(initStats);
+  boot(initGames);
+  boot(initGuestbook);
+  boot(initViewCounter);
+  boot(initNavigation);
 
   // Cached Discord presence recovery
   try {

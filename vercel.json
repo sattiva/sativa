@@ -2,16 +2,26 @@
   "cleanUrls": true,
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/(home|music|games|guestbook)", "destination": "/index.html" },
     { "source": "/chronicle", "destination": "/chronicle/index.html" },
     { "source": "/chronicle/tos", "destination": "/chronicle/tos/index.html" },
     { "source": "/chronicle/policy", "destination": "/chronicle/policy/index.html" }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/(guestbook|scrobble|lastfm)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" }
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" },
+        { "key": "Access-Control-Max-Age", "value": "86400" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     }
   ]

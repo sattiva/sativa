@@ -1,3 +1,7 @@
 node_modules
 scratch/
 .system_generated
+.env
+.env.local
+.env.*.local
+.vercel

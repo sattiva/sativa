@@ -554,10 +554,10 @@ export function initViewCounter() {
       referrerPolicy: 'no-referrer',
       keepalive: true
     }).then(r => r.ok ? r.json() : null).then(d => {
-      if (!d || typeof d.views !== 'number') return;
-      cSet(CK_V, d.views);
+      if (!d || typeof d.count !== 'number') return;
+      cSet(CK_V, d.count);
       if ($('viewCounter')) $('viewCounter').hidden = false;
-      animateCount(d.views);
+      animateCount(d.count);
     }).catch(() => {});
   }
 
