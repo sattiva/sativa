@@ -362,11 +362,17 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .game svg{width:28px;height:28px;display:block}
 .game span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
 
+.proj-group+.proj-group{margin-top:24px}
+.proj-group-label{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:13px}
 .proj{display:flex;flex-direction:column;gap:9px;padding:15px 16px;border-radius:13px;background:var(--case);border:1px solid var(--rule);text-decoration:none;color:inherit;transition:background .22s var(--e),border-color .22s,transform .22s var(--e)}
 a.proj:hover{background:var(--case-2);border-color:rgba(242,241,238,.18);transform:translateY(-1px)}
-.proj-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.proj-mark{display:flex;align-items:center;height:26px}
+.proj-mark img{width:26px;height:26px;object-fit:contain;display:block}
 .proj-name{font-size:14px;font-weight:600;color:var(--paper);letter-spacing:-.014em;line-height:1.2}
+.proj-name-wordmark{font-family:'General Sans',system-ui,sans-serif;font-size:21px;font-weight:400;letter-spacing:-.03em;color:#8ea3b8;line-height:1.15}
+.proj-name-wordmark b{font-weight:700}
+.proj-name-wordmark i{font-style:normal;font-weight:500}
 .proj-go{flex-shrink:0;width:12px;height:12px;align-self:center;color:var(--faint);fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;transition:color .2s,transform .22s var(--e)}
 a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
 .proj-desc{font-size:13px;line-height:1.62;color:var(--mute);letter-spacing:-.004em}
@@ -687,51 +693,48 @@ a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
   <div class="panel" style="margin-top:22px">
     <div class="panel-head">
       <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7l9 5 9-5-9-5Z"></path><path d="m3 12 9 5 9-5"></path><path d="m3 17 9 5 9-5"></path></svg>Projects</div>
-      <div class="panel-meta">7 shipped</div>
+      <div class="panel-meta">4 shipped</div>
     </div>
 
-    <div class="proj-grid">
+    <div class="proj-group">
+      <div class="proj-group-label">Spitari</div>
+      <div class="proj-grid">
+
       <a class="proj" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
-        <div class="proj-head"><span class="proj-name">Spitari Watchdog</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
-        <p class="proj-desc">Multi-instance Discord bot runner with a terminal dashboard and web control panel, Lavalink music, AES-256-GCM encrypted credential storage, and hot-reloadable Lua plugins.</p>
+        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+        <span class="proj-name">Spitari Watchdog <svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></span>
+        <p class="proj-desc">Bot runner I use every day. Spin up as many instances as I want from one terminal, watch them in a TUI or the web dashboard, and drop a Lua plugin in without a restart. Credentials go into an encrypted BoltDB instead of sitting in a .env.</p>
         <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">TUI</span><span class="proj-tag">SQLite</span></div>
       </a>
 
-      <a class="proj" href="https://spitari.win" target="_blank" rel="noopener noreferrer">
-        <div class="proj-head"><span class="proj-name">Spitari.win</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
-        <p class="proj-desc">Public web platform for Spitari — landing, command reference, policy and terms, built statically and deployed behind a hardened CSP with no client framework.</p>
-        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Vercel</span></div>
-      </a>
-
       <div class="proj">
-        <div class="proj-head"><span class="proj-name">Spitari External</span></div>
-        <p class="proj-desc">Native C++ external for Roblox — DX9 present-hook renderer, custom GUI, memory and Roblox service layer, and a Lua-driven feature set spanning aim, visuals, movement, rage, explorer and MCP tooling.</p>
-        <div class="proj-tags"><span class="proj-tag">C++</span><span class="proj-tag">DX9</span><span class="proj-tag">Windows</span></div>
+        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+        <span class="proj-name">Spitari External</span>
+        <p class="proj-desc">External for Roblox in C++. Hooks the DirectX 9 present chain to draw the overlay, reads game memory directly, and drives everything through Lua. Aiming, visuals, movement, an explorer for walking the instance tree, and an MCP bridge so I can drive it from an agent.</p>
+        <div class="proj-tags"><span class="proj-tag">C++</span><span class="proj-tag">DX9</span><span class="proj-tag">Lua</span></div>
       </div>
 
-      <a class="proj" href="https://github.com/sattiva/stivalib" target="_blank" rel="noopener noreferrer">
-        <div class="proj-head"><span class="proj-name">sativlib</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
-        <p class="proj-desc">Zero-dependency Go security core — AES-256-GCM, HKDF, Argon2id, TOTP, HS256 JWT, bitmask scopes, a tamper-evident audit hash chain, rate limiter, circuit breaker and sandbox.</p>
-        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Crypto</span><span class="proj-tag">Auth</span></div>
-      </a>
+      <div class="proj">
+        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+        <span class="proj-name">SpitariStrap</span>
+        <p class="proj-desc">Fishstrap fork for Roblox. I added a multi instance watcher so it notices your other instances instead of fighting them, plus an account manager that keeps your logins in one spot with its own settings screen. Everything sits on top of the Bloxstrap codebase.</p>
+        <div class="proj-tags"><span class="proj-tag">C#</span><span class="proj-tag">WPF</span><span class="proj-tag">.NET</span></div>
+      </div>
 
-      <a class="proj" href="https://github.com/sattiva/ai-python-bot" target="_blank" rel="noopener noreferrer">
-        <div class="proj-head"><span class="proj-name">boobs</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
-        <p class="proj-desc">Multi-provider Discord AI bot across Gemini, Groq, DeepSeek, Claude, OpenAI and OpenRouter — with multimodal vision/OCR, document ingestion, Whisper transcription, TTS voice channels, image generation and token-economy access control.</p>
-        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">AI</span></div>
-      </a>
+      </div>
+    </div>
+
+    <div class="proj-group">
+      <div class="proj-group-label">Monu</div>
+      <div class="proj-grid">
 
       <div class="proj">
-        <div class="proj-head"><span class="proj-name">Monu MM</span></div>
-        <p class="proj-desc">Ticket-based crypto escrow bot with on-chain deposit detection, dual-confirm payouts, automatic cold-wallet fee sweep and vouch transcripts — plus a provably-fair casino subsystem.</p>
+        <span class="proj-name proj-name-wordmark"><b>monu</b> <i>MM</i></span>
+        <p class="proj-desc">Discord bot for running crypto trades. Opens a ticket per deal, waits for the deposit to land on chain, and releases the funds only once both sides hit confirm. Cuts its fee and sweeps it to a cold wallet on the way out. Provably fair casino games are bolted on the side if you want them.</p>
         <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">SQLite</span></div>
       </div>
 
-      <a class="proj" href="https://github.com/fishstrap/fishstrap" target="_blank" rel="noopener noreferrer">
-        <div class="proj-head"><span class="proj-name">Fishstrap</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
-        <p class="proj-desc">Bloxstrap-derived Roblox bootstrapper patched with a multi-instance watcher and a built-in account manager — model, settings and viewmodel layered over upstream launch handling.</p>
-        <div class="proj-tags"><span class="proj-tag">C#</span><span class="proj-tag">WPF</span><span class="proj-tag">.NET</span></div>
-      </a>
+      </div>
     </div>
   </div>
 </section>
