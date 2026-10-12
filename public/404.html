@@ -372,34 +372,79 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .proj-group+.proj-group{margin-top:26px}
 .proj-group-label{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--dim);margin-bottom:13px}
 .proj-group-label::before{content:'—';color:var(--faint);font-weight:400}
-.proj-grid{display:flex;flex-direction:column;gap:12px}
 
-.proj{position:relative;display:flex;flex-direction:column;border-radius:14px;background:rgba(18,19,23,.65);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
+.proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.proj-grid{grid-template-columns:1fr}}
+
+.proj{position:relative;display:flex;flex-direction:column;border-radius:14px;background:rgba(18,19,23,.7);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;overflow:hidden;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
+.proj.proj-wide{grid-column:1/-1}
 a.proj{cursor:pointer}
-a.proj:hover{background:rgba(25,26,32,.85);border-color:rgba(255,255,255,.18);box-shadow:0 12px 32px -12px rgba(0,0,0,.7)}
+a.proj:hover{background:rgba(24,25,31,.9);border-color:rgba(255,255,255,.18);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
 
-.proj.proj-featured{padding:0;overflow:hidden;background:linear-gradient(180deg,rgba(22,23,28,.7) 0%,rgba(14,15,18,.9) 100%)}
-.proj-showcase-visual{position:relative;height:140px;background:radial-gradient(100% 120% at 50% 15%,rgba(40,42,52,.55) 0%,rgba(12,13,16,.96) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.proj-showcase-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:rgba(15,16,19,.85);border:1px solid rgba(255,255,255,.09);font-family:var(--fm);font-size:11px;color:var(--paper);letter-spacing:.02em;box-shadow:0 8px 24px -6px rgba(0,0,0,.6)}
-.proj-showcase-dot{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
-.proj-featured-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px}
-.proj-action{font-family:var(--fm);font-size:11.5px;font-weight:500;color:var(--mute);display:inline-flex;align-items:center;gap:6px;transition:color .2s}
-a.proj:hover .proj-action{color:var(--paper)}
+/* Custom Art Containers */
+.proj-art{position:relative;height:120px;background:radial-gradient(100% 120% at 50% 10%,rgba(35,37,46,.55) 0%,rgba(12,13,16,.96) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:12px 16px;overflow:hidden}
 
-.proj.proj-row{padding:16px 18px}
-.proj-row-inner{display:flex;align-items:flex-start;gap:15px}
-.proj-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+/* Watchdog TUI Art */
+.art-terminal{width:100%;max-width:380px;border-radius:9px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 10px 24px -8px rgba(0,0,0,.6)}
+.art-term-bar{display:flex;align-items:center;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);font-family:var(--fm);font-size:10px}
+.art-term-dots{display:flex;align-items:center;gap:4px}
+.art-term-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22)}
+.art-term-title{color:var(--mute);letter-spacing:.02em}
+.art-term-state{color:var(--faint);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
+.art-term-body{display:flex;flex-direction:column;gap:3px;font-family:var(--fm);font-size:10px;line-height:1.4}
+.art-term-line{display:flex;align-items:center;gap:7px}
+.art-dim{color:var(--faint)}
+.art-hi{color:var(--paper);font-weight:500}
+.art-mute{color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-tag{font-size:8.5px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.05em}
 
-.proj-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.proj-identity{display:flex;align-items:center;gap:12px;min-width:0}
+/* External DX9 HUD Art */
+.art-hud{position:relative;width:100%;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.art-hud-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
+.art-hud-scope{position:relative;flex:1;display:flex;align-items:center;justify-content:center}
+.art-hud-cross{position:absolute;width:40px;height:40px;border:1px dashed rgba(255,255,255,.15);border-radius:50%}
+.art-hud-box{position:relative;padding:5px 12px;border-radius:6px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:9px;font-family:var(--fm);box-shadow:0 6px 20px rgba(0,0,0,.6)}
+.art-hud-tag{font-size:10px;color:var(--paper);font-weight:500}
+.art-hud-stat{font-size:9.5px;color:var(--dim);letter-spacing:.04em}
+.art-hud-footer{position:relative;display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
 
-.proj-mark{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0}
-.proj-mark img{width:24px;height:24px;object-fit:contain;display:block}
+/* SpitariStrap Launcher Art */
+.art-launcher{width:100%;max-width:340px;border-radius:8px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 12px;display:flex;flex-direction:column;gap:7px}
+.art-launcher-header{display:flex;justify-content:space-between;align-items:center;font-family:var(--fm);font-size:10px}
+.art-launcher-title{color:var(--mute)}
+.art-launcher-sync{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.art-launcher-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.art-slot{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.art-slot-dot{width:5px;height:5px;border-radius:50%;background:#fff;opacity:.7}
+.art-slot-info{display:flex;flex-direction:column;min-width:0;font-family:var(--fm);line-height:1.2}
+.art-slot-info b{font-size:9.5px;color:var(--paper);font-weight:500}
+.art-slot-info span{font-size:8.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Monu Escrow Art */
+.art-escrow{width:100%;max-width:380px;border-radius:9px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 14px;display:flex;flex-direction:column;gap:8px}
+.art-escrow-meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--fm);font-size:10px}
+.art-escrow-ticket{color:var(--paper);font-weight:500}
+.art-escrow-badge{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.art-escrow-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.art-node{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--fm)}
+.art-node-role{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.art-node-val{font-size:10px;color:var(--paper);font-weight:500}
+.art-link{flex:1;display:flex;align-items:center;gap:6px}
+.art-link-line{flex:1;height:1px;background:rgba(255,255,255,.15)}
+.art-vault{padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:.05em;text-transform:uppercase}
+
+/* Card Body */
+.proj-card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.proj-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.proj-identity{display:flex;align-items:center;gap:11px;min-width:0}
+
+.proj-mark{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.proj-mark img{width:20px;height:20px;object-fit:contain;display:block}
 .proj-mark-monu{color:var(--paper);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
-.proj-mark-monu svg{width:20px;height:20px;stroke:currentColor}
+.proj-mark-monu svg{width:18px;height:18px;stroke:currentColor}
 
-.proj-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.proj-name{font-size:15px;font-weight:600;color:var(--paper);letter-spacing:-.015em;line-height:1.2;white-space:nowrap}
+.proj-title-row{display:flex;align-items:center;gap:8px;min-width:0}
+.proj-name{font-size:14.5px;font-weight:600;color:var(--paper);letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .proj-name-wordmark{font-family:'General Sans',system-ui,sans-serif;font-size:15.5px;letter-spacing:-.02em;color:var(--paper)}
 .proj-name-wordmark b{font-weight:700;color:#fff}
 .proj-name-wordmark i{font-style:normal;font-weight:500;color:var(--dim);margin-left:3px}
@@ -408,18 +453,12 @@ a.proj:hover .proj-action{color:var(--paper)}
 .proj-go{flex-shrink:0;width:13px;height:13px;color:var(--faint);fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:color .2s,transform .2s var(--e)}
 a.proj:hover .proj-go{color:var(--paper);transform:translate(2px,-2px)}
 
-.proj-desc{font-size:13px;line-height:1.58;color:var(--dim);letter-spacing:-.004em}
+.proj-desc{font-size:12.8px;line-height:1.6;color:var(--dim);letter-spacing:-.004em}
 
-.proj-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.proj-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto;padding-top:2px}
 .proj-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font:500 10px var(--fm);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);transition:border-color .18s,color .18s}
 .proj-tag svg{flex-shrink:0;opacity:.85}
 a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
-
-@media (max-width:540px){
-  .proj-row-inner{gap:12px}
-  .proj-head{gap:8px}
-  .proj-desc{font-size:12.5px;line-height:1.52}
-}
 
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:18;background:rgba(13,13,15,.93);border-top:1px solid var(--rule);backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%)}
 .dock-in{display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto;padding:11px 26px 13px}
@@ -746,20 +785,31 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
       <div class="proj-group-label">Spitari</div>
       <div class="proj-grid">
 
-      <a class="proj proj-featured" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
-        <div class="proj-showcase-visual">
-          <div class="proj-showcase-badge">
-            <span class="proj-showcase-dot"></span>
-            <span>daemon active</span>
+      <a class="proj proj-wide" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
+        <div class="proj-art">
+          <div class="art-terminal">
+            <div class="art-term-bar">
+              <div class="art-term-dots"><span></span><span></span><span></span></div>
+              <span class="art-term-title">spitari-watchdog // cluster v2.4</span>
+              <span class="art-term-state">connected</span>
+            </div>
+            <div class="art-term-body">
+              <div class="art-term-line"><span class="art-dim">[01]</span> <span class="art-hi">shard #00</span> <span class="art-mute">gateway 24ms</span> <span class="art-tag">LAVALINK</span></div>
+              <div class="art-term-line"><span class="art-dim">[02]</span> <span class="art-hi">shard #01</span> <span class="art-mute">gateway 19ms</span> <span class="art-tag">LUA HOT-RELOAD</span></div>
+              <div class="art-term-line"><span class="art-dim">[db]</span> <span class="art-hi">boltdb</span> <span class="art-mute">aes-256-gcm</span> <span class="art-tag">ENCRYPTED</span></div>
+            </div>
           </div>
         </div>
-        <div class="proj-featured-body">
+        <div class="proj-card-body">
           <div class="proj-head">
             <div class="proj-identity">
               <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
-              <span class="proj-name">Spitari Watchdog</span>
+              <div class="proj-title-row">
+                <span class="proj-name">Spitari Watchdog</span>
+                <span class="proj-year">2026</span>
+              </div>
             </div>
-            <span class="proj-action">view project <svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></span>
+            <svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
           </div>
           <p class="proj-desc">bot runner I use daily. spin up multiple instances from one terminal, watch them live in a TUI or web dashboard, and hot-reload Lua plugins on the fly.</p>
           <div class="proj-tags">
@@ -771,42 +821,77 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
         </div>
       </a>
 
-      <div class="proj proj-row">
-        <div class="proj-row-inner">
-          <div class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></div>
-          <div class="proj-row-main">
-            <div class="proj-head">
+      <div class="proj">
+        <div class="proj-art">
+          <div class="art-hud">
+            <div class="art-hud-grid"></div>
+            <div class="art-hud-scope">
+              <div class="art-hud-cross"></div>
+              <div class="art-hud-box">
+                <span class="art-hud-tag">0x7FF4B1A0</span>
+                <span class="art-hud-stat">144 FPS · DX9</span>
+              </div>
+            </div>
+            <div class="art-hud-footer">
+              <span>present_hook()</span>
+              <span>mem::read</span>
+              <span>lua_vm</span>
+            </div>
+          </div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-head">
+            <div class="proj-identity">
+              <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
               <div class="proj-title-row">
                 <span class="proj-name">Spitari External</span>
                 <span class="proj-year">2026</span>
               </div>
-              <div class="proj-tags">
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.366 11.233l-2.072-3.59a.747.747 0 0 0-.649-.373H15.5a.75.75 0 0 0-.65.375l-.834 1.444a4.985 4.985 0 0 0-1.956-.39c-2.757 0-5 2.243-5 5s2.243 5 5 5c1.47 0 2.802-.638 3.73-1.656l.06-.065.834 1.444a.75.75 0 0 0 .65.375h4.145a.747.747 0 0 0 .649-.373l2.072-3.59a.75.75 0 0 0 0-.751l-1.184-2.053 1.184-2.053a.75.75 0 0 0 0-.751zM12.06 16.4c-1.544 0-2.8-1.256-2.8-2.8s1.256-2.8 2.8-2.8c.846 0 1.602.378 2.115.975l-1.365 2.365a.75.75 0 0 0 .65 1.125h2.156a2.787 2.787 0 0 1-2.956 1.135zm7.39-2.025h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9zm3 0h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9z"/></svg>C++</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 3.3l6.5 3.25L12 11.8 5.5 8.55 12 5.3zm-7 5.1l6 3v6.3l-6-3v-6.3zm8 9.3v-6.3l6-3v6.3l-6 3z"/></svg>DX9</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 2.2a7.8 7.8 0 0 1 7.28 5.06 6.8 6.8 0 0 0-4.08-1.36 6.9 6.9 0 0 0-6.9 6.9 6.8 6.8 0 0 0 1.36 4.08A7.8 7.8 0 0 1 4.2 12a7.8 7.8 0 0 1 7.8-7.8zm6.5 1.5a1.8 1.8 0 1 1-1.8 1.8 1.8 1.8 0 0 1 1.8-1.8z"/></svg>Lua</span>
-              </div>
             </div>
-            <p class="proj-desc">external for Roblox written in C++. hooks DX9 Present for clean overlay rendering, virtual memory reads, and custom Lua scripts.</p>
+          </div>
+          <p class="proj-desc">external for Roblox written in C++. hooks DX9 Present for clean overlay rendering, virtual memory reads, and custom Lua scripts.</p>
+          <div class="proj-tags">
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.366 11.233l-2.072-3.59a.747.747 0 0 0-.649-.373H15.5a.75.75 0 0 0-.65.375l-.834 1.444a4.985 4.985 0 0 0-1.956-.39c-2.757 0-5 2.243-5 5s2.243 5 5 5c1.47 0 2.802-.638 3.73-1.656l.06-.065.834 1.444a.75.75 0 0 0 .65.375h4.145a.747.747 0 0 0 .649-.373l2.072-3.59a.75.75 0 0 0 0-.751l-1.184-2.053 1.184-2.053a.75.75 0 0 0 0-.751zM12.06 16.4c-1.544 0-2.8-1.256-2.8-2.8s1.256-2.8 2.8-2.8c.846 0 1.602.378 2.115.975l-1.365 2.365a.75.75 0 0 0 .65 1.125h2.156a2.787 2.787 0 0 1-2.956 1.135zm7.39-2.025h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9zm3 0h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9z"/></svg>C++</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 3.3l6.5 3.25L12 11.8 5.5 8.55 12 5.3zm-7 5.1l6 3v6.3l-6-3v-6.3zm8 9.3v-6.3l6-3v6.3l-6 3z"/></svg>DX9</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 2.2a7.8 7.8 0 0 1 7.28 5.06 6.8 6.8 0 0 0-4.08-1.36 6.9 6.9 0 0 0-6.9 6.9 6.8 6.8 0 0 0 1.36 4.08A7.8 7.8 0 0 1 4.2 12a7.8 7.8 0 0 1 7.8-7.8zm6.5 1.5a1.8 1.8 0 1 1-1.8 1.8 1.8 1.8 0 0 1 1.8-1.8z"/></svg>Lua</span>
           </div>
         </div>
       </div>
 
-      <div class="proj proj-row">
-        <div class="proj-row-inner">
-          <div class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></div>
-          <div class="proj-row-main">
-            <div class="proj-head">
+      <div class="proj">
+        <div class="proj-art">
+          <div class="art-launcher">
+            <div class="art-launcher-header">
+              <span class="art-launcher-title">SpitariStrap // multi-instance</span>
+              <span class="art-launcher-sync">sync: ok</span>
+            </div>
+            <div class="art-launcher-slots">
+              <div class="art-slot">
+                <div class="art-slot-dot"></div>
+                <div class="art-slot-info"><b>instance 1</b><span>main_session</span></div>
+              </div>
+              <div class="art-slot">
+                <div class="art-slot-dot"></div>
+                <div class="art-slot-info"><b>instance 2</b><span>alt_session</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-head">
+            <div class="proj-identity">
+              <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
               <div class="proj-title-row">
                 <span class="proj-name">SpitariStrap</span>
                 <span class="proj-year">2026</span>
               </div>
-              <div class="proj-tags">
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5zm4.8-5h.7v-1.5h-.7V9h-1.5v1h-1V9h-1.5v1h-.8v1.5h.8v1h-.8V14h.8v1h1.5v-1h1v1h1.5v-1h.7v-1.5h-.7v-1zm-2.2 1h-1v-1h1z"/></svg>C#</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M3 4v7.5h8V4H3zm0 8.5V20h8v-7.5H3zm9-8.5v7.5h9V4h-9zm0 8.5V20h9v-7.5h-9z"/></svg>WPF</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M2.5 16.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-9h2.3v9H6.5V7.5zm5.7 0h2.4l4.2 5.9V7.5h2.2v9h-2.3l-4.3-6v6h-2.2V7.5z"/></svg>.NET</span>
-              </div>
             </div>
-            <p class="proj-desc">custom Bloxstrap fork with multi-instance detection so accounts don't clash, plus a built-in account switcher.</p>
+          </div>
+          <p class="proj-desc">custom Bloxstrap fork with multi-instance detection so accounts don't clash, plus a built-in account switcher.</p>
+          <div class="proj-tags">
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5zm4.8-5h.7v-1.5h-.7V9h-1.5v1h-1V9h-1.5v1h-.8v1.5h.8v1h-.8V14h.8v1h1.5v-1h1v1h1.5v-1h.7v-1.5h-.7v-1zm-2.2 1h-1v-1h1z"/></svg>C#</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M3 4v7.5h8V4H3zm0 8.5V20h8v-7.5H3zm9-8.5v7.5h9V4h-9zm0 8.5V20h9v-7.5h-9z"/></svg>WPF</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M2.5 16.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-9h2.3v9H6.5V7.5zm5.7 0h2.4l4.2 5.9V7.5h2.2v9h-2.3l-4.3-6v6h-2.2V7.5z"/></svg>.NET</span>
           </div>
         </div>
       </div>
@@ -818,24 +903,47 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
       <div class="proj-group-label">Monu</div>
       <div class="proj-grid">
 
-      <div class="proj proj-row">
-        <div class="proj-row-inner">
-          <div class="proj-mark proj-mark-monu">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      <div class="proj proj-wide">
+        <div class="proj-art">
+          <div class="art-escrow">
+            <div class="art-escrow-meta">
+              <span class="art-escrow-ticket">ticket #0842</span>
+              <span class="art-escrow-badge">12/12 confirms</span>
+            </div>
+            <div class="art-escrow-flow">
+              <div class="art-node">
+                <span class="art-node-role">buyer</span>
+                <span class="art-node-val">signed</span>
+              </div>
+              <div class="art-link">
+                <div class="art-link-line"></div>
+                <div class="art-vault">vault</div>
+                <div class="art-link-line"></div>
+              </div>
+              <div class="art-node">
+                <span class="art-node-role">seller</span>
+                <span class="art-node-val">signed</span>
+              </div>
+            </div>
           </div>
-          <div class="proj-row-main">
-            <div class="proj-head">
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-head">
+            <div class="proj-identity">
+              <span class="proj-mark proj-mark-monu">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </span>
               <div class="proj-title-row">
                 <span class="proj-name proj-name-wordmark"><b>monu</b> <i>MM</i></span>
                 <span class="proj-year">2026</span>
               </div>
-              <div class="proj-tags">
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M1.98 12.35c.07-.8.29-1.55.67-2.26.39-.71.93-1.32 1.62-1.81.68-.5 1.51-.87 2.48-1.12.98-.25 2.05-.38 3.2-.38h1.22v2.33h-1.22c-.78 0-1.49.09-2.14.26-.64.17-1.19.42-1.63.76-.45.34-.79.76-1.02 1.27-.24.51-.36 1.09-.36 1.74s.12 1.23.36 1.74c.24.51.58.94 1.03 1.28.45.34 1 .6 1.65.77.65.17 1.37.26 2.15.26.96 0 1.8-.13 2.53-.4.73-.27 1.34-.65 1.83-1.15.49-.5.85-1.11 1.08-1.83h-5.44v-2.33h7.94c.05.41.08.83.08 1.27 0 1.27-.2 2.43-.6 3.49-.4 1.06-.99 1.98-1.78 2.76-.79.78-1.77 1.39-2.94 1.83-1.17.44-2.52.66-4.04.66-1.57 0-2.97-.24-4.2-.72-1.23-.48-2.28-1.16-3.14-2.04-.86-.88-1.53-1.93-2.01-3.16-.48-1.23-.72-2.61-.72-4.14z"/></svg>Go</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord</span>
-                <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6.5C7.58 8.5 4 6.93 4 6.5S7.58 4.5 12 4.5s8 1.57 8 2-3.58 2-8 2zM2 9.5v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5zm0 6v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5z"/></svg>SQLite</span>
-              </div>
             </div>
-            <p class="proj-desc">automated middleman bot for crypto trades. verifies on-chain deposits in private ticket channels and sweeps fees on confirm.</p>
+          </div>
+          <p class="proj-desc">automated middleman bot for crypto trades. verifies on-chain deposits in private ticket channels and sweeps fees on confirm.</p>
+          <div class="proj-tags">
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M1.98 12.35c.07-.8.29-1.55.67-2.26.39-.71.93-1.32 1.62-1.81.68-.5 1.51-.87 2.48-1.12.98-.25 2.05-.38 3.2-.38h1.22v2.33h-1.22c-.78 0-1.49.09-2.14.26-.64.17-1.19.42-1.63.76-.45.34-.79.76-1.02 1.27-.24.51-.36 1.09-.36 1.74s.12 1.23.36 1.74c.24.51.58.94 1.03 1.28.45.34 1 .6 1.65.77.65.17 1.37.26 2.15.26.96 0 1.8-.13 2.53-.4.73-.27 1.34-.65 1.83-1.15.49-.5.85-1.11 1.08-1.83h-5.44v-2.33h7.94c.05.41.08.83.08 1.27 0 1.27-.2 2.43-.6 3.49-.4 1.06-.99 1.98-1.78 2.76-.79.78-1.77 1.39-2.94 1.83-1.17.44-2.52.66-4.04.66-1.57 0-2.97-.24-4.2-.72-1.23-.48-2.28-1.16-3.14-2.04-.86-.88-1.53-1.93-2.01-3.16-.48-1.23-.72-2.61-.72-4.14z"/></svg>Go</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6.5C7.58 8.5 4 6.93 4 6.5S7.58 4.5 12 4.5s8 1.57 8 2-3.58 2-8 2zM2 9.5v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5zm0 6v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5z"/></svg>SQLite</span>
           </div>
         </div>
       </div>
