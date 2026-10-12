@@ -1,4 +1,3 @@
-
 import { $, toast, safeUrl, tile } from './config.js';
 
 const SCROBBLE_AT = 0.5;

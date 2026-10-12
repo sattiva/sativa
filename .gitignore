@@ -1,5 +1,6 @@
 node_modules
 scratch/
+dist/
 .system_generated
 .env
 .env.local

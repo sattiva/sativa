@@ -186,8 +186,6 @@ export function avatarUrl(u, size) {
   return base + '?size=' + (size || 512);
 }
 
-// The tab icon is the Discord avatar, same source as the hero portrait. The hash is in
-// the path, so a new avatar is a new URL and browsers pick it up on their own.
 function setIcons(u) {
   const pairs = [
     ['siteIcon', 128],

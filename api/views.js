@@ -1,4 +1,3 @@
-
 const crypto = require('crypto');
 const store = require('./_lib/store');
 const G = require('./_lib/guard');

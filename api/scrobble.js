@@ -1,4 +1,3 @@
-
 const crypto = require('crypto');
 const store = require('./_lib/store');
 const G = require('./_lib/guard');
@@ -91,9 +90,7 @@ function vaultView(lanyard) {
   const seenAlbum = {};
   for (const id of ids) {
     const t = MANIFEST[id];
-    // A collab credit like "Limerence, Yves Tumor" is two artists, not one artist
-    // with a comma in the name. Split on commas so the distinct count and the ranked
-    // list both treat them separately.
+
     const names = String(t.artist || '')
       .split(',')
       .map((s) => s.trim())
@@ -128,9 +125,6 @@ function vaultView(lanyard) {
     });
   }
 
-  // Without BASELINE_STATS every counter rendered a flat 0, which read as a broken
-  // panel rather than an unconfigured one. Derive the floor from the manifest so the
-  // numbers are at least self-consistent, then let the env override upward.
   const total = BASELINE.scrobbles || tracks.length;
   const days = BASELINE.days || Math.max(artists.length, 1);
   const topArtist = BASELINE.topArtist || (artists[0] ? artists[0].name : '');
@@ -364,8 +358,7 @@ module.exports = async function handler(req, res) {
 
   if (!store.READY) {
     if (req.method === 'GET' || req.method === 'HEAD') {
-      // The Lanyard fallback is still a public endpoint, so it stays behind the
-      // limiter. Without Redis that means the per-instance bucket in the guard.
+
       return G.applyLimits(store, req, res, READ_LIMITS, rand()).then((ok) => {
         if (!ok) return;
         return fetchLanyard()

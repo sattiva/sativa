@@ -1,4 +1,3 @@
-
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY || '';
 const TURNSTILE_SITE = process.env.TURNSTILE_SITE_KEY || '';
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
@@ -7,8 +6,6 @@ const TURNSTILE_TIMEOUT_MS = 5000;
 const MAX_BODY_BYTES = 4096;
 const VERIFY_TIMEOUT_MS = 5000;
 
-// Every endpoint runs these tiers before its own. One IP cannot mint an unbounded
-// number of requests by rotating between /views, /scrobble and /guestbook.
 const GLOBAL_LIMITS = [
   { scope: 'gz:sec', max: 60, windowMs: 10000 },
   { scope: 'gz:min', max: 300, windowMs: 60000 },
@@ -16,8 +13,6 @@ const GLOBAL_LIMITS = [
   { scope: 'gz:day', max: 40000, windowMs: 86400000 }
 ];
 
-// Rate limiter state when no Redis is configured. Per-instance, so it only needs to
-// blunt a single warm lambda, not coordinate a fleet. Bounded and swept.
 const LOCAL_SLOTS = 8192;
 const local = new Map();
 const sweep = setInterval(() => {
@@ -84,9 +79,7 @@ function fail(res, status, code, detail, extraHeaders) {
 }
 
 function preflight(req, res) {
-  // No Access-Control-Allow-Origin. Nothing on the site is fetched cross-origin, so a
-  // wildcard would only hand third-party pages a readable API. Preflights that do
-  // arrive therefore come from someone else's origin and get refused.
+
   if (!sameOrigin(req)) {
     fail(res, 403, 'bad_origin', 'Cross-origin requests are not accepted.');
     return true;
@@ -155,7 +148,7 @@ function text(v, max) {
 function sameOrigin(req) {
   const h = req.headers || {};
   const origin = h.origin || h.referer || '';
-  if (!origin) return true; // same-origin form posts and native navigations send neither
+  if (!origin) return true;
   try {
     return new URL(origin).host === (h.host || '');
   } catch (e) {
@@ -194,9 +187,7 @@ function applyLimits(store, req, res, limits, ident) {
   const ip = clientIp(req);
   const tiers = GLOBAL_LIMITS.concat(Array.isArray(limits) ? limits : []);
   const shared = store && store.READY;
-  // Every tier is evaluated concurrently. Chaining them cost one Upstash round trip per
-  // tier on the critical path, which showed up as hundreds of milliseconds of latency
-  // on the guestbook POST.
+
   return Promise.all(
     tiers.map((l) =>
       (shared

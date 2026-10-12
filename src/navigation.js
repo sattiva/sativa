@@ -16,8 +16,6 @@ export function scApply() {
   $stage.style.transform = 'translate3d(0,' + (-SC.y).toFixed(2) + 'px,0)';
 }
 
-// No easing. A still page scrolls to where you asked and stops, and there is no rAF
-// loop burning frames to get there.
 function scLoop() {
   SC.y = SC.target;
   scApply();
@@ -205,8 +203,6 @@ export function initNavigation() {
   });
 }
 
-// One static frame. The shader is a drifting tint; without a loop it is just a
-// background, which is the whole point of a still page.
 export function initBg() {
   if (MOB) return;
   const cv = $('bgCanvas');

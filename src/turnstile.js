@@ -1,4 +1,3 @@
-
 import { toast } from './config.js';
 
 const SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';

@@ -1,4 +1,3 @@
-
 import { $, esc, toast, safeUrl, fmtNum, timeAgo, tile } from './config.js';
 import { scMax } from './navigation.js';
 

@@ -1,8 +1,3 @@
-// Client-side lockdown against the lazy routes: select-and-copy, the context menu,
-// keyboard save/print/source/devtools shortcuts, drag-out of artwork, and text-to-speech
-// narration of the page. None of this is a security boundary, the bundle always ships
-// to the browser, it only removes the one-click paths.
-
 const BLOCK_MOD = {
   KeyA: 'select-all',
   KeyC: 'copy',
@@ -32,8 +27,6 @@ function onKey(e) {
   const code = e.code || '';
   const key = e.key || '';
 
-  // F11 and Ctrl/Cmd+Alt+F stay live: the lyrics view has a fullscreen button and
-  // fullscreen has to keep working.
   if (key === 'F11' || (mod && e.altKey && String(key).toLowerCase() === 'f')) return;
 
   if (mod && e.shiftKey && BLOCK_SHIFT_MOD[code]) return swallow(e);
@@ -84,8 +77,7 @@ function initEvents() {
 }
 
 function initClipboard() {
-  // Deliberately not touching navigator.clipboard: the one intentional copy on this
-  // site is the "copy handle" button, and it should keep working.
+
   try {
     if (typeof document.execCommand === 'function') document.execCommand = () => false;
   } catch (e) {}
