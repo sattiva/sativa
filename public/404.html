@@ -157,10 +157,19 @@ html.motion-off .ident{transition:none}
 
 .eyebrow{display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--faint);text-transform:lowercase;margin-bottom:8px}
 .eyebrow::before{content:"";width:12px;height:1px;background:var(--faint)}
-.home-header{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;max-width:680px;margin:8px auto 0}
-.home-user-row{display:flex;align-items:center;gap:8px;margin-top:6px}
-.home-user-ava{width:22px;height:22px;border-radius:50%;object-fit:cover;display:block}
-.home-user-handle{font-family:var(--fm);font-size:11.5px;color:var(--dim);font-weight:500}
+.home-header{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;max-width:680px;margin:8px auto 0;gap:0}
+.home-ava-wrap{position:relative;width:88px;height:88px;flex-shrink:0}
+.home-user-ava{width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;border:3px solid rgba(255,255,255,.08)}
+.home-status-ring{position:absolute;bottom:2px;right:2px;width:22px;height:22px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px var(--ink)}
+.home-status-ring svg{width:18px;height:18px}
+.home-user-row{display:flex;align-items:center;gap:14px;margin-top:14px}
+.home-name-block{display:flex;flex-direction:column;gap:3px}
+.home-user-handle{font-family:var(--fm);font-size:12px;color:var(--dim);font-weight:500;letter-spacing:.01em}
+.home-bio{font-size:13.5px;color:var(--mute);line-height:1.6;margin-top:10px;max-width:480px}
+.home-handle{background:none;border:none;padding:0;cursor:pointer;font-family:inherit;color:inherit}
+.home-presence{display:flex;align-items:center;gap:6px;margin-top:8px;font-family:var(--fm);font-size:12px;color:var(--dim)}
+.home-presence img{width:16px;height:16px;border-radius:3px}
+
 .home-card-box{margin-top:22px;width:100%;max-width:680px;padding:22px 24px;border-radius:14px;background:rgba(18,19,23,.78);border:1px solid rgba(255,255,255,.07);box-shadow:0 18px 40px -20px rgba(0,0,0,.8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-align:left}
 .home-card-box p{font-size:14px;line-height:1.75;color:var(--mute);letter-spacing:-.008em}
 .home-card-box p b{color:var(--paper);font-weight:600}
@@ -674,7 +683,8 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
   .linkcard-go{display:none}
   .stage{padding:84px 18px 110px}
   .bio-block,.weather-widget{max-width:none}
-  .home-ava{width:78px;height:78px}
+  .home-ava-wrap{width:72px;height:72px}
+  .home-user-ava{width:72px;height:72px}
   .home-name{font-size:29px;margin-top:17px}
   .meter b{font-size:19px}
   .meter span{font-size:8px;letter-spacing:.1em}
@@ -776,13 +786,18 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 <section class="view" data-view="home">
 
   <div class="home-header home-id">
-    <h1 class="home-name js-name" id="displayName">cosmin</h1>
     <div class="home-user-row">
-      <div class="home-ava"><img id="avatar" class="home-user-ava js-avatar" alt="Avatar" referrerpolicy="no-referrer" decoding="async" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23131316'/%3E%3C/svg%3E"><span class="status-dot js-status" id="statusDot"></span></div>
-      <button class="home-handle js-handle-btn" id="handle" type="button"><span class="js-handle" id="handleText">@sativasballs</span></button>
-      <div class="home-presence" id="homePresence" hidden=""><img id="homePresenceEmoji" alt="" referrerpolicy="no-referrer" decoding="async"><span id="homePresenceText"></span></div>
+      <div class="home-ava-wrap">
+        <img id="avatar" class="home-user-ava js-avatar" alt="Avatar" referrerpolicy="no-referrer" decoding="async" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23131316'/%3E%3C/svg%3E">
+        <span class="home-status-ring js-status" id="statusDot"></span>
+      </div>
+      <div class="home-name-block">
+        <h1 class="home-name js-name" id="displayName">cosmin</h1>
+        <button class="home-handle js-handle-btn" id="handle" type="button"><span class="js-handle home-user-handle" id="handleText">@sativasballs</span></button>
+      </div>
     </div>
-    <span id="bioText" hidden="">hi I'm sativa!</span>
+    <p class="home-bio" id="bioText">hi I'm sativa!</p>
+    <div class="home-presence" id="homePresence" hidden=""><img id="homePresenceEmoji" alt="" referrerpolicy="no-referrer" decoding="async"><span id="homePresenceText"></span></div>
   </div>
 
   <div class="now-playing rv" id="nowPlaying" hidden="">
