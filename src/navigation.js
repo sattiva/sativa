@@ -15,6 +15,11 @@ export function scMax() {
 export function scApply() {
   if (!SC.active || !$stage) return;
   $stage.style.transform = 'translate3d(0,' + (-SC.y).toFixed(2) + 'px,0)';
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent('stagescroll', { detail: { y: SC.y } }));
+    } catch (e) {}
+  }
 }
 
 function scLoop() {

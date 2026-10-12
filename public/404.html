@@ -384,25 +384,51 @@ a.proj{cursor:pointer}
 a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
 
 /* Custom Art Canvases */
-.proj-art{position:relative;height:128px;background:radial-gradient(100% 120% at 50% 10%,rgba(32,34,42,.55) 0%,rgba(11,12,15,.98) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:12px 18px;overflow:hidden}
+.proj-art{position:relative;height:140px;background:radial-gradient(100% 120% at 50% 10%,rgba(32,34,42,.55) 0%,rgba(11,12,15,.98) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:12px 18px;overflow:hidden}
+.proj-art::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,255,255,.04) 0%,transparent 70%);pointer-events:none;animation:artShimmer 6s ease-in-out infinite alternate}
+.proj-art::after{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);transform:skewX(-20deg);pointer-events:none;animation:liquidSheen 8s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes artShimmer{0%{opacity:.6;transform:scale(1) translateY(0)}100%{opacity:1;transform:scale(1.04) translateY(4px)}}
+@keyframes liquidSheen{0%,65%{left:-100%}100%{left:200%}}
 
-/* 1. Watchdog Telemetry Art */
-.art-telemetry{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
-.art-telemetry-top{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
-.art-telemetry-nodes{display:flex;align-items:center;gap:7px}
-.art-node-dot{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9)}
-.art-telemetry-title{color:var(--paper);font-weight:600;letter-spacing:.02em}
-.art-telemetry-rate{color:var(--dim);font-size:9px;letter-spacing:.03em}
-.art-wave-wrap{width:100%;height:44px;display:flex;align-items:center;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:2px 8px;overflow:hidden}
-.art-wave-wrap svg{width:100%;height:100%;display:block}
-.art-telemetry-bottom{display:flex;align-items:center;justify-content:space-between;gap:6px;font-family:var(--fm);font-size:9px}
-.art-pill{padding:3px 7px;border-radius:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:var(--dim);white-space:nowrap}
-.art-pill b{color:var(--paper);font-weight:500}
+/* 1. Watchdog Bot Processes Art */
+.art-bots{width:100%;max-width:500px;display:flex;flex-direction:column;gap:6px}
+.art-bots-header{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--faint);padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.05)}
+.art-bots-title{color:var(--paper);font-weight:600;font-size:9.5px;letter-spacing:.02em}
+.art-bots-meta{color:var(--dim)}
+.art-bot-row{display:flex;align-items:center;gap:9px;padding:6px 9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.art-bot-dot{width:5px;height:5px;border-radius:50%;background:#fff;flex-shrink:0;animation:botPulse 2s ease-in-out infinite}
+.art-bot-row:nth-child(2) .art-bot-dot{animation-delay:.7s}
+@keyframes botPulse{0%,100%{opacity:1;box-shadow:0 0 5px rgba(255,255,255,.9)}50%{opacity:.4;box-shadow:none}}
+.art-bot-name{font-family:var(--fm);font-size:9px;font-weight:600;color:var(--paper);flex:1;min-width:0;letter-spacing:.02em}
+.art-bot-stats{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:8px;color:var(--dim)}
+.art-bot-stat{display:flex;flex-direction:column;align-items:flex-end;gap:0px}
+.art-bot-stat span{font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.art-bot-stat b{font-size:9px;color:var(--mute);font-weight:500}
+.art-bot-bar{width:38px;height:3px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;position:relative}
+.art-bot-bar i{position:absolute;left:0;top:0;bottom:0;background:#fff;border-radius:99px;animation:botBar 3s ease-in-out infinite}
+.art-bot-row:nth-child(2) .art-bot-bar i{animation-delay:1.2s;width:62%}
+.art-bot-row:nth-child(3) .art-bot-bar i{animation-delay:.4s;width:74%}
+@keyframes botBar{0%,100%{opacity:.5}50%{opacity:.95}}
 
-/* 2. Spitari External - Overlay ESP Art */
+/* 2. Spitari External - 3D Canvas + 2D HUD */
 .art-esp{position:relative;width:100%;max-width:460px;height:100%;display:flex;align-items:center;justify-content:center}
-.art-esp-frame{position:relative;width:100%;height:104px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.art-esp-frame svg{width:100%;height:100%;display:block}
+.art-esp-canvas-wrap{position:relative;width:100%;height:116px;border-radius:6px;overflow:hidden;background:rgba(6,7,10,.9);border:1px solid rgba(255,255,255,.07)}
+.art-esp-canvas{width:100%;height:100%;display:block}
+.art-esp-hud{position:absolute;inset:0;pointer-events:none}
+.art-esp-crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.art-esp-reticle{width:18px;height:18px;position:relative}
+.art-esp-reticle::before,.art-esp-reticle::after{content:"";position:absolute;background:#fff}
+.art-esp-reticle::before{width:1px;height:6px;left:50%;top:0;transform:translateX(-50%)}
+.art-esp-reticle::after{width:6px;height:1px;top:50%;left:0;transform:translateY(-50%)}
+.art-esp-dot{width:2px;height:2px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.art-esp-box{position:absolute;border:1px solid rgba(255,255,255,.55);border-radius:1px;animation:espBoxBreath 2.4s ease-in-out infinite}
+@keyframes espBoxBreath{0%,100%{border-color:rgba(255,255,255,.45);box-shadow:0 0 6px rgba(255,255,255,.1)}50%{border-color:rgba(255,255,255,.8);box-shadow:0 0 12px rgba(255,255,255,.25)}}
+.art-esp-box::before,.art-esp-box::after{content:"";position:absolute;width:5px;height:5px;border-color:#fff;border-style:solid}
+.art-esp-box::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.art-esp-box::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+.art-esp-hpbar{position:absolute;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.art-esp-hpbar i{height:100%;background:#fff;border-radius:99px;transition:width .5s ease}
+.art-esp-label{position:absolute;font-family:var(--fm);font-size:7px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.04em;white-space:nowrap}
 
 /* 3. SpitariStrap Sessions Art */
 .art-sessions{width:100%;max-width:390px;border-radius:8px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.08);padding:7px 11px;display:flex;flex-direction:column;gap:6px}
@@ -446,7 +472,7 @@ a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);bo
 .art-exo-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint);padding:0 2px}
 .art-exo-status{display:flex;align-items:center;gap:5px;color:var(--mute)}
 .art-exo-rate{font-family:var(--fm);font-size:8px;font-weight:500;color:var(--dim);margin-left:4px}
-.art-exo-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.8);animation:exoDot 2s ease-in-out infinite}
+.art-exo-dot{width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8);animation:exoDot 2s ease-in-out infinite}
 @keyframes exoBeam{0%{transform:translateX(-16px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateX(44px);opacity:0}}
 @keyframes exoDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
 
@@ -454,20 +480,22 @@ a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);bo
 .projects-active .proj{opacity:0;transform:translateY(12px);transition:opacity .35s cubic-bezier(.2,.8,.2,1),transform .35s cubic-bezier(.2,.8,.2,1),background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
 .projects-active .proj.proj-entered{opacity:1;transform:translateY(0)}
 
-.proj.proj-scrolled-1 .art-wave-wrap{box-shadow:inset 0 0 16px rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);transition:all .5s ease}
-.proj.proj-scrolled-1 .art-telemetry-nodes{animation:pulseWatchdog 1.4s ease-out 1}
-@keyframes pulseWatchdog{0%{transform:scale(.98);opacity:.8}50%{transform:scale(1.02);opacity:1}100%{transform:scale(1);opacity:1}}
+.proj.proj-scrolled-1 .art-bots{border-color:rgba(255,255,255,.16);box-shadow:0 0 24px rgba(255,255,255,.05);transition:all .5s ease}
+.proj.proj-scrolled-1 .art-bot-row{animation:botRowPop .7s cubic-bezier(.16,1,.3,1) 1}
+@keyframes botRowPop{0%{transform:translateX(-6px);opacity:.6}100%{transform:translateX(0);opacity:1}}
 
-.proj.proj-scrolled-2 .art-esp-frame{border-color:rgba(255,255,255,.14);box-shadow:inset 0 0 18px rgba(255,255,255,.04);transition:all .5s ease}
-.proj.proj-scrolled-2 .art-esp-frame svg{animation:espLock 1.2s cubic-bezier(.16,1,.3,1) 1}
-@keyframes espLock{0%{transform:scale(1.04);filter:drop-shadow(0 0 8px rgba(255,255,255,.6))}100%{transform:scale(1);filter:none}}
+.proj.proj-scrolled-2 .art-esp-canvas-wrap{box-shadow:inset 0 0 30px rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);transition:all .5s ease}
+.proj.proj-scrolled-2 .art-esp-hud{animation:espHudSweep 1s cubic-bezier(.16,1,.3,1) 1}
+@keyframes espHudSweep{0%{opacity:.3;transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
 
 .proj.proj-scrolled-3 .art-sessions{border-color:rgba(255,255,255,.16);box-shadow:0 8px 24px -10px rgba(0,0,0,.9);transition:all .5s ease}
 .proj.proj-scrolled-3 .art-sess-card{animation:sessCardPop .8s cubic-bezier(.16,1,.3,1) 1}
 @keyframes sessCardPop{0%{transform:translateY(4px);opacity:.6}100%{transform:translateY(0);opacity:1}}
 
-.proj.proj-scrolled-4 .art-exo-body{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.035);transition:all .5s ease}
+.proj.proj-scrolled-4 .art-solana{filter:drop-shadow(0 0 16px rgba(255,255,255,.06));transition:all .6s ease}
+.proj.proj-scrolled-4 .art-exo-body{border-color:rgba(255,255,255,.2);background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.015) 100%);box-shadow:0 4px 20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12);transition:all .5s ease}
 .proj.proj-scrolled-4 .art-exo-sum{animation:solValGlow 1.2s ease-out 1}
+.proj.proj-scrolled-4 .art-exo-conduit .art-exo-beam{animation:exoBeam 0.9s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes solValGlow{0%{color:#fff;text-shadow:0 0 14px rgba(255,255,255,.8)}100%{text-shadow:none}}
 
 /* Card Body */
@@ -831,35 +859,28 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <a class="proj proj-wide" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
         <div class="proj-art">
-          <div class="art-telemetry">
-            <div class="art-telemetry-top">
-              <div class="art-telemetry-nodes">
-                <span class="art-telemetry-title">spitari-watchdog process runner</span>
+          <div class="art-bots">
+            <div class="art-bots-header">
+              <span class="art-bots-title">spitari processes</span>
+              <span class="art-bots-meta">2 running · uptime 14h 33m</span>
+            </div>
+            <div class="art-bot-row">
+              <span class="art-bot-dot"></span>
+              <span class="art-bot-name">discord-gateway</span>
+              <div class="art-bot-stats">
+                <div class="art-bot-stat"><span>heap</span><b id="botHeap1">31.4 MB</b></div>
+                <div class="art-bot-stat"><span>lag</span><b id="botLag1">19ms</b></div>
+                <div class="art-bot-bar"><i id="botBar1" style="width:55%"></i></div>
               </div>
-              <span class="art-telemetry-rate">2 instances · 48.2 MB · 19ms avg</span>
             </div>
-            <div class="art-wave-wrap">
-              <svg viewBox="0 0 440 38" preserveAspectRatio="none" fill="none" aria-hidden="true">
-                <defs>
-                  <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"></stop>
-                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
-                  </linearGradient>
-                </defs>
-                <line x1="0" y1="19" x2="440" y2="19" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3 3"></line>
-                <line x1="110" y1="0" x2="110" y2="38" stroke="rgba(255,255,255,0.04)"></line>
-                <line x1="220" y1="0" x2="220" y2="38" stroke="rgba(255,255,255,0.04)"></line>
-                <line x1="330" y1="0" x2="330" y2="38" stroke="rgba(255,255,255,0.04)"></line>
-                <polygon points="0,28 35,26 70,22 105,29 140,14 175,20 210,11 245,24 280,16 315,22 350,9 385,18 420,13 440,16 440,38 0,38" fill="url(#waveGrad)"></polygon>
-                <polyline points="0,28 35,26 70,22 105,29 140,14 175,20 210,11 245,24 280,16 315,22 350,9 385,18 420,13 440,16" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></polyline>
-                <circle cx="210" cy="11" r="2.5" fill="#ffffff"></circle>
-                <circle cx="350" cy="9" r="2.5" fill="#ffffff"></circle>
-              </svg>
-            </div>
-            <div class="art-telemetry-bottom">
-              <span class="art-pill"><b>shard 00</b> 24ms · lavalink pool</span>
-              <span class="art-pill"><b>shard 01</b> 19ms · lua sandbox</span>
-              <span class="art-pill"><b>storage</b> boltdb encrypted</span>
+            <div class="art-bot-row">
+              <span class="art-bot-dot"></span>
+              <span class="art-bot-name">plugin-host</span>
+              <div class="art-bot-stats">
+                <div class="art-bot-stat"><span>heap</span><b id="botHeap2">16.8 MB</b></div>
+                <div class="art-bot-stat"><span>lag</span><b id="botLag2">11ms</b></div>
+                <div class="art-bot-bar"><i id="botBar2" style="width:62%"></i></div>
+              </div>
             </div>
           </div>
         </div>
@@ -887,93 +908,23 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
       <div class="proj">
         <div class="proj-art">
           <div class="art-esp">
-            <div class="art-esp-frame">
-              <svg viewBox="0 0 440 104" fill="none" aria-hidden="true">
-                <defs>
-                  <linearGradient id="espBoxGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.04"></stop>
-                    <stop offset="100%" stop-color="#000000" stop-opacity="0.65"></stop>
-                  </linearGradient>
-                  <filter id="chamsGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="1.5" result="blur"></feGaussianBlur>
-                    <feMerge>
-                      <feMergeNode in="blur"></feMergeNode>
-                      <feMergeNode in="SourceGraphic"></feMergeNode>
-                    </feMerge>
-                  </filter>
-                </defs>
-
-                <line x1="0" y1="52" x2="440" y2="52" stroke="rgba(255,255,255,0.03)" stroke-dasharray="2 4"></line>
-                <text x="12" y="14" fill="rgba(255,255,255,0.45)" font-family="var(--fm)" font-size="7.5" font-weight="600" letter-spacing="0.06em">[CHAMS // ESP]</text>
-                <text x="428" y="14" fill="rgba(255,255,255,0.45)" font-family="var(--fm)" font-size="7.5" font-weight="500" text-anchor="end">FOV 90° · 144 FPS</text>
-
-                <circle cx="220" cy="52" r="38" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="2 3"></circle>
-                <circle cx="220" cy="52" r="1.2" fill="#ffffff"></circle>
-                <line x1="214" y1="52" x2="218" y2="52" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="222" y1="52" x2="226" y2="52" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="220" y1="46" x2="220" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="220" y1="54" x2="220" y2="58" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-
-                <line x1="220" y1="104" x2="168" y2="88" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="2 3"></line>
-
-                <rect x="142" y="16" width="52" height="72" rx="2" fill="url(#espBoxGrad)" stroke="rgba(255,255,255,0.08)"></rect>
-                <polyline points="142,26 142,16 152,16" stroke="#ffffff" stroke-width="1.4"></polyline>
-                <polyline points="184,16 194,16 194,26" stroke="#ffffff" stroke-width="1.4"></polyline>
-                <polyline points="142,78 142,88 152,88" stroke="#ffffff" stroke-width="1.4"></polyline>
-                <polyline points="184,88 194,88 194,78" stroke="#ffffff" stroke-width="1.4"></polyline>
-
-                <g filter="url(#chamsGlow)">
-                  <rect x="161" y="20" width="14" height="12" rx="2" fill="rgba(255,255,255,0.2)" stroke="#ffffff" stroke-width="0.9"></rect>
-                  <rect x="157" y="34" width="22" height="26" rx="2" fill="rgba(255,255,255,0.16)" stroke="#ffffff" stroke-width="0.9"></rect>
-                  <rect x="147" y="34" width="8" height="26" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
-                  <rect x="181" y="34" width="8" height="26" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
-                  <rect x="157" y="62" width="10" height="24" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
-                  <rect x="169" y="62" width="10" height="24" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
-                </g>
-
-                <circle cx="168" cy="26" r="2.2" fill="#ffffff"></circle>
-                <line x1="168" y1="26" x2="168" y2="61" stroke="#ffffff" stroke-width="1.2"></line>
-                <line x1="151" y1="38" x2="185" y2="38" stroke="#ffffff" stroke-width="1.2"></line>
-                <line x1="151" y1="38" x2="151" y2="56" stroke="#ffffff" stroke-width="1.2"></line>
-                <line x1="185" y1="38" x2="185" y2="56" stroke="#ffffff" stroke-width="1.2"></line>
-                <line x1="162" y1="61" x2="162" y2="84" stroke="#ffffff" stroke-width="1.2"></line>
-                <line x1="174" y1="61" x2="174" y2="84" stroke="#ffffff" stroke-width="1.2"></line>
-                <circle cx="151" cy="38" r="1.3" fill="#ffffff"></circle>
-                <circle cx="185" cy="38" r="1.3" fill="#ffffff"></circle>
-                <circle cx="162" cy="61" r="1.3" fill="#ffffff"></circle>
-                <circle cx="174" cy="61" r="1.3" fill="#ffffff"></circle>
-
-                <rect x="136" y="16" width="2" height="72" rx="1" fill="rgba(255,255,255,0.15)"></rect>
-                <rect x="136" y="16" width="2" height="72" rx="1" fill="#4ade80"></rect>
-                <text x="129" y="23" fill="#4ade80" font-family="var(--fm)" font-size="6.5" font-weight="600" text-anchor="end">100</text>
-
-                <rect x="132" y="28" width="1.8" height="60" rx="1" fill="rgba(255,255,255,0.15)"></rect>
-                <rect x="132" y="42" width="1.8" height="46" rx="1" fill="#78c8ee"></rect>
-                <text x="129" y="32" fill="#78c8ee" font-family="var(--fm)" font-size="6" font-weight="500" text-anchor="end">70</text>
-
-                <text x="168" y="11" fill="#ffffff" font-family="var(--fm)" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">PHOTON [CREW]</text>
-
-                <text x="200" y="26" fill="#ffffff" font-family="var(--fm)" font-size="6.5" font-weight="600">SCOPED</text>
-                <text x="200" y="36" fill="rgba(255,255,255,0.65)" font-family="var(--fm)" font-size="6.5">RELOAD</text>
-                <text x="200" y="46" fill="rgba(255,255,255,0.4)" font-family="var(--fm)" font-size="6.5">ARMOR</text>
-
-                <text x="168" y="98" fill="#ffffff" font-family="var(--fm)" font-size="7" font-weight="600" text-anchor="middle">ASSAULT RIFLE · 24M</text>
-
-                <polyline points="298,42 298,36 304,36" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
-                <polyline points="320,36 326,36 326,42" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
-                <polyline points="298,72 298,78 304,78" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
-                <polyline points="320,78 326,78 326,72" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
-                <rect x="294" y="36" width="1.5" height="42" fill="#4ade80"></rect>
-                <circle cx="312" cy="42" r="1.5" fill="rgba(255,255,255,0.8)"></circle>
-                <line x1="312" y1="43" x2="312" y2="62" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
-                <line x1="312" y1="62" x2="308" y2="74" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
-                <line x1="312" y1="62" x2="316" y2="74" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
-                <text x="312" y="32" fill="rgba(255,255,255,0.7)" font-family="var(--fm)" font-size="6" text-anchor="middle">PLAYER [58M]</text>
-                <text x="312" y="85" fill="rgba(255,255,255,0.5)" font-family="var(--fm)" font-size="5.5" text-anchor="middle">SHOTGUN</text>
-              </svg>
+            <div class="art-esp-canvas-wrap" id="espWrap">
+              <canvas class="art-esp-canvas" id="espCanvas" aria-hidden="true"></canvas>
+              <div class="art-esp-hud" aria-hidden="true">
+                <div class="art-esp-crosshair"><div class="art-esp-reticle"><div class="art-esp-dot"></div></div></div>
+                <div class="art-esp-box" style="top:18%;left:38%;width:18%;height:64%" id="espBox1">
+                  <div class="art-esp-hpbar" style="position:absolute;bottom:-9px;left:0;right:0;height:3px"><i id="espHp1" style="width:88%"></i></div>
+                  <div class="art-esp-label" style="top:-12px;left:0" id="espLbl1">sativa · 88hp</div>
+                </div>
+                <div class="art-esp-box" style="top:24%;right:14%;width:14%;height:52%" id="espBox2">
+                  <div class="art-esp-hpbar" style="position:absolute;bottom:-9px;left:0;right:0;height:3px"><i id="espHp2" style="width:43%"></i></div>
+                  <div class="art-esp-label" style="top:-12px;left:0" id="espLbl2">Player · 43hp</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
         <div class="proj-card-body">
           <div class="proj-head">
             <div class="proj-identity">
@@ -984,7 +935,7 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
               </div>
             </div>
           </div>
-          <p class="proj-desc">external for Roblox written in C++. renders clean overlays and fully external with custom Lua scripts.</p>
+          <p class="proj-desc">fully external Roblox cheat in C++. clean ESP overlays, no injection - reads memory from outside the process with custom Lua scripting.</p>
           <div class="proj-tags">
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.11c-3.92 0-7.109-3.19-7.109-7.11 0-3.92 3.19-7.11 7.11-7.11a7.133 7.133 0 016.156 3.553l-3.076 1.78a3.567 3.567 0 00-3.08-1.78A3.56 3.56 0 008.444 12 3.56 3.56 0 0012 15.555a3.57 3.57 0 003.08-1.778l3.078 1.78A7.135 7.135 0 0112 19.11zm7.11-6.715h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79z"/></svg>C++</span>
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 3.3l6.5 3.25L12 11.8 5.5 8.55 12 5.3zm-7 5.1l6 3v6.3l-6-3v-6.3zm8 9.3v-6.3l6-3v6.3l-6 3z"/></svg>DX9</span>
