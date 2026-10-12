@@ -395,7 +395,7 @@ a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);bo
 .art-pill b{color:var(--paper);font-weight:500}
 
 /* 2. Spitari External - Overlay ESP Art */
-.art-esp{position:relative;width:100%;max-width:390px;height:100%;display:flex;align-items:center;justify-content:center}
+.art-esp{position:relative;width:100%;max-width:460px;height:100%;display:flex;align-items:center;justify-content:center}
 .art-esp-frame{position:relative;width:100%;height:104px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .art-esp-frame svg{width:100%;height:100%;display:block}
 
@@ -417,21 +417,32 @@ a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);bo
 .art-sess-status{font-size:8px;font-family:var(--fm);padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--paper);white-space:nowrap}
 .art-sessions-footer{font-family:var(--fm);font-size:8.5px;color:var(--faint);text-align:center;padding-top:2px}
 
-/* 4. Monu MM Solana Transfer Art */
-.art-solana{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
-.art-solana-header{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
-.art-solana-title{display:flex;align-items:center;gap:6px;color:var(--paper);font-weight:600}
-.art-solana-title svg{width:12px;height:12px;fill:currentColor}
-.art-solana-badge{font-size:8.5px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.04em}
-.art-solana-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.art-sol-node{display:flex;flex-direction:column;gap:2px;font-family:var(--fm);padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);min-width:98px}
-.art-sol-label{font-size:8.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
-.art-sol-addr{font-size:9.5px;color:var(--paper);font-weight:500}
-.art-sol-bridge{flex:1;display:flex;align-items:center;gap:6px}
-.art-sol-line{flex:1;height:1px;background:rgba(255,255,255,.12)}
-.art-sol-chip{padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:8.5px;color:#fff;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.art-sol-chip svg{width:10px;height:10px;fill:currentColor}
-.art-solana-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint)}
+/* 4. Monu MM Exodus Solana Wallet Art */
+.art-solana{width:100%;max-width:460px;display:flex;flex-direction:column;gap:7px}
+.art-exo-header{display:flex;align-items:center;justify-content:space-between}
+.art-exo-asset{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:9.5px;color:var(--paper);font-weight:600}
+.art-exo-asset svg{width:12px;height:12px;fill:currentColor}
+.art-exo-net{font-size:8px;font-weight:500;color:var(--faint);padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);text-transform:uppercase;letter-spacing:.04em}
+.art-exo-tabs{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.03);padding:2px;border-radius:6px;border:1px solid rgba(255,255,255,.06)}
+.art-exo-tab{font-family:var(--fm);font-size:8.5px;font-weight:500;padding:2px 7px;border-radius:4px;color:var(--dim);background:none;border:none;cursor:default;transition:all .18s}
+.art-exo-tab.active{color:#fff;background:rgba(255,255,255,.1);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.art-exo-body{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:7px}
+.art-exo-val{display:flex;flex-direction:column;gap:1px}
+.art-exo-sum{font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;letter-spacing:-.01em;line-height:1.1}
+.art-exo-sum span{font-family:var(--fm);font-size:10px;font-weight:500;color:var(--dim);margin-left:2px}
+.art-exo-usd{font-family:var(--fm);font-size:8.5px;color:var(--faint)}
+.art-exo-route{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.art-exo-chip{display:flex;flex-direction:column;gap:1px;font-family:var(--fm);padding:3px 7px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);min-width:74px}
+.art-exo-chip span{font-size:7.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em}
+.art-exo-chip b{font-size:9px;color:var(--paper);font-weight:500}
+.art-exo-conduit{position:relative;width:44px;height:8px;display:flex;align-items:center;overflow:hidden}
+.art-exo-track{position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.14)}
+.art-exo-beam{position:absolute;top:0;left:0;width:16px;height:8px;background:radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);animation:exoBeam 1.8s cubic-bezier(.4,0,.2,1) infinite}
+.art-exo-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint);padding:0 2px}
+.art-exo-status{display:flex;align-items:center;gap:5px;color:var(--mute)}
+.art-exo-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.8);animation:exoDot 2s ease-in-out infinite}
+@keyframes exoBeam{0%{transform:translateX(-16px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateX(44px);opacity:0}}
+@keyframes exoDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
 
 /* Card Body */
 .proj-card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
@@ -844,37 +855,88 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
         <div class="proj-art">
           <div class="art-esp">
             <div class="art-esp-frame">
-              <svg viewBox="0 0 360 100" fill="none" aria-hidden="true">
-                <circle cx="180" cy="50" r="1.5" fill="#ffffff"></circle>
-                <line x1="172" y1="50" x2="176" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="184" y1="50" x2="188" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="180" y1="42" x2="180" y2="46" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
-                <line x1="180" y1="54" x2="180" y2="58" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+              <svg viewBox="0 0 440 104" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="espBoxGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.04"></stop>
+                    <stop offset="100%" stop-color="#000000" stop-opacity="0.65"></stop>
+                  </linearGradient>
+                  <filter id="chamsGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="1.5" result="blur"></feGaussianBlur>
+                    <feMerge>
+                      <feMergeNode in="blur"></feMergeNode>
+                      <feMergeNode in="SourceGraphic"></feMergeNode>
+                    </feMerge>
+                  </filter>
+                </defs>
 
-                <polyline points="134,26 128,26 128,32" stroke="#ffffff" stroke-width="1.2"></polyline>
-                <polyline points="152,26 158,26 158,32" stroke="#ffffff" stroke-width="1.2"></polyline>
-                <polyline points="128,74 128,80 134,80" stroke="#ffffff" stroke-width="1.2"></polyline>
-                <polyline points="158,74 158,80 152,80" stroke="#ffffff" stroke-width="1.2"></polyline>
+                <line x1="0" y1="52" x2="440" y2="52" stroke="rgba(255,255,255,0.03)" stroke-dasharray="2 4"></line>
+                <text x="12" y="14" fill="rgba(255,255,255,0.45)" font-family="var(--fm)" font-size="7.5" font-weight="600" letter-spacing="0.06em">[CHAMS // ESP]</text>
+                <text x="428" y="14" fill="rgba(255,255,255,0.45)" font-family="var(--fm)" font-size="7.5" font-weight="500" text-anchor="end">FOV 90° · 144 FPS</text>
 
-                <line x1="124" y1="26" x2="124" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="2"></line>
-                <line x1="124" y1="36" x2="124" y2="80" stroke="#ffffff" stroke-width="2"></line>
+                <circle cx="220" cy="52" r="38" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="2 3"></circle>
+                <circle cx="220" cy="52" r="1.2" fill="#ffffff"></circle>
+                <line x1="214" y1="52" x2="218" y2="52" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="222" y1="52" x2="226" y2="52" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="220" y1="46" x2="220" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="220" y1="54" x2="220" y2="58" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
 
-                <circle cx="143" cy="33" r="3" stroke="#ffffff" stroke-width="1" fill="none"></circle>
-                <line x1="143" y1="36" x2="143" y2="56" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
-                <line x1="135" y1="44" x2="151" y2="44" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
-                <line x1="143" y1="56" x2="136" y2="76" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
-                <line x1="143" y1="56" x2="150" y2="76" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
+                <line x1="220" y1="104" x2="168" y2="88" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="2 3"></line>
 
-                <line x1="180" y1="100" x2="143" y2="80" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="3 3"></line>
+                <rect x="142" y="16" width="52" height="72" rx="2" fill="url(#espBoxGrad)" stroke="rgba(255,255,255,0.08)"></rect>
+                <polyline points="142,26 142,16 152,16" stroke="#ffffff" stroke-width="1.4"></polyline>
+                <polyline points="184,16 194,16 194,26" stroke="#ffffff" stroke-width="1.4"></polyline>
+                <polyline points="142,78 142,88 152,88" stroke="#ffffff" stroke-width="1.4"></polyline>
+                <polyline points="184,88 194,88 194,78" stroke="#ffffff" stroke-width="1.4"></polyline>
 
-                <text x="143" y="21" fill="#ffffff" font-family="monospace" font-size="8" text-anchor="middle" font-weight="bold">PLAYER [24m]</text>
-                <text x="143" y="90" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="7.5" text-anchor="middle">100 HP</text>
+                <g filter="url(#chamsGlow)">
+                  <rect x="161" y="20" width="14" height="12" rx="2" fill="rgba(255,255,255,0.2)" stroke="#ffffff" stroke-width="0.9"></rect>
+                  <rect x="157" y="34" width="22" height="26" rx="2" fill="rgba(255,255,255,0.16)" stroke="#ffffff" stroke-width="0.9"></rect>
+                  <rect x="147" y="34" width="8" height="26" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
+                  <rect x="181" y="34" width="8" height="26" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
+                  <rect x="157" y="62" width="10" height="24" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
+                  <rect x="169" y="62" width="10" height="24" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"></rect>
+                </g>
 
-                <polyline points="230,42 226,42 226,46" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
-                <polyline points="242,42 246,42 246,46" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
-                <polyline points="226,66 226,70 230,70" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
-                <polyline points="246,66 246,70 242,70" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
-                <text x="236" y="38" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="7" text-anchor="middle">58m</text>
+                <circle cx="168" cy="26" r="2.2" fill="#ffffff"></circle>
+                <line x1="168" y1="26" x2="168" y2="61" stroke="#ffffff" stroke-width="1.2"></line>
+                <line x1="151" y1="38" x2="185" y2="38" stroke="#ffffff" stroke-width="1.2"></line>
+                <line x1="151" y1="38" x2="151" y2="56" stroke="#ffffff" stroke-width="1.2"></line>
+                <line x1="185" y1="38" x2="185" y2="56" stroke="#ffffff" stroke-width="1.2"></line>
+                <line x1="162" y1="61" x2="162" y2="84" stroke="#ffffff" stroke-width="1.2"></line>
+                <line x1="174" y1="61" x2="174" y2="84" stroke="#ffffff" stroke-width="1.2"></line>
+                <circle cx="151" cy="38" r="1.3" fill="#ffffff"></circle>
+                <circle cx="185" cy="38" r="1.3" fill="#ffffff"></circle>
+                <circle cx="162" cy="61" r="1.3" fill="#ffffff"></circle>
+                <circle cx="174" cy="61" r="1.3" fill="#ffffff"></circle>
+
+                <rect x="136" y="16" width="2" height="72" rx="1" fill="rgba(255,255,255,0.15)"></rect>
+                <rect x="136" y="16" width="2" height="72" rx="1" fill="#4ade80"></rect>
+                <text x="129" y="23" fill="#4ade80" font-family="var(--fm)" font-size="6.5" font-weight="600" text-anchor="end">100</text>
+
+                <rect x="132" y="28" width="1.8" height="60" rx="1" fill="rgba(255,255,255,0.15)"></rect>
+                <rect x="132" y="42" width="1.8" height="46" rx="1" fill="#78c8ee"></rect>
+                <text x="129" y="32" fill="#78c8ee" font-family="var(--fm)" font-size="6" font-weight="500" text-anchor="end">70</text>
+
+                <text x="168" y="11" fill="#ffffff" font-family="var(--fm)" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">PHOTON [CREW]</text>
+
+                <text x="200" y="26" fill="#ffffff" font-family="var(--fm)" font-size="6.5" font-weight="600">SCOPED</text>
+                <text x="200" y="36" fill="rgba(255,255,255,0.65)" font-family="var(--fm)" font-size="6.5">RELOAD</text>
+                <text x="200" y="46" fill="rgba(255,255,255,0.4)" font-family="var(--fm)" font-size="6.5">ARMOR</text>
+
+                <text x="168" y="98" fill="#ffffff" font-family="var(--fm)" font-size="7" font-weight="600" text-anchor="middle">ASSAULT RIFLE · 24M</text>
+
+                <polyline points="298,42 298,36 304,36" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
+                <polyline points="320,36 326,36 326,42" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
+                <polyline points="298,72 298,78 304,78" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
+                <polyline points="320,78 326,78 326,72" stroke="rgba(255,255,255,0.6)" stroke-width="1"></polyline>
+                <rect x="294" y="36" width="1.5" height="42" fill="#4ade80"></rect>
+                <circle cx="312" cy="42" r="1.5" fill="rgba(255,255,255,0.8)"></circle>
+                <line x1="312" y1="43" x2="312" y2="62" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
+                <line x1="312" y1="62" x2="308" y2="74" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
+                <line x1="312" y1="62" x2="316" y2="74" stroke="rgba(255,255,255,0.6)" stroke-width="0.9"></line>
+                <text x="312" y="32" fill="rgba(255,255,255,0.7)" font-family="var(--fm)" font-size="6" text-anchor="middle">PLAYER [58M]</text>
+                <text x="312" y="85" fill="rgba(255,255,255,0.5)" font-family="var(--fm)" font-size="5.5" text-anchor="middle">SHOTGUN</text>
               </svg>
             </div>
           </div>
@@ -962,35 +1024,41 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
       <div class="proj proj-wide">
         <div class="proj-art">
           <div class="art-solana">
-            <div class="art-solana-header">
-              <span class="art-solana-title">
+            <div class="art-exo-header">
+              <div class="art-exo-asset">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.92.92 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/></svg>
-                <span>solana escrow</span>
-              </span>
-              <span class="art-solana-badge">finalized · 31 confirms</span>
-            </div>
-            <div class="art-solana-flow">
-              <div class="art-sol-node">
-                <span class="art-sol-label">sender</span>
-                <span class="art-sol-addr">6qRz...4p9</span>
+                <span>Solana (SOL)</span>
+                <span class="art-exo-net">Mainnet</span>
               </div>
-              <div class="art-sol-bridge">
-                <div class="art-sol-line"></div>
-                <div class="art-sol-chip">
-                  <svg viewBox="0 0 24 24"><path d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.9202.9202 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/></svg>
-                  <span>4.5 SOL</span>
+              <div class="art-exo-tabs">
+                <span class="art-exo-tab active">Send</span>
+                <span class="art-exo-tab">Receive</span>
+                <span class="art-exo-tab">Escrow</span>
+              </div>
+            </div>
+            <div class="art-exo-body">
+              <div class="art-exo-val">
+                <div class="art-exo-sum">4.500 <span>SOL</span></div>
+                <div class="art-exo-usd">≈ $675.00 USD</div>
+              </div>
+              <div class="art-exo-route">
+                <div class="art-exo-chip">
+                  <span>From</span>
+                  <b>6qRz...4p9</b>
                 </div>
-                <div class="art-sol-line"></div>
-              </div>
-              <div class="art-sol-node">
-                <span class="art-sol-label">recipient</span>
-                <span class="art-sol-addr">8xLp...2m7</span>
+                <div class="art-exo-conduit">
+                  <div class="art-exo-track"></div>
+                  <div class="art-exo-beam"></div>
+                </div>
+                <div class="art-exo-chip">
+                  <span>To Escrow</span>
+                  <b>8xLp...2m7</b>
+                </div>
               </div>
             </div>
-            <div class="art-solana-footer">
-              <span>tx: 5Kt9...w2Q</span>
-              <span>auto sweep 0.5%</span>
-              <span>mainnet-beta</span>
+            <div class="art-exo-footer">
+              <span class="art-exo-status"><i class="art-exo-dot"></i> Swept & Finalized</span>
+              <span>31 confirms · fee 0.5%</span>
             </div>
           </div>
         </div>
