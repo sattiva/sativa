@@ -362,22 +362,31 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .game svg{width:28px;height:28px;display:block}
 .game span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
 
-.proj-group+.proj-group{margin-top:24px}
-.proj-group-label{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
-.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:13px}
-.proj{display:flex;flex-direction:column;gap:9px;padding:15px 16px;border-radius:13px;background:var(--case);border:1px solid var(--rule);text-decoration:none;color:inherit;transition:background .22s var(--e),border-color .22s,transform .22s var(--e)}
-a.proj:hover{background:var(--case-2);border-color:rgba(242,241,238,.18);transform:translateY(-1px)}
-.proj-mark{display:flex;align-items:center;height:26px}
-.proj-mark img{width:26px;height:26px;object-fit:contain;display:block}
-.proj-name{font-size:14px;font-weight:600;color:var(--paper);letter-spacing:-.014em;line-height:1.2}
-.proj-name-wordmark{font-family:'General Sans',system-ui,sans-serif;font-size:21px;font-weight:400;letter-spacing:-.03em;color:#8ea3b8;line-height:1.15}
-.proj-name-wordmark b{font-weight:700}
-.proj-name-wordmark i{font-style:normal;font-weight:500}
-.proj-go{flex-shrink:0;width:12px;height:12px;align-self:center;color:var(--faint);fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;transition:color .2s,transform .22s var(--e)}
-a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
-.proj-desc{font-size:13px;line-height:1.62;color:var(--mute);letter-spacing:-.004em}
-.proj-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:3px}
-.proj-tag{padding:3px 7px;border-radius:6px;background:rgba(var(--signal),.08);border:1px solid rgba(var(--signal),.17);font:500 9.5px var(--fm);letter-spacing:.07em;text-transform:uppercase;color:rgba(var(--signal),.8)}
+.proj-group+.proj-group{margin-top:28px}
+.proj-group-label{display:flex;align-items:center;gap:10px;font-family:var(--fm);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.proj-group-label::after{content:'';flex:1;height:1px;background:var(--rule-2)}
+.proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.proj-grid{grid-template-columns:1fr}}
+.proj{position:relative;display:flex;flex-direction:column;gap:12px;padding:18px 20px;border-radius:14px;background:linear-gradient(180deg,rgba(22,23,28,.75) 0%,rgba(14,15,18,.9) 100%);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;transition:background .2s var(--e),border-color .2s,transform .2s var(--e),box-shadow .2s var(--e);box-shadow:0 6px 20px -8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
+.proj.proj-wide{grid-column:1/-1}
+a.proj{cursor:pointer}
+a.proj:hover{background:linear-gradient(180deg,rgba(26,28,35,.88) 0%,rgba(17,18,22,.95) 100%);border-color:rgba(57,217,138,.35);transform:translateY(-2px);box-shadow:0 12px 30px -10px rgba(0,0,0,.7),0 0 24px -8px rgba(57,217,138,.2)}
+.proj-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.proj-identity{display:flex;align-items:center;gap:12px;min-width:0}
+.proj-mark{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.proj-mark img{width:22px;height:22px;object-fit:contain;display:block}
+.proj-mark-monu{color:#39d98a;background:rgba(57,217,138,.08);border-color:rgba(57,217,138,.2)}
+.proj-mark-monu svg{width:18px;height:18px;stroke:currentColor}
+.proj-name{font-size:14.5px;font-weight:600;color:var(--paper);letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj-name-wordmark{font-family:'General Sans',system-ui,sans-serif;font-size:17px;letter-spacing:-.025em;color:var(--paper);line-height:1.2}
+.proj-name-wordmark b{font-weight:700;color:#fff}
+.proj-name-wordmark i{font-style:normal;font-weight:500;color:#39d98a;margin-left:3px}
+.proj-go{flex-shrink:0;width:14px;height:14px;color:var(--dim);fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:color .2s,transform .2s var(--e)}
+a.proj:hover .proj-go{color:#39d98a;transform:translate(2px,-2px)}
+.proj-desc{font-size:12.8px;line-height:1.65;color:rgba(242,241,238,.65);letter-spacing:-.004em}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.proj-tag{padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font:500 9.5px var(--fm);letter-spacing:.06em;text-transform:uppercase;color:rgba(242,241,238,.7);transition:border-color .18s,color .18s}
+a.proj:hover .proj-tag{border-color:rgba(57,217,138,.22);color:rgba(242,241,238,.9)}
 
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:18;background:rgba(13,13,15,.93);border-top:1px solid var(--rule);backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%)}
 .dock-in{display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto;padding:11px 26px 13px}
@@ -700,24 +709,37 @@ a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
       <div class="proj-group-label">Spitari</div>
       <div class="proj-grid">
 
-      <a class="proj" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
-        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
-        <span class="proj-name">Spitari Watchdog <svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></span>
-        <p class="proj-desc">Bot runner I use every day. Spin up as many instances as I want from one terminal, watch them in a TUI or the web dashboard, and drop a Lua plugin in without a restart. Credentials go into an encrypted BoltDB instead of sitting in a .env.</p>
+      <a class="proj proj-wide" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head">
+          <div class="proj-identity">
+            <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+            <span class="proj-name">Spitari Watchdog</span>
+          </div>
+          <svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+        </div>
+        <p class="proj-desc">Headless multi-instance bot runner with a live terminal UI and web dashboard. Features hot-reloading Lua scripts, process health supervision, and encrypted BoltDB key-value storage for bot tokens.</p>
         <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">TUI</span><span class="proj-tag">SQLite</span></div>
       </a>
 
       <div class="proj">
-        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
-        <span class="proj-name">Spitari External</span>
-        <p class="proj-desc">External for Roblox in C++. Hooks the DirectX 9 present chain to draw the overlay, reads game memory directly, and drives everything through Lua. Aiming, visuals, movement, an explorer for walking the instance tree, and an MCP bridge so I can drive it from an agent.</p>
+        <div class="proj-head">
+          <div class="proj-identity">
+            <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+            <span class="proj-name">Spitari External</span>
+          </div>
+        </div>
+        <p class="proj-desc">Roblox external overlay hooking DirectX 9 Present for zero-flicker rendering. Reads memory structures directly and drives features through Lua scripts, including smooth aim assist, ESP, and instance tree inspection.</p>
         <div class="proj-tags"><span class="proj-tag">C++</span><span class="proj-tag">DX9</span><span class="proj-tag">Lua</span></div>
       </div>
 
       <div class="proj">
-        <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
-        <span class="proj-name">SpitariStrap</span>
-        <p class="proj-desc">Fishstrap fork for Roblox. I added a multi instance watcher so it notices your other instances instead of fighting them, plus an account manager that keeps your logins in one spot with its own settings screen. Everything sits on top of the Bloxstrap codebase.</p>
+        <div class="proj-head">
+          <div class="proj-identity">
+            <span class="proj-mark"><img src="images/spitari-logo.png" alt="" width="26" height="26" referrerpolicy="no-referrer" decoding="async"></span>
+            <span class="proj-name">SpitariStrap</span>
+          </div>
+        </div>
+        <p class="proj-desc">Custom Bloxstrap distribution modified with multi-client process watching to prevent client conflicts, encrypted multi-account persistence, and modular launcher settings.</p>
         <div class="proj-tags"><span class="proj-tag">C#</span><span class="proj-tag">WPF</span><span class="proj-tag">.NET</span></div>
       </div>
 
@@ -728,9 +750,16 @@ a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
       <div class="proj-group-label">Monu</div>
       <div class="proj-grid">
 
-      <div class="proj">
-        <span class="proj-name proj-name-wordmark"><b>monu</b> <i>MM</i></span>
-        <p class="proj-desc">Discord bot for running crypto trades. Opens a ticket per deal, waits for the deposit to land on chain, and releases the funds only once both sides hit confirm. Cuts its fee and sweeps it to a cold wallet on the way out. Provably fair casino games are bolted on the side if you want them.</p>
+      <div class="proj proj-wide">
+        <div class="proj-head">
+          <div class="proj-identity">
+            <span class="proj-mark proj-mark-monu">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </span>
+            <span class="proj-name proj-name-wordmark"><b>monu</b> <i>MM</i></span>
+          </div>
+        </div>
+        <p class="proj-desc">Automated escrow engine for peer-to-peer cryptocurrency trades. Listens for on-chain transaction confirmations in private ticket channels, executes releases upon dual authorization, sweeps platform cuts into cold storage, and powers provably-fair games.</p>
         <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">SQLite</span></div>
       </div>
 
