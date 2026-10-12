@@ -394,45 +394,44 @@ a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);bo
 .art-pill{padding:3px 7px;border-radius:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:var(--dim);white-space:nowrap}
 .art-pill b{color:var(--paper);font-weight:500}
 
-/* 2. External Tactical Radar/HUD Art */
-.art-tactical{width:100%;max-width:390px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.art-radar-wrap{position:relative;width:82px;height:82px;flex-shrink:0;background:rgba(255,255,255,.015);border-radius:50%;border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}
-.art-radar-wrap svg{width:76px;height:76px;display:block}
-.art-tactical-target{flex:1;display:flex;flex-direction:column;gap:5px;font-family:var(--fm);min-width:0}
-.art-target-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);width:fit-content;font-size:9.5px;color:var(--paper);font-weight:500}
-.art-target-badge b{color:#fff}
-.art-target-readout{display:flex;justify-content:space-between;font-size:9px;color:var(--dim)}
-.art-target-brackets{display:flex;align-items:center;justify-content:space-between;font-size:8.5px;color:var(--faint);letter-spacing:.04em}
+/* 2. Spitari External - Overlay ESP Art */
+.art-esp{position:relative;width:100%;max-width:390px;height:100%;display:flex;align-items:center;justify-content:center}
+.art-esp-frame{position:relative;width:100%;height:104px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.art-esp-frame svg{width:100%;height:100%;display:block}
 
-/* 3. SpitariStrap Desktop App Art */
-.art-desktop-app{width:100%;max-width:390px;border-radius:8px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.08);padding:8px 11px;display:flex;flex-direction:column;gap:6px}
-.art-app-titlebar{display:flex;align-items:center;justify-content:space-between;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.06);font-family:var(--fm);font-size:9.5px}
-.art-app-dots{display:flex;align-items:center;gap:4px}
-.art-app-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18)}
-.art-app-name{color:var(--paper);font-weight:500;font-size:9px}
-.art-app-state{color:var(--faint);font-size:8.5px}
-.art-app-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.art-account-card{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
-.art-account-avatar{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--fm);color:#fff;flex-shrink:0}
-.art-account-meta{display:flex;flex-direction:column;min-width:0;font-family:var(--fm);line-height:1.2}
-.art-account-meta b{font-size:9px;color:var(--paper);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.art-account-meta span{font-size:8px;color:var(--faint)}
-.art-app-footer{font-family:var(--fm);font-size:8.5px;color:var(--faint);text-align:center;padding-top:2px;border-top:1px dashed rgba(255,255,255,.05)}
+/* 3. SpitariStrap Sessions Art */
+.art-sessions{width:100%;max-width:390px;border-radius:8px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.08);padding:7px 11px;display:flex;flex-direction:column;gap:6px}
+.art-sessions-titlebar{display:flex;align-items:center;justify-content:space-between;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.06);font-family:var(--fm);font-size:9.5px}
+.art-sessions-dots{display:flex;align-items:center;gap:4px}
+.art-sessions-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2)}
+.art-sessions-name{color:var(--paper);font-weight:600;font-size:9.5px}
+.art-sessions-toggle{font-size:8.5px;color:var(--dim);display:flex;align-items:center;gap:4px}
+.art-sessions-toggle i{width:5px;height:5px;border-radius:50%;background:#fff}
+.art-sessions-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.art-sess-card{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.art-sess-main{display:flex;align-items:center;gap:6px;min-width:0}
+.art-sess-avatar{width:18px;height:18px;border-radius:4px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--fm);color:#fff;flex-shrink:0}
+.art-sess-meta{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.art-sess-meta b{font-size:9px;color:var(--paper);font-weight:500;font-family:var(--fm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-sess-meta span{font-size:8px;color:var(--faint);font-family:var(--fm)}
+.art-sess-status{font-size:8px;font-family:var(--fm);padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--paper);white-space:nowrap}
+.art-sessions-footer{font-family:var(--fm);font-size:8.5px;color:var(--faint);text-align:center;padding-top:2px}
 
-/* 4. Monu Escrow Pipeline Art */
-.art-pipeline{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
-.art-pipeline-header{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
-.art-pipeline-id{color:var(--paper);font-weight:600;letter-spacing:.02em}
-.art-pipeline-badge{font-size:8.5px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.05em}
-.art-pipeline-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.art-pipe-node{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--fm);padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);min-width:96px}
-.art-pipe-label{font-size:8.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
-.art-pipe-hash{font-size:9.5px;color:var(--paper);font-weight:500}
-.art-pipe-bridge{flex:1;display:flex;align-items:center;gap:6px}
-.art-pipe-line{flex:1;height:1px;background:rgba(255,255,255,.12)}
-.art-pipe-lock{padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:8.5px;color:var(--paper);font-weight:500;letter-spacing:.03em;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.art-pipe-lock svg{width:9px;height:9px;fill:currentColor}
-.art-pipeline-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint)}
+/* 4. Monu MM Solana Transfer Art */
+.art-solana{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
+.art-solana-header{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
+.art-solana-title{display:flex;align-items:center;gap:6px;color:var(--paper);font-weight:600}
+.art-solana-title svg{width:12px;height:12px;fill:currentColor}
+.art-solana-badge{font-size:8.5px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.04em}
+.art-solana-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.art-sol-node{display:flex;flex-direction:column;gap:2px;font-family:var(--fm);padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);min-width:98px}
+.art-sol-label{font-size:8.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.art-sol-addr{font-size:9.5px;color:var(--paper);font-weight:500}
+.art-sol-bridge{flex:1;display:flex;align-items:center;gap:6px}
+.art-sol-line{flex:1;height:1px;background:rgba(255,255,255,.12)}
+.art-sol-chip{padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:8.5px;color:#fff;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.art-sol-chip svg{width:10px;height:10px;fill:currentColor}
+.art-solana-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint)}
 
 /* Card Body */
 .proj-card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
@@ -843,34 +842,40 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <div class="proj">
         <div class="proj-art">
-          <div class="art-tactical">
-            <div class="art-radar-wrap">
-              <svg viewBox="0 0 80 80" fill="none" aria-hidden="true">
-                <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
-                <circle cx="40" cy="40" r="24" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"></circle>
-                <circle cx="40" cy="40" r="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"></circle>
-                <line x1="40" y1="2" x2="40" y2="78" stroke="rgba(255,255,255,0.09)" stroke-width="1"></line>
-                <line x1="2" y1="40" x2="78" y2="40" stroke="rgba(255,255,255,0.09)" stroke-width="1"></line>
-                <path d="M40 40 L65 22 A36 36 0 0 0 40 4 Z" fill="rgba(255,255,255,0.04)"></path>
-                <circle cx="56" cy="26" r="2.2" fill="#ffffff"></circle>
-                <circle cx="56" cy="26" r="5" stroke="#ffffff" stroke-width="0.75" opacity="0.6"></circle>
-                <circle cx="28" cy="50" r="1.8" fill="rgba(255,255,255,0.7)"></circle>
+          <div class="art-esp">
+            <div class="art-esp-frame">
+              <svg viewBox="0 0 360 100" fill="none" aria-hidden="true">
+                <circle cx="180" cy="50" r="1.5" fill="#ffffff"></circle>
+                <line x1="172" y1="50" x2="176" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="184" y1="50" x2="188" y2="50" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="180" y1="42" x2="180" y2="46" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+                <line x1="180" y1="54" x2="180" y2="58" stroke="#ffffff" stroke-width="1" opacity="0.6"></line>
+
+                <polyline points="134,26 128,26 128,32" stroke="#ffffff" stroke-width="1.2"></polyline>
+                <polyline points="152,26 158,26 158,32" stroke="#ffffff" stroke-width="1.2"></polyline>
+                <polyline points="128,74 128,80 134,80" stroke="#ffffff" stroke-width="1.2"></polyline>
+                <polyline points="158,74 158,80 152,80" stroke="#ffffff" stroke-width="1.2"></polyline>
+
+                <line x1="124" y1="26" x2="124" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="2"></line>
+                <line x1="124" y1="36" x2="124" y2="80" stroke="#ffffff" stroke-width="2"></line>
+
+                <circle cx="143" cy="33" r="3" stroke="#ffffff" stroke-width="1" fill="none"></circle>
+                <line x1="143" y1="36" x2="143" y2="56" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
+                <line x1="135" y1="44" x2="151" y2="44" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
+                <line x1="143" y1="56" x2="136" y2="76" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
+                <line x1="143" y1="56" x2="150" y2="76" stroke="rgba(255,255,255,0.6)" stroke-width="1"></line>
+
+                <line x1="180" y1="100" x2="143" y2="80" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="3 3"></line>
+
+                <text x="143" y="21" fill="#ffffff" font-family="monospace" font-size="8" text-anchor="middle" font-weight="bold">PLAYER [24m]</text>
+                <text x="143" y="90" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="7.5" text-anchor="middle">100 HP</text>
+
+                <polyline points="230,42 226,42 226,46" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
+                <polyline points="242,42 246,42 246,46" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
+                <polyline points="226,66 226,70 230,70" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
+                <polyline points="246,66 246,70 242,70" stroke="rgba(255,255,255,0.5)" stroke-width="1"></polyline>
+                <text x="236" y="38" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="7" text-anchor="middle">58m</text>
               </svg>
-            </div>
-            <div class="art-tactical-target">
-              <div class="art-target-badge">
-                <span class="art-node-dot"></span>
-                <b>0x7FF4B1A0</b>
-                <span>hooked</span>
-              </div>
-              <div class="art-target-readout">
-                <span>present_hook · dx9</span>
-                <b style="color:var(--paper)">144 FPS</b>
-              </div>
-              <div class="art-target-brackets">
-                <span>vmem: mapped [r/w]</span>
-                <span>lua_vm ready</span>
-              </div>
             </div>
           </div>
         </div>
@@ -884,41 +889,47 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
               </div>
             </div>
           </div>
-          <p class="proj-desc">external for Roblox written in C++. hooks DX9 Present for clean overlay rendering, virtual memory reads, and custom Lua scripts.</p>
+          <p class="proj-desc">external for Roblox written in C++. renders clean overlays and fully external with custom Lua scripts.</p>
           <div class="proj-tags">
-            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.366 11.233l-2.072-3.59a.747.747 0 0 0-.649-.373H15.5a.75.75 0 0 0-.65.375l-.834 1.444a4.985 4.985 0 0 0-1.956-.39c-2.757 0-5 2.243-5 5s2.243 5 5 5c1.47 0 2.802-.638 3.73-1.656l.06-.065.834 1.444a.75.75 0 0 0 .65.375h4.145a.747.747 0 0 0 .649-.373l2.072-3.59a.75.75 0 0 0 0-.751l-1.184-2.053 1.184-2.053a.75.75 0 0 0 0-.751zM12.06 16.4c-1.544 0-2.8-1.256-2.8-2.8s1.256-2.8 2.8-2.8c.846 0 1.602.378 2.115.975l-1.365 2.365a.75.75 0 0 0 .65 1.125h2.156a2.787 2.787 0 0 1-2.956 1.135zm7.39-2.025h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9zm3 0h-1.35v1.35h-.9v-1.35h-1.35v-.9h1.35v-1.35h.9v1.35h1.35v.9z"/></svg>C++</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.11c-3.92 0-7.109-3.19-7.109-7.11 0-3.92 3.19-7.11 7.11-7.11a7.133 7.133 0 016.156 3.553l-3.076 1.78a3.567 3.567 0 00-3.08-1.78A3.56 3.56 0 008.444 12 3.56 3.56 0 0012 15.555a3.57 3.57 0 003.08-1.778l3.078 1.78A7.135 7.135 0 0112 19.11zm7.11-6.715h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79z"/></svg>C++</span>
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 3.3l6.5 3.25L12 11.8 5.5 8.55 12 5.3zm-7 5.1l6 3v6.3l-6-3v-6.3zm8 9.3v-6.3l6-3v6.3l-6 3z"/></svg>DX9</span>
-            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 2.2a7.8 7.8 0 0 1 7.28 5.06 6.8 6.8 0 0 0-4.08-1.36 6.9 6.9 0 0 0-6.9 6.9 6.8 6.8 0 0 0 1.36 4.08A7.8 7.8 0 0 1 4.2 12a7.8 7.8 0 0 1 7.8-7.8zm6.5 1.5a1.8 1.8 0 1 1-1.8 1.8 1.8 1.8 0 0 1 1.8-1.8z"/></svg>Lua</span>
+            <span class="proj-tag"><svg viewBox="0 0 128 128" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M112.956.708c-7.912 0-14.335 6.424-14.335 14.336s6.424 14.335 14.335 14.335 14.335-6.41 14.335-14.335c0-7.912-6.424-14.336-14.335-14.336zM64 15.058c-27.02 0-48.956 21.935-48.956 48.955S36.979 112.97 64 112.97c27.02 0 48.956-21.935 48.956-48.956 0-27.02-21.936-48.956-48.956-48.956z"/></svg>Lua</span>
           </div>
         </div>
       </div>
 
       <div class="proj">
         <div class="proj-art">
-          <div class="art-desktop-app">
-            <div class="art-app-titlebar">
-              <div class="art-app-dots"><span></span><span></span><span></span></div>
-              <span class="art-app-name">SpitariStrap Mutex Supervisor</span>
-              <span class="art-app-state">2 instances</span>
+          <div class="art-sessions">
+            <div class="art-sessions-titlebar">
+              <div class="art-sessions-dots"><span></span><span></span><span></span></div>
+              <span class="art-sessions-name">SpitariStrap</span>
+              <span class="art-sessions-toggle"><i></i> multi-instance on</span>
             </div>
-            <div class="art-app-cards">
-              <div class="art-account-card">
-                <div class="art-account-avatar">S</div>
-                <div class="art-account-meta">
-                  <b>sativa (main)</b>
-                  <span>pid 14208 · isolated</span>
+            <div class="art-sessions-grid">
+              <div class="art-sess-card">
+                <div class="art-sess-main">
+                  <div class="art-sess-avatar">S</div>
+                  <div class="art-sess-meta">
+                    <b>sativa</b>
+                    <span>Roblox Player</span>
+                  </div>
                 </div>
+                <span class="art-sess-status">Playing</span>
               </div>
-              <div class="art-account-card">
-                <div class="art-account-avatar">A</div>
-                <div class="art-account-meta">
-                  <b>alt_session</b>
-                  <span>pid 19844 · isolated</span>
+              <div class="art-sess-card">
+                <div class="art-sess-main">
+                  <div class="art-sess-avatar">A</div>
+                  <div class="art-sess-meta">
+                    <b>alt_session</b>
+                    <span>Roblox Player</span>
+                  </div>
                 </div>
+                <span class="art-sess-status">Active</span>
               </div>
             </div>
-            <div class="art-app-footer">
-              <span>singleton mutex detached · zero account collisions</span>
+            <div class="art-sessions-footer">
+              <span>2 independent game sessions running</span>
             </div>
           </div>
         </div>
@@ -934,9 +945,9 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
           </div>
           <p class="proj-desc">custom Bloxstrap fork with multi-instance detection so accounts don't clash, plus a built-in account switcher.</p>
           <div class="proj-tags">
-            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5zm4.8-5h.7v-1.5h-.7V9h-1.5v1h-1V9h-1.5v1h-.8v1.5h.8v1h-.8V14h.8v1h1.5v-1h1v1h1.5v-1h.7v-1.5h-.7v-1zm-2.2 1h-1v-1h1z"/></svg>C#</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M1.194 7.543v8.913c0 1.103.588 2.122 1.544 2.674l7.718 4.456a3.086 3.086 0 0 0 3.088 0l7.718-4.456a3.087 3.087 0 0 0 1.544-2.674V7.543a3.084 3.084 0 0 0-1.544-2.673L13.544.414a3.086 3.086 0 0 0-3.088 0L2.738 4.87a3.085 3.085 0 0 0-1.544 2.673Zm5.403 2.914v3.087a.77.77 0 0 0 .772.772.773.773 0 0 0 .772-.772.773.773 0 0 1 1.317-.546.775.775 0 0 1 .226.546 2.314 2.314 0 1 1-4.631 0v-3.087c0-.615.244-1.203.679-1.637a2.312 2.312 0 0 1 3.274 0c.434.434.678 1.023.678 1.637a.769.769 0 0 1-.226.545.767.767 0 0 1-1.091 0 .77.77 0 0 1-.226-.545.77.77 0 0 0-.772-.772.771.771 0 0 0-.772.772Zm12.35 3.087a.77.77 0 0 1-.772.772h-.772v.772a.773.773 0 0 1-1.544 0v-.772h-1.544v.772a.773.773 0 0 1-1.317.546.775.775 0 0 1-.226-.546v-.772H12a.771.771 0 1 1 0-1.544h.772v-1.543H12a.77.77 0 1 1 0-1.544h.772v-.772a.773.773 0 0 1 1.317-.546.775.775 0 0 1 .226.546v.772h1.544v-.772a.773.773 0 0 1 1.544 0v.772h.772a.772.772 0 0 1 0 1.544h-.772v1.543h.772a.776.776 0 0 1 .772.772Zm-3.088-2.315h-1.544v1.543h1.544v-1.543Z"/></svg>C#</span>
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M3 4v7.5h8V4H3zm0 8.5V20h8v-7.5H3zm9-8.5v7.5h9V4h-9zm0 8.5V20h9v-7.5h-9z"/></svg>WPF</span>
-            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M2.5 16.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-9h2.3v9H6.5V7.5zm5.7 0h2.4l4.2 5.9V7.5h2.2v9h-2.3l-4.3-6v6h-2.2V7.5z"/></svg>.NET</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M24 8.77h-2.468v7.565h-1.425V8.77h-2.462V7.53H24zm-6.852 7.565h-4.821V7.53h4.63v1.24h-3.205v2.494h2.953v1.234h-2.953v2.604h3.396zm-6.708 0H8.882L4.78 9.863a2.896 2.896 0 0 1-.258-.51h-.036c.032.189.048.592.048 1.21v5.772H3.157V7.53h1.659l3.965 6.32c.167.261.275.442.323.54h.024c-.04-.233-.06-.629-.06-1.185V7.529h1.372zm-8.703-.693a.868.829 0 0 1-.869.829.868.829 0 0 1-.868-.83.868.829 0 0 1 .868-.828.868.829 0 0 1 .869.829Z"/></svg>.NET</span>
           </div>
         </div>
       </div>
@@ -950,33 +961,36 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <div class="proj proj-wide">
         <div class="proj-art">
-          <div class="art-pipeline">
-            <div class="art-pipeline-header">
-              <span class="art-pipeline-id">escrow session #0842</span>
-              <span class="art-pipeline-badge">12/12 confirms</span>
+          <div class="art-solana">
+            <div class="art-solana-header">
+              <span class="art-solana-title">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.92.92 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/></svg>
+                <span>solana escrow</span>
+              </span>
+              <span class="art-solana-badge">finalized · 31 confirms</span>
             </div>
-            <div class="art-pipeline-flow">
-              <div class="art-pipe-node">
-                <span class="art-pipe-label">buyer</span>
-                <span class="art-pipe-hash">0x4f82...19e</span>
+            <div class="art-solana-flow">
+              <div class="art-sol-node">
+                <span class="art-sol-label">sender</span>
+                <span class="art-sol-addr">6qRz...4p9</span>
               </div>
-              <div class="art-pipe-bridge">
-                <div class="art-pipe-line"></div>
-                <div class="art-pipe-lock">
-                  <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V7z"/></svg>
-                  <span>multisig vault</span>
+              <div class="art-sol-bridge">
+                <div class="art-sol-line"></div>
+                <div class="art-sol-chip">
+                  <svg viewBox="0 0 24 24"><path d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.9202.9202 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/></svg>
+                  <span>4.5 SOL</span>
                 </div>
-                <div class="art-pipe-line"></div>
+                <div class="art-sol-line"></div>
               </div>
-              <div class="art-pipe-node">
-                <span class="art-pipe-label">seller</span>
-                <span class="art-pipe-hash">0x9bc1...74a</span>
+              <div class="art-sol-node">
+                <span class="art-sol-label">recipient</span>
+                <span class="art-sol-addr">8xLp...2m7</span>
               </div>
             </div>
-            <div class="art-pipeline-footer">
-              <span>audit: 0x8e2b...f41</span>
-              <span>fee sweep: 0.5% confirmed</span>
-              <span>channel: private ticket</span>
+            <div class="art-solana-footer">
+              <span>tx: 5Kt9...w2Q</span>
+              <span>auto sweep 0.5%</span>
+              <span>mainnet-beta</span>
             </div>
           </div>
         </div>
@@ -996,7 +1010,7 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
           <div class="proj-tags">
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M1.98 12.35c.07-.8.29-1.55.67-2.26.39-.71.93-1.32 1.62-1.81.68-.5 1.51-.87 2.48-1.12.98-.25 2.05-.38 3.2-.38h1.22v2.33h-1.22c-.78 0-1.49.09-2.14.26-.64.17-1.19.42-1.63.76-.45.34-.79.76-1.02 1.27-.24.51-.36 1.09-.36 1.74s.12 1.23.36 1.74c.24.51.58.94 1.03 1.28.45.34 1 .6 1.65.77.65.17 1.37.26 2.15.26.96 0 1.8-.13 2.53-.4.73-.27 1.34-.65 1.83-1.15.49-.5.85-1.11 1.08-1.83h-5.44v-2.33h7.94c.05.41.08.83.08 1.27 0 1.27-.2 2.43-.6 3.49-.4 1.06-.99 1.98-1.78 2.76-.79.78-1.77 1.39-2.94 1.83-1.17.44-2.52.66-4.04.66-1.57 0-2.97-.24-4.2-.72-1.23-.48-2.28-1.16-3.14-2.04-.86-.88-1.53-1.93-2.01-3.16-.48-1.23-.72-2.61-.72-4.14z"/></svg>Go</span>
             <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord</span>
-            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6.5C7.58 8.5 4 6.93 4 6.5S7.58 4.5 12 4.5s8 1.57 8 2-3.58 2-8 2zM2 9.5v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5zm0 6v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c-1.92 1.63-5.67 2.5-10 2.5s-8.08-.87-10-2.5z"/></svg>SQLite</span>
+            <span class="proj-tag"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.92.92 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/></svg>Solana</span>
           </div>
         </div>
       </div>
