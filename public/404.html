@@ -30,33 +30,24 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 
-/* ==========================================================================
-   FIELD EQUIPMENT — monochrome interface, polychrome content.
-   Every structural colour is graphite + warm white. The only saturation on the
-   page is album art and --signal, which is sampled live from that artwork.
-   ========================================================================== */
 :root{
-  /* surfaces */
+
   --ink:#0b0b0c;
   --ink-2:#101012;
   --case:#131316;
   --case-2:#1a1a1f;
   --case-3:#222228;
 
-  /* type — warm white, not #fff. Pure white on near-black glares. */
   --paper:#f2f1ee;
   --mute:rgba(242,241,238,.68);
   --dim:rgba(242,241,238,.46);
   --faint:rgba(242,241,238,.27);
 
-  /* hairlines. Structure is drawn with rules, not boxes. */
   --rule:rgba(242,241,238,.09);
   --rule-2:rgba(242,241,238,.055);
 
-  /* the only colour. Set at runtime by applyAccent() from album artwork. */
   --signal:255,255,255;
 
-  /* type roles */
   --ff:'General Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
   --fd:'Clash Display','General Sans',system-ui,sans-serif;
   --fm:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -68,7 +59,6 @@
   --wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 6'%3E%3Cpath d='M0 3 C 2.5 1, 7.5 1, 10 3 C 12.5 5, 17.5 5, 20 3' fill='none' stroke='%23f2f1ee' stroke-width='1.6' stroke-linecap='round' opacity='0.95'/%3E%3C/svg%3E");
 }
 
-/* Every number on this site is a measurement, so measurements are monospaced. */
 .num,.mono{font-family:var(--fm);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 .lbl{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
 
@@ -91,22 +81,14 @@ img{pointer-events:none;-webkit-user-drag:none;border:0}
 button,a{touch-action:manipulation}
 :focus-visible{outline:2px solid rgba(242,241,238,.6);outline-offset:3px;border-radius:4px}
 
-/* ---- still page ------------------------------------------------------ */
-/* No prompt, no toggle, no keyframes, no transitions. Everything on this page is
-   already in its final state when it paints. */
 *,*::before,*::after{animation:none!important;transition:none!important}
 .rv{opacity:1!important;transform:none!important;pointer-events:auto!important}
 .view.view-out{opacity:1!important;transform:none!important}
 
-/* Lock: nothing on this page is selectable or printable. In the markup rather than in
-   JS so it holds before the bundle runs. Text inputs stay typable. */
 *,*::before,*::after{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
 input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-user-select:text!important;-ms-user-select:text!important;user-select:text!important}
 @media print{html,body{display:none!important;height:0!important;overflow:hidden!important}}
 
-/* ---- background layers ------------------------------------------------- */
-/* Artwork is a tint, never a texture. Bright enough that the song reads as colour
-   behind the page, dim enough that body copy still wins. */
 #bgCanvas,#bgArt,#bgArtShadow{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none}
 #bgCanvas{display:block;z-index:0;background:var(--ink)}
 #bgArt{z-index:1;background-size:cover;background-position:center;background-color:#000;opacity:0;filter:saturate(.7) brightness(.48);transform:scale(1.03);transition:opacity .8s var(--e),filter .9s var(--e);will-change:opacity,filter,transform}
@@ -114,9 +96,6 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 #bgArtShadow{z-index:3;opacity:0;transition:opacity .7s var(--e);background:radial-gradient(115% 85% at 50% 10%,rgba(11,11,12,.5),rgba(11,11,12,.84) 74%),linear-gradient(180deg,rgba(11,11,12,.66) 0,rgba(11,11,12,.46) 34%,rgba(11,11,12,.48) 66%,rgba(11,11,12,.76) 100%)}
 #bgArtShadow.show{opacity:1}
 
-/* ---- identity column (desktop sidebar / mobile header) ----------------- */
-/* Identity and outbound links are CONTENT, not chrome, so they get cards.
-   Everything structural inside a view stays rule-based. */
 .ident{position:relative;z-index:6;padding:30px 22px calc(26px + env(safe-area-inset-bottom,0px))}
 .ident-id{display:flex;align-items:center;gap:13px}
 .ident-ava{position:relative;width:58px;height:58px;flex-shrink:0}
@@ -133,7 +112,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 .linkcard:hover{background:var(--case-2);border-color:rgba(242,241,238,.18);transform:translateY(-1px)}
 .linkcard svg,.linkcard i svg{width:19px;height:19px;flex-shrink:0;display:block}
 .linkcard i{display:flex;flex-shrink:0}
-/* These are spans inside a span, so they must be told to stack explicitly. */
+
 .linkcard-txt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
 .linkcard-t{display:block;font-size:13px;font-weight:600;color:var(--paper);letter-spacing:-.012em;line-height:1.2}
 .linkcard-s{display:block;font:500 10.5px var(--fm);color:var(--dim);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -145,14 +124,10 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 .ident-foot span{font-family:var(--fm);font-size:9px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
 .ident-foot b{font-family:var(--fm);font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--mute)}
 
-/* status + activity also belong to identity, shown under the links on desktop */
 .ident-social{margin-top:14px}
 .ident-social .custom-status{margin-top:0;justify-content:flex-start}
 .ident-social .activity-line{margin:12px 0 0;max-width:100%}
 
-/* ---- top bar: burger left, nav pill centred --------------------------- */
-/* Above the scrim (16) and the drawer (17) so the burger stays clickable and its
-   open/close animation is never dimmed by the overlay. */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:18;display:flex;justify-content:center;padding:13px 16px 24px;background:linear-gradient(180deg,rgba(11,11,12,.9) 30%,rgba(11,11,12,0));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none}
 .cluster{display:flex;align-items:center;gap:8px;pointer-events:auto}
 
@@ -170,9 +145,6 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 .tabs .nav-btn.active{background:var(--paper);color:var(--ink);font-weight:600}
 .tabs .nav-btn:focus-visible{outline:2px solid rgba(242,241,238,.55);outline-offset:2px}
 
-/* ---- identity drawer -------------------------------------------------- */
-/* Off-canvas on every size. Opens from the burger, closes on scrim, Escape, or any
-   navigation. */
 .scrim{position:fixed;inset:0;z-index:16;background:rgba(5,5,6,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .3s var(--e)}
 .scrim.on{opacity:1}
 .scrim[hidden]{display:none!important}
@@ -180,9 +152,6 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 .ident.on{transform:none}
 html.motion-off .ident{transition:none}
 
-/* ---- home identity hero ------------------------------------------------ */
-/* The Discord-derived avatar, name and handle live on the home view as well as in the
-   drawer, so the profile is the first thing you see without opening anything. */
 .home-id{display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 0 4px}
 .home-ava{position:relative;width:88px;height:88px}
 .home-ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:var(--case-2);display:block;box-shadow:0 22px 50px -24px #000}
@@ -195,18 +164,15 @@ html.motion-off .ident{transition:none}
 .home-presence img{width:14px;height:14px;object-fit:contain;flex-shrink:0}
 .home-presence span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ---- stage ------------------------------------------------------------- */
 .stage{position:relative;z-index:5;min-height:100vh;min-height:100dvh;max-width:840px;margin:0 auto;padding:96px 26px 120px;display:flex;flex-direction:column}
 .view{width:100%;opacity:1;transform:translateY(0);transition:opacity .26s var(--e),transform .26s var(--e);will-change:opacity,transform}
 .view.view-out{opacity:0;transform:translateY(-8px);pointer-events:none}
 .view.view-enter{animation:viewIn .4s var(--e) both}
 @keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* ---- reveal + motion --------------------------------------------------- */
 .rv{opacity:0;transform:translate3d(0,20px,0);transition:opacity .85s var(--er),transform .85s var(--er);will-change:opacity,transform;pointer-events:none}
 .rv.in{opacity:1;transform:none;pointer-events:auto}
 
-/* ---- profile hero ------------------------------------------------------ */
 .profile-hero{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%}
 .avatar-wrap{position:relative;width:96px;height:96px;flex-shrink:0;z-index:3}
 .avatar-wrap img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:var(--case-2);display:block;box-shadow:0 24px 56px -26px #000}
@@ -231,7 +197,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .activity-meta{display:flex;align-items:center;gap:4px;margin-left:4px;color:var(--dim);font-family:var(--fm);font-variant-numeric:tabular-nums;flex-shrink:0;font-size:11.5px}
 .activity-meta svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---- now playing strip (home) ----------------------------------------- */
 .now-playing{margin-top:26px;width:100%}
 .lyrics-stage{position:relative;height:150px;overflow:hidden;mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%)}
 .lyrics-track{position:absolute;left:0;right:0;top:63px;transition:transform .1s cubic-bezier(.2,.8,.2,1);will-change:transform}
@@ -250,7 +215,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .listening-text b{font-size:15px}
 .listening-text span{font-size:14px}
 
-/* ---- bio + links ------------------------------------------------------ */
 .bio-block{max-width:560px;margin:26px auto 0;text-align:center}
 .bio-block p{font-size:15px;line-height:2;letter-spacing:-.008em;color:var(--mute);text-wrap:pretty;font-weight:400}
 .links{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap;width:100%;max-width:520px;margin:24px auto 0}
@@ -260,7 +224,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .link:hover{opacity:.6}
 .link:active{transform:scale(.97)}
 
-/* ---- weather readout --------------------------------------------------- */
 .weather-widget{margin:28px auto 0;max-width:520px;width:100%;padding:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .weather-main{display:flex;align-items:center;gap:14px;padding:16px 0}
 .weather-clock{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
@@ -293,7 +256,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .weather-ftmax{font-family:var(--fm);font-size:11.5px;font-weight:500;color:var(--paper)}
 .weather-ftmin{font-family:var(--fm);font-size:9.5px;font-weight:400;color:var(--faint)}
 
-/* ---- section shell ----------------------------------------------------- */
 .panel{width:100%;margin-top:34px}
 .panel:first-child{margin-top:22px}
 .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid var(--rule);margin-bottom:16px}
@@ -303,7 +265,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .panel-meta[data-src="live"]{color:rgba(var(--signal),.7)}
 .panel-meta[data-src="off"],.panel-meta[data-src="unavailable"]{color:#e5484d}
 
-/* ---- Music Vault: hero ------------------------------------------------- */
 .vault-hero{position:relative;padding:22px 0 20px;border-bottom:1px solid var(--rule);overflow:hidden}
 .vault-hero::before{content:"";position:absolute;left:-10%;right:-10%;top:-40%;bottom:-40%;background:radial-gradient(60% 50% at 18% 40%,rgba(var(--signal),.16),transparent 70%);pointer-events:none;transition:opacity .8s var(--e)}
 .vault-kicker{display:flex;align-items:center;gap:8px;position:relative}
@@ -314,12 +275,9 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .hero-readout b{font-family:var(--fm);font-size:19px;font-weight:700;letter-spacing:-.03em;color:var(--paper);font-variant-numeric:tabular-nums}
 .hero-readout span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 
-/* ---- Music Vault: measurement strip ------------------------------------ */
-/* No boxes. Readings separated by hairlines, like a panel meter. */
 .meter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);opacity:.4;transition:opacity .6s var(--e)}
 .meter.on{opacity:1}
-/* Only columns 2 and 3 get the divider. A plain div+div selector also matches the FIRST
-   cell of rows 2 and 3, which shifted every second row 16px right of the first. */
+
 .meter div{padding:15px 4px 15px 0;position:relative}
 .meter div:nth-child(3n+2),.meter div:nth-child(3n+3){padding-left:16px}
 .meter div:nth-child(3n+2)::before,.meter div:nth-child(3n+3)::before{content:"";position:absolute;left:0;top:15px;bottom:15px;width:1px;background:var(--rule)}
@@ -328,7 +286,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .meter-note{margin:9px 0 0;font-family:var(--fm);font-size:9.5px;color:var(--faint)}
 .meter-note[hidden]{display:none!important}
 
-/* ---- Music Vault: track rows ------------------------------------------- */
 .track-list{display:flex;flex-direction:column}
 .track-row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:14px;padding:11px 8px 11px 4px;border-bottom:1px solid var(--rule-2);cursor:pointer;transition:background .2s var(--e);position:relative}
 .track-row:first-child{border-top:1px solid var(--rule-2)}
@@ -349,7 +306,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .track-mark svg{width:12px;height:12px;fill:var(--paper)}
 .track-row:hover .track-mark,.track-row.playing .track-mark{opacity:1}
 
-/* ---- ranked lists ------------------------------------------------------ */
 .rank{display:flex;flex-direction:column}
 .rk{display:grid;grid-template-columns:20px 34px 1fr auto;align-items:center;gap:12px;padding:9px 6px;border-bottom:1px solid var(--rule-2)}
 .rk:last-child{border-bottom:none}
@@ -361,7 +317,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .rk-plays{font-family:var(--fm);font-size:11.5px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--mute)}
 .empty{margin:0;padding:16px 0;font-family:var(--fm);font-size:10.5px;color:var(--faint)}
 
-/* recently played — distinct from the rank list: it is a log, not a chart */
 .log{display:flex;flex-direction:column}
 .log-row{display:grid;grid-template-columns:6px 34px 1fr auto;align-items:center;gap:12px;padding:9px 6px;border-bottom:1px solid var(--rule-2)}
 .log-row:last-child{border-bottom:none}
@@ -375,7 +330,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .log-when{font-family:var(--fm);font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--faint);flex-shrink:0}
 .log-row.live .log-when{color:var(--signal)}
 
-/* top albums — grid of square tiles, the one place a card shape is right */
 .albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px}
 .al{display:flex;flex-direction:column}
 .al-art{width:100%;aspect-ratio:1/1;border-radius:9px;overflow:hidden;background:var(--case-2);display:block;margin-bottom:9px}
@@ -384,7 +338,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .al-artist{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .al-plays{font-family:var(--fm);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:5px}
 
-/* ---- Games ------------------------------------------------------------- */
 .spotlight{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--rule)}
 .spot-icon{width:44px;height:44px;border-radius:11px;background:var(--case-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--paper)}
 .spot-icon svg{width:24px;height:24px;fill:currentColor}
@@ -394,7 +347,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .spot-link{padding:7px 14px;border-radius:99px;border:1px solid var(--rule);color:var(--paper);text-decoration:none;font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,border-color .2s;white-space:nowrap}
 .spot-link:hover{background:var(--case-2);border-color:var(--faint)}
 
-/* charge meter fills while the start button is held */
 .channels{display:flex;align-items:center;gap:6px;margin-left:auto}
 .ch{font-family:var(--fm);font-size:8.5px;font-weight:500;letter-spacing:.11em;text-transform:uppercase;padding:3px 7px;border-radius:99px;border:1px solid var(--rule);color:var(--faint);white-space:nowrap}
 .ch.on{color:var(--ink);background:var(--signal);border-color:transparent}
@@ -410,45 +362,17 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .game svg{width:28px;height:28px;display:block}
 .game span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
 
-/* ---- Recommendations ---------------------------------------------------- */
-.gb-form{display:flex;flex-direction:column;gap:0;border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:20px}
-.gb-field{position:relative;display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-.gb-field:first-of-type{border-top:1px solid var(--rule)}
-.gb-row{display:grid;grid-template-columns:1fr 1fr}
-.gb-row .gb-field:first-child{border-right:1px solid var(--rule)}
-.gb-row .gb-field:first-child .gb-input{padding-right:14px}
-.gb-input,.gb-textarea{width:100%;background:none;border:none;padding:15px 60px 15px 0;color:var(--paper);font:500 14px var(--fm);letter-spacing:-.004em;outline:none;resize:none}
-.gb-textarea{min-height:88px;line-height:1.65;padding-right:52px}
-.gb-input::placeholder,.gb-textarea::placeholder{color:var(--faint)}
-.gb-count{position:absolute;right:0;top:50%;transform:translateY(-50%);font-family:var(--fm);font-size:10px;font-variant-numeric:tabular-nums;color:var(--faint);pointer-events:none}
-.gb-field.msg .gb-count{top:auto;bottom:14px;transform:none}
-.gb-count.warn{color:#e5484d}
-.gb-trap{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
-.gb-ts{margin-top:14px}
-.gb-hint{margin:12px 0 0;font-family:var(--fm);font-size:10.5px;color:var(--dim);line-height:1.6}
-.gb-hint[hidden]{display:none!important}
-.gb-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px}
-.gb-btn{position:relative;padding:11px 24px;border-radius:99px;background:var(--paper);color:var(--ink);border:none;font:700 11px var(--fm);letter-spacing:.11em;text-transform:uppercase;cursor:pointer;overflow:hidden;transition:transform .15s,opacity .2s}
-.gb-btn:hover:not(:disabled){transform:scale(1.02)}
-.gb-btn:active:not(:disabled){transform:scale(.97)}
-.gb-btn:disabled{opacity:.34;cursor:not-allowed}
-.gb-btn .gb-fill{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--signal);transition:width .95s linear}
-.gb-rate{font-family:var(--fm);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);text-align:right}
-.gb-rate.hot{color:#e5484d}
-.gb-form.is-offline .gb-input,.gb-form.is-offline .gb-textarea{opacity:.45;pointer-events:none}
-.gb-list{display:flex;flex-direction:column}
-.gb{padding:14px 0 14px 16px;border-bottom:1px solid var(--rule-2);position:relative}
-.gb::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:1px;background:var(--rule);transition:background .25s var(--e),box-shadow .25s}
-.gb:hover::before{background:var(--signal);box-shadow:0 0 8px rgba(var(--signal),.7)}
-.gb-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
-.gb-name{font-size:13px;font-weight:600;color:var(--paper);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gb-time{font-family:var(--fm);font-size:10px;font-variant-numeric:tabular-nums;color:var(--faint);flex-shrink:0}
-.gb-track{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;font-size:15px;font-weight:600;color:var(--paper);letter-spacing:-.012em;margin:0 0 4px}
-.gb-artist{font-size:12.5px;font-weight:400;color:var(--dim);font-style:italic}
-.gb-msg{font-size:13.5px;color:var(--mute);line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:13px}
+.proj{display:flex;flex-direction:column;gap:9px;padding:15px 16px;border-radius:13px;background:var(--case);border:1px solid var(--rule);text-decoration:none;color:inherit;transition:background .22s var(--e),border-color .22s,transform .22s var(--e)}
+a.proj:hover{background:var(--case-2);border-color:rgba(242,241,238,.18);transform:translateY(-1px)}
+.proj-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.proj-name{font-size:14px;font-weight:600;color:var(--paper);letter-spacing:-.014em;line-height:1.2}
+.proj-go{flex-shrink:0;width:12px;height:12px;align-self:center;color:var(--faint);fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;transition:color .2s,transform .22s var(--e)}
+a.proj:hover .proj-go{color:var(--mute);transform:translate(1.5px,-1.5px)}
+.proj-desc{font-size:13px;line-height:1.62;color:var(--mute);letter-spacing:-.004em}
+.proj-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:3px}
+.proj-tag{padding:3px 7px;border-radius:6px;background:rgba(var(--signal),.08);border:1px solid rgba(var(--signal),.17);font:500 9.5px var(--fm);letter-spacing:.07em;text-transform:uppercase;color:rgba(var(--signal),.8)}
 
-/* ---- docked player ----------------------------------------------------- */
-/* Persistent across every view, so audio and context never jump when you navigate. */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:18;background:rgba(13,13,15,.93);border-top:1px solid var(--rule);backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%)}
 .dock-in{display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto;padding:11px 26px 13px}
 .dock-art{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--case-2)}
@@ -463,7 +387,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .dock-btn:hover{color:var(--paper);border-color:var(--faint);background:var(--case)}
 .dock-btn svg{width:13px;height:13px;fill:currentColor}
 
-/* ---- lyrics modal ------------------------------------------------------ */
 .modal-ov{position:fixed;inset:0;z-index:30;background:rgba(5,5,6,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .26s}
 .modal-ov.show{opacity:1;pointer-events:auto}
 .modal{position:relative;display:flex;flex-direction:column;width:100%;max-width:900px;height:min(84vh,600px);border-radius:18px;overflow:hidden;background:rgba(13,13,16,.62);border:1px solid var(--rule);box-shadow:0 40px 100px -36px #000,0 0 90px -30px rgba(var(--signal),.28);transform:translateY(20px) scale(.97);transition:transform .34s var(--e),box-shadow .6s var(--e);isolation:isolate;backdrop-filter:blur(26px) saturate(200%);-webkit-backdrop-filter:blur(26px) saturate(200%)}
@@ -502,7 +425,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .lyr-line .w.now{color:#fff}
 .lyr-line.empty{color:rgba(242,241,238,.5);font-size:14px;text-align:center;letter-spacing:0}
 
-/* ---- chrome: prompt, toast, counter ----------------------------------- */
 .view-counter{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:calc(20px + env(safe-area-inset-left,0px));z-index:12;display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10.5px;color:var(--faint);pointer-events:none}
 .view-counter svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;opacity:.6}
 .view-counter b{color:var(--mute);font-weight:500}
@@ -513,8 +435,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .toast.error{border-color:rgba(229,72,77,.5)}
 .toast.error .ic{background:rgba(229,72,77,.2);color:#ff8a8a}
 
-
-/* ---- desktop ----------------------------------------------------------- */
 @media (min-width:1000px){
   .tabs .nav-btn{padding:8px 20px;font-size:13px}
   .stage{padding:104px 46px 112px}
@@ -522,7 +442,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
   .view-counter{left:18px}
 }
 
-/* ---- mobile ----------------------------------------------------------- */
 @media (max-width:999px){
   .topbar{padding:12px 14px 18px}
   .burger{width:34px;height:34px;border-radius:11px}
@@ -549,7 +468,7 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
   .albums{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .view-counter{display:none}
   .hero-artist{font-size:clamp(30px,8.6vw,44px)}
-  /* 16px inputs stop iOS Safari auto-zooming the viewport on focus */
+
   .gb-input,.gb-textarea{font-size:16px;padding:14px 56px 14px 0}
   .track-row{min-height:56px;grid-template-columns:38px 1fr auto;gap:12px}
   .track-art{width:38px;height:38px}
@@ -583,9 +502,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 <div id="bgArt" aria-hidden="true"></div>
 <div id="bgArtShadow" aria-hidden="true"></div>
 
-<!-- Identity drawer. Off-canvas on every size, opened by the burger.
-     Deliberately holds no avatar, name or handle: that identity belongs to the home
-     view, and duplicating it here meant two copies to keep in sync for no gain. -->
 <div class="scrim" id="scrim" hidden></div>
 <aside class="ident" id="ident" aria-label="Links">
   <div class="ident-rule" style="margin-top:0"></div>
@@ -613,7 +529,6 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
     <div class="activity-line" id="activityLine" hidden=""><img class="art" id="activityArt" alt="" referrerpolicy="no-referrer" decoding="async"><div class="txt" id="activityText"></div><span class="activity-meta" id="activityMeta" hidden=""><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span id="activityTime">0:00</span></span></div>
   </div>
 
-
   <div class="ident-foot">
     <div><span>scrobbles</span><b id="railScrobbles">—</b></div>
     <div><span>views</span><b id="railViews">—</b></div>
@@ -625,10 +540,9 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
   <nav class="tabs" aria-label="Sections"><div class="tabs-inner">
     <button class="nav-btn active" data-view="home" type="button">home</button>
     <button class="nav-btn" data-view="music" type="button">music</button>
-    <button class="nav-btn" data-view="guestbook" type="button">recommend</button>
+    <button class="nav-btn" data-view="projects" type="button">projects</button>
   </div></nav>
 </div></header>
-
 
 <main class="stage">
 <section class="view" data-view="home">
@@ -695,7 +609,7 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 </section>
 
 <section class="view" data-view="music" hidden="">
-  <!-- Signature moment: the loudest thing on the page, clipped with live artwork colour -->
+
   <div class="vault-hero">
     <div class="vault-kicker lbl"><i></i>top artist</div>
     <h2 class="hero-artist" id="statTopArtistName">—</h2>
@@ -769,37 +683,60 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
   </div>
 </section>
 
-
-
-<section class="view" data-view="guestbook" hidden="">
+<section class="view" data-view="projects" hidden="">
   <div class="panel" style="margin-top:22px">
     <div class="panel-head">
-      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>Recommend a track</div>
-      <div class="panel-meta" id="gbCountBadge">none yet</div>
+      <div class="panel-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7l9 5 9-5-9-5Z"></path><path d="m3 12 9 5 9-5"></path><path d="m3 17 9 5 9-5"></path></svg>Projects</div>
+      <div class="panel-meta">7 shipped</div>
     </div>
 
-    <form class="gb-form" id="gbForm" novalidate="">
-      <div class="gb-field"><input class="gb-input" id="gbAuthor" name="author" placeholder="your name" maxlength="32" autocomplete="nickname" required=""></div>
-      <div class="gb-row">
-        <div class="gb-field"><input class="gb-input" id="gbTrack" name="track" placeholder="track title" maxlength="80" required=""></div>
-        <div class="gb-field"><input class="gb-input" id="gbArtist" name="artist" placeholder="artist" maxlength="80"></div>
-      </div>
-      <div class="gb-field msg"><textarea class="gb-textarea" id="gbWhy" name="why" placeholder="why it deserves a spot in the vault" maxlength="140" required=""></textarea><span class="gb-count" id="gbCount">0/140</span></div>
-      <input class="gb-trap" id="gbTrap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <div class="gb-ts" id="gbTurnstile" hidden=""></div>
-      <p class="gb-hint" id="gbHint" hidden=""></p>
-      <div class="gb-actions">
-        <span class="gb-rate" id="gbRate">4 per hour</span>
-        <button class="gb-btn" id="gbSubmit" type="submit">Recommend<i class="gb-fill" id="gbFill"></i></button>
-      </div>
-    </form>
+    <div class="proj-grid">
+      <a class="proj" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head"><span class="proj-name">Spitari Watchdog</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
+        <p class="proj-desc">Multi-instance Discord bot runner with a terminal dashboard and web control panel, Lavalink music, AES-256-GCM encrypted credential storage, and hot-reloadable Lua plugins.</p>
+        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">TUI</span><span class="proj-tag">SQLite</span></div>
+      </a>
 
-    <div class="gb-list" id="gbList"></div>
+      <a class="proj" href="https://spitari.win" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head"><span class="proj-name">Spitari.win</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
+        <p class="proj-desc">Public web platform for Spitari — landing, command reference, policy and terms, built statically and deployed behind a hardened CSP with no client framework.</p>
+        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Vercel</span></div>
+      </a>
+
+      <div class="proj">
+        <div class="proj-head"><span class="proj-name">Spitari External</span></div>
+        <p class="proj-desc">Native C++ external for Roblox — DX9 present-hook renderer, custom GUI, memory and Roblox service layer, and a Lua-driven feature set spanning aim, visuals, movement, rage, explorer and MCP tooling.</p>
+        <div class="proj-tags"><span class="proj-tag">C++</span><span class="proj-tag">DX9</span><span class="proj-tag">Windows</span></div>
+      </div>
+
+      <a class="proj" href="https://github.com/sattiva/stivalib" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head"><span class="proj-name">sativlib</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
+        <p class="proj-desc">Zero-dependency Go security core — AES-256-GCM, HKDF, Argon2id, TOTP, HS256 JWT, bitmask scopes, a tamper-evident audit hash chain, rate limiter, circuit breaker and sandbox.</p>
+        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Crypto</span><span class="proj-tag">Auth</span></div>
+      </a>
+
+      <a class="proj" href="https://github.com/sattiva/ai-python-bot" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head"><span class="proj-name">boobs</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
+        <p class="proj-desc">Multi-provider Discord AI bot across Gemini, Groq, DeepSeek, Claude, OpenAI and OpenRouter — with multimodal vision/OCR, document ingestion, Whisper transcription, TTS voice channels, image generation and token-economy access control.</p>
+        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">AI</span></div>
+      </a>
+
+      <div class="proj">
+        <div class="proj-head"><span class="proj-name">Monu MM</span></div>
+        <p class="proj-desc">Ticket-based crypto escrow bot with on-chain deposit detection, dual-confirm payouts, automatic cold-wallet fee sweep and vouch transcripts — plus a provably-fair casino subsystem.</p>
+        <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Discord</span><span class="proj-tag">SQLite</span></div>
+      </div>
+
+      <a class="proj" href="https://github.com/fishstrap/fishstrap" target="_blank" rel="noopener noreferrer">
+        <div class="proj-head"><span class="proj-name">Fishstrap</span><svg class="proj-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></div>
+        <p class="proj-desc">Bloxstrap-derived Roblox bootstrapper patched with a multi-instance watcher and a built-in account manager — model, settings and viewmodel layered over upstream launch handling.</p>
+        <div class="proj-tags"><span class="proj-tag">C#</span><span class="proj-tag">WPF</span><span class="proj-tag">.NET</span></div>
+      </a>
+    </div>
   </div>
 </section>
 </main>
 
-<!-- Docked player. Persists across views so audio and context never jump. -->
 <div class="dock" id="dock" hidden="">
   <div class="dock-in">
     <img class="dock-art" id="dockArt" alt="" referrerpolicy="no-referrer" decoding="async">

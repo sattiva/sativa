@@ -1,4 +1,3 @@
-
 export const $ = (id) => document.getElementById(id);
 
 export const C = {
@@ -18,13 +17,13 @@ try {
 export const TITLES = {
   home: 'Sativa',
   music: 'Music — Sativa',
-  guestbook: 'Recommend a track — Sativa'
+  projects: 'Projects — Sativa'
 };
 
 export const PATH = {
   home: '/home',
   music: '/music',
-  guestbook: '/recommend'
+  projects: '/projects'
 };
 
 export const VIEW = { '/': 'home', '': 'home' };

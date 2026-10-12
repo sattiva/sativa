@@ -5,7 +5,6 @@ import { initLyricsModal, setArt, setBgArt, clearNow } from './lyrics.js';
 import { connect, presence } from './lanyard.js';
 import { initMusic } from './music.js';
 import { initStats } from './stats.js';
-import { initGuestbook } from './guestbook.js';
 import { initProtect } from './protect.js';
 
 function boot(fn) {
@@ -14,17 +13,6 @@ function boot(fn) {
   } catch (e) {
     if (window.console && console.warn) console.warn('[init] ' + (fn && fn.name) + ' failed:', e);
   }
-}
-
-if (typeof document !== 'undefined') {
-  document.addEventListener(
-    'submit',
-    function (e) {
-      const f = e.target;
-      if (f && f.id === 'gbForm') e.preventDefault();
-    },
-    true
-  );
 }
 
 let booted = false;
@@ -58,7 +46,6 @@ function init() {
   boot(initLyricsModal);
   boot(initMusic);
   boot(initStats);
-  boot(initGuestbook);
   boot(initViewCounter);
   boot(initNavigation);
 

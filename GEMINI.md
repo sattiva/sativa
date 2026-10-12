@@ -177,8 +177,8 @@ npm test             # id cross-check + api integration + jsdom smoke
 ### Env (see .env.example)
 | Var | Effect when absent |
 | --- | --- |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Guestbook + view counter return 503. Vault and arcade still work. |
-| `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Widget hidden; honeypot + dwell + origin pinning + rate limits remain. |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | View counter + stats return 503 or fall back to a read-only baseline. Vault still works. |
+| `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Unused. Turnstile is not wired to any endpoint since the guestbook removal. |
 | `LASTFM_API_KEY` / `_USERNAME` | Stats fall back to locally tracked vault plays. |
 | `LASTFM_COUNTS` | Distinct artist/track/album totals shown as a bounded lower bound with a `+` suffix. |
 
@@ -206,5 +206,5 @@ npm test             # id cross-check + api integration + jsdom smoke
 - Chrome rejects `ry = 0` arcs in SVG path data and truncates the path. Use `l`/`L`.
 - Track identity is resolved from the manifest inside `api/scrobble.js`, never from a
   request body, so counters cannot be inflated with invented tracks.
-- `vercel.json` rewrites `/home|/music|/games|/guestbook` to `/index.html`. Removing that
-  rewrite is what made the guestbook form 404 on submit.
+- `vercel.json` rewrites `/home|/music|/projects` to `/index.html`. Dropping that rewrite
+  is what made deep links return the host's error page instead of the app.

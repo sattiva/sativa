@@ -180,9 +180,9 @@ edit without a rebuild never ships. `npm test` boots the bundle that is currentl
 ### Env (see .env.example)
 | Var | Effect when absent |
 | --- | --- |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Guestbook returns 503 and the form stays disabled. Stats render the baseline read-only and do not count. Vault and arcade still work. |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | View counter and stats return 503 or render the baseline read-only and do not count. The vault still works. |
 | `BASELINE_STATS` | Every stat starts at zero. One JSON blob, seeded into Redis on first read. |
-| `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Widget hidden; honeypot + dwell + origin pinning + rate limits remain. |
+| `TURNSTILE_SITE_KEY` / `_SECRET_KEY` | Unused. Turnstile is no longer wired to any endpoint; the verifier sits dormant in `api/_lib/guard.js`. |
 
 ### Invariants
 - `api/` is CommonJS (no `"type": "module"`); `src/` is ESM bundled by esbuild.
@@ -234,7 +234,7 @@ edit without a rebuild never ships. `npm test` boots the bundle that is currentl
   totals once behind an `sx:seeded` NX flag, local plays are additive.
 - `vercel.json` rewrites `/:slug` to `/index.html` for SPA deep links, and `404.html` is a
   byte-identical copy of `index.html` as the fallback. Without one of those, refreshing on
-  `/music` or `/guestbook` returns the host's error page instead of the app.
+  `/music` or `/projects` returns the host's error page instead of the app.
 - `index.html` must NOT hardcode `class="smooth-scroll"`. That class sets
   `body{overflow:hidden}` and is only safe when the custom scroller is actually driving.
 - Always scope view lookups to the section: `section[data-view="music"]`, never
