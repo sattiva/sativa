@@ -133,14 +133,17 @@ export function updateContactTimes() {
   const vEl = document.getElementById('visitorTime');
   const mEl = document.getElementById('myTime');
   if (!vEl && !mEl) return;
+  const fmt = (tz) => {
+    try {
+      return new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false });
+    } catch (e) {
+      return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  };
+  const visitorTz = Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : null;
   const tick = () => {
-    const now = new Date();
-    if (vEl) {
-      vEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
-    if (mEl) {
-      mEl.textContent = now.toLocaleTimeString('en-US', { timeZone: 'America/Toronto', hour: '2-digit', minute: '2-digit', hour12: false });
-    }
+    if (vEl) vEl.textContent = fmt(visitorTz || undefined);
+    if (mEl) mEl.textContent = fmt('America/Toronto');
   };
   tick();
   if (!contactTimer) contactTimer = setInterval(tick, 1000);
@@ -264,9 +267,9 @@ export function initNavigation() {
       setTimeout(() => el.classList.remove('copied'), 1500);
     });
   };
-  bindCopy('copyDiscordBtn', 'o_vxvxvx');
-  bindCopy('copyGithubBtn', 'csynholic');
-  bindCopy('copyTelegramBtn', 'cosmin');
+  bindCopy('copyDiscordBtn', 'sativasballs');
+  bindCopy('copyGithubBtn', 'sattiva');
+  bindCopy('copyEmailBtn', 'me@sativa.cfd');
 
   window.addEventListener('resize', () => {
     const a = document.querySelector('.tabs .nav-btn.active');
