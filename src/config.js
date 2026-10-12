@@ -16,14 +16,18 @@ try {
 
 export const TITLES = {
   home: 'Sativa',
-  music: 'Music — Sativa',
-  projects: 'Projects — Sativa'
+  music: 'Music - Sativa',
+  projects: 'Projects - Sativa',
+  games: 'Games - Sativa',
+  contact: 'Contact - Sativa'
 };
 
 export const PATH = {
   home: '/home',
   music: '/music',
-  projects: '/projects'
+  projects: '/projects',
+  games: '/games',
+  contact: '/contact'
 };
 
 export const VIEW = { '/': 'home', '': 'home' };

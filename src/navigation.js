@@ -105,10 +105,45 @@ export function initialRequestedView() {
   return (TITLES[q] ? q : null) || VIEW[p] || 'home';
 }
 
+export function updatePill(t) {
+  const pill = document.getElementById('tabsPill');
+  const btn = document.querySelector('.tabs .nav-btn[data-view="' + t + '"]');
+  if (!pill || !btn) return;
+  const p = btn.parentElement;
+  if (!p) return;
+  const pr = p.getBoundingClientRect();
+  const br = btn.getBoundingClientRect();
+  if (br.width > 0) {
+    pill.style.transform = 'translate3d(' + Math.round(br.left - pr.left) + 'px,' + Math.round(br.top - pr.top) + 'px,0)';
+    pill.style.width = br.width + 'px';
+    pill.style.height = br.height + 'px';
+    pill.style.opacity = '1';
+  }
+}
+
 export function setActive(t) {
   document.querySelectorAll('.nav-btn').forEach(x => {
     x.classList.toggle('active', x.dataset.view === t);
   });
+  updatePill(t);
+}
+
+let contactTimer = null;
+export function updateContactTimes() {
+  const vEl = document.getElementById('visitorTime');
+  const mEl = document.getElementById('myTime');
+  if (!vEl && !mEl) return;
+  const tick = () => {
+    const now = new Date();
+    if (vEl) {
+      vEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+    if (mEl) {
+      mEl.textContent = now.toLocaleTimeString('en-US', { timeZone: 'America/Toronto', hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  };
+  tick();
+  if (!contactTimer) contactTimer = setInterval(tick, 1000);
 }
 
 export function showView(t, push) {
@@ -135,6 +170,9 @@ export function showView(t, push) {
   if (t === 'projects') {
     triggerProjectsEntrance();
     startSolPricePolling();
+  }
+  if (t === 'contact') {
+    updateContactTimes();
   }
   setTimeout(scMax, 50);
 
@@ -206,6 +244,38 @@ export function initNavigation() {
   document.querySelectorAll('.nav-btn[data-view]').forEach((b) => {
     b.addEventListener('click', () => setDrawer(false));
   });
+
+  document.querySelectorAll('.js-nav-link[data-view]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const v = a.dataset.view;
+      setActive(v);
+      showView(v, true);
+      setDrawer(false);
+    });
+  });
+
+  const bindCopy = (id, txt) => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener('click', () => {
+      try { navigator.clipboard.writeText(txt); } catch (e) {}
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1500);
+    });
+  };
+  bindCopy('copyDiscordBtn', 'o_vxvxvx');
+  bindCopy('copyGithubBtn', 'csynholic');
+  bindCopy('copyTelegramBtn', 'cosmin');
+
+  window.addEventListener('resize', () => {
+    const a = document.querySelector('.tabs .nav-btn.active');
+    if (a) updatePill(a.dataset.view);
+  }, { passive: true });
+  setTimeout(() => {
+    const a = document.querySelector('.tabs .nav-btn.active');
+    if (a) updatePill(a.dataset.view);
+  }, 60);
 
   window.addEventListener('popstate', function() {
     const p = location.pathname.replace(/\/+$/, '') || '/';

@@ -78,6 +78,21 @@ export function initBotTelemetry() {
   }, 2400);
 }
 
+let casinoTimer = null;
+export function initCasinoTicker() {
+  if (casinoTimer) return;
+  const mEl = document.getElementById('casinoMultiplier');
+  const pEl = document.getElementById('casinoPayout');
+  if (!mEl && !pEl) return;
+  let mult = 1.20;
+  casinoTimer = setInterval(() => {
+    mult += (0.04 + Math.random() * 0.08);
+    if (mult > 4.40) mult = 1.05;
+    if (mEl) mEl.textContent = mult.toFixed(2) + 'x';
+    if (pEl) pEl.textContent = '+' + (1.50 * mult).toFixed(2) + ' SOL';
+  }, 220);
+}
+
 export function triggerProjectsEntrance() {
   const view = document.querySelector('section[data-view="projects"]');
   if (!view) return;
@@ -286,5 +301,6 @@ export function initProjectsScroller() {
   });
 
   initBotTelemetry();
+  initCasinoTicker();
   initEspCanvas();
 }
