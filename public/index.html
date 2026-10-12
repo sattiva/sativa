@@ -362,76 +362,77 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .game svg{width:28px;height:28px;display:block}
 .game span{font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
 
-.proj-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--rule);margin-bottom:22px}
-.proj-header-main{display:flex;flex-direction:column;gap:4px}
-.proj-kicker{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--dim)}
-.proj-kicker::before{content:'—';color:var(--faint);font-weight:400}
+.proj-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--rule);margin-bottom:24px}
+.proj-header-main{display:flex;flex-direction:column;gap:5px}
 .proj-heading{font-family:var(--fd);font-size:32px;font-weight:600;letter-spacing:-.025em;line-height:1.1;color:var(--paper);text-transform:lowercase}
-.proj-lead{font-size:13.5px;color:var(--dim);line-height:1.5;margin-top:2px}
+.proj-lead{font-size:13.5px;color:var(--dim);line-height:1.5}
 
-.proj-group+.proj-group{margin-top:26px}
-.proj-group-label{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--dim);margin-bottom:13px}
-.proj-group-label::before{content:'—';color:var(--faint);font-weight:400}
+.proj-group+.proj-group{margin-top:28px}
+.proj-group-label{font-family:var(--fm);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;display:block}
 
 .proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:640px){.proj-grid{grid-template-columns:1fr}}
 
-.proj{position:relative;display:flex;flex-direction:column;border-radius:14px;background:rgba(18,19,23,.7);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;overflow:hidden;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
+.proj{position:relative;display:flex;flex-direction:column;border-radius:14px;background:rgba(18,19,23,.75);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;overflow:hidden;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
 .proj.proj-wide{grid-column:1/-1}
 a.proj{cursor:pointer}
-a.proj:hover{background:rgba(24,25,31,.9);border-color:rgba(255,255,255,.18);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
+a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
 
-/* Custom Art Containers */
-.proj-art{position:relative;height:120px;background:radial-gradient(100% 120% at 50% 10%,rgba(35,37,46,.55) 0%,rgba(12,13,16,.96) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:12px 16px;overflow:hidden}
+/* Custom Art Canvases */
+.proj-art{position:relative;height:128px;background:radial-gradient(100% 120% at 50% 10%,rgba(32,34,42,.55) 0%,rgba(11,12,15,.98) 100%);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:12px 18px;overflow:hidden}
 
-/* Watchdog TUI Art */
-.art-terminal{width:100%;max-width:380px;border-radius:9px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 10px 24px -8px rgba(0,0,0,.6)}
-.art-term-bar{display:flex;align-items:center;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);font-family:var(--fm);font-size:10px}
-.art-term-dots{display:flex;align-items:center;gap:4px}
-.art-term-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22)}
-.art-term-title{color:var(--mute);letter-spacing:.02em}
-.art-term-state{color:var(--faint);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
-.art-term-body{display:flex;flex-direction:column;gap:3px;font-family:var(--fm);font-size:10px;line-height:1.4}
-.art-term-line{display:flex;align-items:center;gap:7px}
-.art-dim{color:var(--faint)}
-.art-hi{color:var(--paper);font-weight:500}
-.art-mute{color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.art-tag{font-size:8.5px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.05em}
+/* 1. Watchdog Telemetry Art */
+.art-telemetry{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
+.art-telemetry-top{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
+.art-telemetry-nodes{display:flex;align-items:center;gap:7px}
+.art-node-dot{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9)}
+.art-telemetry-title{color:var(--paper);font-weight:600;letter-spacing:.02em}
+.art-telemetry-rate{color:var(--dim);font-size:9px;letter-spacing:.03em}
+.art-wave-wrap{width:100%;height:44px;display:flex;align-items:center;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:2px 8px;overflow:hidden}
+.art-wave-wrap svg{width:100%;height:100%;display:block}
+.art-telemetry-bottom{display:flex;align-items:center;justify-content:space-between;gap:6px;font-family:var(--fm);font-size:9px}
+.art-pill{padding:3px 7px;border-radius:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:var(--dim);white-space:nowrap}
+.art-pill b{color:var(--paper);font-weight:500}
 
-/* External DX9 HUD Art */
-.art-hud{position:relative;width:100%;height:100%;display:flex;flex-direction:column;justify-content:space-between}
-.art-hud-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
-.art-hud-scope{position:relative;flex:1;display:flex;align-items:center;justify-content:center}
-.art-hud-cross{position:absolute;width:40px;height:40px;border:1px dashed rgba(255,255,255,.15);border-radius:50%}
-.art-hud-box{position:relative;padding:5px 12px;border-radius:6px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:9px;font-family:var(--fm);box-shadow:0 6px 20px rgba(0,0,0,.6)}
-.art-hud-tag{font-size:10px;color:var(--paper);font-weight:500}
-.art-hud-stat{font-size:9.5px;color:var(--dim);letter-spacing:.04em}
-.art-hud-footer{position:relative;display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+/* 2. External Tactical Radar/HUD Art */
+.art-tactical{width:100%;max-width:390px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.art-radar-wrap{position:relative;width:82px;height:82px;flex-shrink:0;background:rgba(255,255,255,.015);border-radius:50%;border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}
+.art-radar-wrap svg{width:76px;height:76px;display:block}
+.art-tactical-target{flex:1;display:flex;flex-direction:column;gap:5px;font-family:var(--fm);min-width:0}
+.art-target-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);width:fit-content;font-size:9.5px;color:var(--paper);font-weight:500}
+.art-target-badge b{color:#fff}
+.art-target-readout{display:flex;justify-content:space-between;font-size:9px;color:var(--dim)}
+.art-target-brackets{display:flex;align-items:center;justify-content:space-between;font-size:8.5px;color:var(--faint);letter-spacing:.04em}
 
-/* SpitariStrap Launcher Art */
-.art-launcher{width:100%;max-width:340px;border-radius:8px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 12px;display:flex;flex-direction:column;gap:7px}
-.art-launcher-header{display:flex;justify-content:space-between;align-items:center;font-family:var(--fm);font-size:10px}
-.art-launcher-title{color:var(--mute)}
-.art-launcher-sync{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
-.art-launcher-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.art-slot{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
-.art-slot-dot{width:5px;height:5px;border-radius:50%;background:#fff;opacity:.7}
-.art-slot-info{display:flex;flex-direction:column;min-width:0;font-family:var(--fm);line-height:1.2}
-.art-slot-info b{font-size:9.5px;color:var(--paper);font-weight:500}
-.art-slot-info span{font-size:8.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 3. SpitariStrap Desktop App Art */
+.art-desktop-app{width:100%;max-width:390px;border-radius:8px;background:rgba(12,13,16,.9);border:1px solid rgba(255,255,255,.08);padding:8px 11px;display:flex;flex-direction:column;gap:6px}
+.art-app-titlebar{display:flex;align-items:center;justify-content:space-between;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.06);font-family:var(--fm);font-size:9.5px}
+.art-app-dots{display:flex;align-items:center;gap:4px}
+.art-app-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18)}
+.art-app-name{color:var(--paper);font-weight:500;font-size:9px}
+.art-app-state{color:var(--faint);font-size:8.5px}
+.art-app-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.art-account-card{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.art-account-avatar{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--fm);color:#fff;flex-shrink:0}
+.art-account-meta{display:flex;flex-direction:column;min-width:0;font-family:var(--fm);line-height:1.2}
+.art-account-meta b{font-size:9px;color:var(--paper);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-account-meta span{font-size:8px;color:var(--faint)}
+.art-app-footer{font-family:var(--fm);font-size:8.5px;color:var(--faint);text-align:center;padding-top:2px;border-top:1px dashed rgba(255,255,255,.05)}
 
-/* Monu Escrow Art */
-.art-escrow{width:100%;max-width:380px;border-radius:9px;background:rgba(10,11,14,.88);border:1px solid rgba(255,255,255,.08);padding:9px 14px;display:flex;flex-direction:column;gap:8px}
-.art-escrow-meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--fm);font-size:10px}
-.art-escrow-ticket{color:var(--paper);font-weight:500}
-.art-escrow-badge{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
-.art-escrow-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.art-node{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--fm)}
-.art-node-role{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
-.art-node-val{font-size:10px;color:var(--paper);font-weight:500}
-.art-link{flex:1;display:flex;align-items:center;gap:6px}
-.art-link-line{flex:1;height:1px;background:rgba(255,255,255,.15)}
-.art-vault{padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:9px;color:var(--mute);letter-spacing:.05em;text-transform:uppercase}
+/* 4. Monu Escrow Pipeline Art */
+.art-pipeline{width:100%;max-width:460px;display:flex;flex-direction:column;gap:8px}
+.art-pipeline-header{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:9.5px}
+.art-pipeline-id{color:var(--paper);font-weight:600;letter-spacing:.02em}
+.art-pipeline-badge{font-size:8.5px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--mute);letter-spacing:.05em}
+.art-pipeline-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.art-pipe-node{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--fm);padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);min-width:96px}
+.art-pipe-label{font-size:8.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.art-pipe-hash{font-size:9.5px;color:var(--paper);font-weight:500}
+.art-pipe-bridge{flex:1;display:flex;align-items:center;gap:6px}
+.art-pipe-line{flex:1;height:1px;background:rgba(255,255,255,.12)}
+.art-pipe-lock{padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:8.5px;color:var(--paper);font-weight:500;letter-spacing:.03em;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.art-pipe-lock svg{width:9px;height:9px;fill:currentColor}
+.art-pipeline-footer{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:8.5px;color:var(--faint)}
 
 /* Card Body */
 .proj-card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
@@ -774,7 +775,6 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
   <div class="panel" style="margin-top:22px">
     <div class="panel-head proj-header">
       <div class="proj-header-main">
-        <span class="proj-kicker">my work</span>
         <h2 class="proj-heading">projects</h2>
         <p class="proj-lead">commissions, collaborations, and personal builds. select work that taught me the most.</p>
       </div>
@@ -787,16 +787,36 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <a class="proj proj-wide" href="https://github.com/sattiva/chronicle-core" target="_blank" rel="noopener noreferrer">
         <div class="proj-art">
-          <div class="art-terminal">
-            <div class="art-term-bar">
-              <div class="art-term-dots"><span></span><span></span><span></span></div>
-              <span class="art-term-title">spitari-watchdog // cluster v2.4</span>
-              <span class="art-term-state">connected</span>
+          <div class="art-telemetry">
+            <div class="art-telemetry-top">
+              <div class="art-telemetry-nodes">
+                <span class="art-node-dot"></span>
+                <span class="art-telemetry-title">spitari-watchdog cluster v2.4</span>
+              </div>
+              <span class="art-telemetry-rate">gateway 21ms avg · 48.2 MB</span>
             </div>
-            <div class="art-term-body">
-              <div class="art-term-line"><span class="art-dim">[01]</span> <span class="art-hi">shard #00</span> <span class="art-mute">gateway 24ms</span> <span class="art-tag">LAVALINK</span></div>
-              <div class="art-term-line"><span class="art-dim">[02]</span> <span class="art-hi">shard #01</span> <span class="art-mute">gateway 19ms</span> <span class="art-tag">LUA HOT-RELOAD</span></div>
-              <div class="art-term-line"><span class="art-dim">[db]</span> <span class="art-hi">boltdb</span> <span class="art-mute">aes-256-gcm</span> <span class="art-tag">ENCRYPTED</span></div>
+            <div class="art-wave-wrap">
+              <svg viewBox="0 0 440 38" preserveAspectRatio="none" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"></stop>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <line x1="0" y1="19" x2="440" y2="19" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3 3"></line>
+                <line x1="110" y1="0" x2="110" y2="38" stroke="rgba(255,255,255,0.04)"></line>
+                <line x1="220" y1="0" x2="220" y2="38" stroke="rgba(255,255,255,0.04)"></line>
+                <line x1="330" y1="0" x2="330" y2="38" stroke="rgba(255,255,255,0.04)"></line>
+                <polygon points="0,28 35,26 70,22 105,29 140,14 175,20 210,11 245,24 280,16 315,22 350,9 385,18 420,13 440,16 440,38 0,38" fill="url(#waveGrad)"></polygon>
+                <polyline points="0,28 35,26 70,22 105,29 140,14 175,20 210,11 245,24 280,16 315,22 350,9 385,18 420,13 440,16" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <circle cx="210" cy="11" r="2.5" fill="#ffffff"></circle>
+                <circle cx="350" cy="9" r="2.5" fill="#ffffff"></circle>
+              </svg>
+            </div>
+            <div class="art-telemetry-bottom">
+              <span class="art-pill"><b>shard 00</b> 24ms · lavalink ok</span>
+              <span class="art-pill"><b>shard 01</b> 19ms · lua vm live</span>
+              <span class="art-pill"><b>storage</b> boltdb encrypted</span>
             </div>
           </div>
         </div>
@@ -823,19 +843,34 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <div class="proj">
         <div class="proj-art">
-          <div class="art-hud">
-            <div class="art-hud-grid"></div>
-            <div class="art-hud-scope">
-              <div class="art-hud-cross"></div>
-              <div class="art-hud-box">
-                <span class="art-hud-tag">0x7FF4B1A0</span>
-                <span class="art-hud-stat">144 FPS · DX9</span>
-              </div>
+          <div class="art-tactical">
+            <div class="art-radar-wrap">
+              <svg viewBox="0 0 80 80" fill="none" aria-hidden="true">
+                <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
+                <circle cx="40" cy="40" r="24" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"></circle>
+                <circle cx="40" cy="40" r="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"></circle>
+                <line x1="40" y1="2" x2="40" y2="78" stroke="rgba(255,255,255,0.09)" stroke-width="1"></line>
+                <line x1="2" y1="40" x2="78" y2="40" stroke="rgba(255,255,255,0.09)" stroke-width="1"></line>
+                <path d="M40 40 L65 22 A36 36 0 0 0 40 4 Z" fill="rgba(255,255,255,0.04)"></path>
+                <circle cx="56" cy="26" r="2.2" fill="#ffffff"></circle>
+                <circle cx="56" cy="26" r="5" stroke="#ffffff" stroke-width="0.75" opacity="0.6"></circle>
+                <circle cx="28" cy="50" r="1.8" fill="rgba(255,255,255,0.7)"></circle>
+              </svg>
             </div>
-            <div class="art-hud-footer">
-              <span>present_hook()</span>
-              <span>mem::read</span>
-              <span>lua_vm</span>
+            <div class="art-tactical-target">
+              <div class="art-target-badge">
+                <span class="art-node-dot"></span>
+                <b>0x7FF4B1A0</b>
+                <span>hooked</span>
+              </div>
+              <div class="art-target-readout">
+                <span>present_hook · dx9</span>
+                <b style="color:var(--paper)">144 FPS</b>
+              </div>
+              <div class="art-target-brackets">
+                <span>vmem: mapped [r/w]</span>
+                <span>lua_vm ready</span>
+              </div>
             </div>
           </div>
         </div>
@@ -860,20 +895,30 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <div class="proj">
         <div class="proj-art">
-          <div class="art-launcher">
-            <div class="art-launcher-header">
-              <span class="art-launcher-title">SpitariStrap // multi-instance</span>
-              <span class="art-launcher-sync">sync: ok</span>
+          <div class="art-desktop-app">
+            <div class="art-app-titlebar">
+              <div class="art-app-dots"><span></span><span></span><span></span></div>
+              <span class="art-app-name">SpitariStrap Mutex Supervisor</span>
+              <span class="art-app-state">2 instances</span>
             </div>
-            <div class="art-launcher-slots">
-              <div class="art-slot">
-                <div class="art-slot-dot"></div>
-                <div class="art-slot-info"><b>instance 1</b><span>main_session</span></div>
+            <div class="art-app-cards">
+              <div class="art-account-card">
+                <div class="art-account-avatar">S</div>
+                <div class="art-account-meta">
+                  <b>sativa (main)</b>
+                  <span>pid 14208 · isolated</span>
+                </div>
               </div>
-              <div class="art-slot">
-                <div class="art-slot-dot"></div>
-                <div class="art-slot-info"><b>instance 2</b><span>alt_session</span></div>
+              <div class="art-account-card">
+                <div class="art-account-avatar">A</div>
+                <div class="art-account-meta">
+                  <b>alt_session</b>
+                  <span>pid 19844 · isolated</span>
+                </div>
               </div>
+            </div>
+            <div class="art-app-footer">
+              <span>singleton mutex detached · zero account collisions</span>
             </div>
           </div>
         </div>
@@ -905,25 +950,33 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 
       <div class="proj proj-wide">
         <div class="proj-art">
-          <div class="art-escrow">
-            <div class="art-escrow-meta">
-              <span class="art-escrow-ticket">ticket #0842</span>
-              <span class="art-escrow-badge">12/12 confirms</span>
+          <div class="art-pipeline">
+            <div class="art-pipeline-header">
+              <span class="art-pipeline-id">escrow session #0842</span>
+              <span class="art-pipeline-badge">12/12 confirms</span>
             </div>
-            <div class="art-escrow-flow">
-              <div class="art-node">
-                <span class="art-node-role">buyer</span>
-                <span class="art-node-val">signed</span>
+            <div class="art-pipeline-flow">
+              <div class="art-pipe-node">
+                <span class="art-pipe-label">buyer</span>
+                <span class="art-pipe-hash">0x4f82...19e</span>
               </div>
-              <div class="art-link">
-                <div class="art-link-line"></div>
-                <div class="art-vault">vault</div>
-                <div class="art-link-line"></div>
+              <div class="art-pipe-bridge">
+                <div class="art-pipe-line"></div>
+                <div class="art-pipe-lock">
+                  <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V7z"/></svg>
+                  <span>multisig vault</span>
+                </div>
+                <div class="art-pipe-line"></div>
               </div>
-              <div class="art-node">
-                <span class="art-node-role">seller</span>
-                <span class="art-node-val">signed</span>
+              <div class="art-pipe-node">
+                <span class="art-pipe-label">seller</span>
+                <span class="art-pipe-hash">0x9bc1...74a</span>
               </div>
+            </div>
+            <div class="art-pipeline-footer">
+              <span>audit: 0x8e2b...f41</span>
+              <span>fee sweep: 0.5% confirmed</span>
+              <span>channel: private ticket</span>
             </div>
           </div>
         </div>
