@@ -197,7 +197,18 @@ function play(row) {
   audio = a;
   a.addEventListener('play', () => startLoop(row));
   a.addEventListener('pause', () => setDockIcon(false));
-  a.addEventListener('ended', () => stopCustomAudio());
+  a.addEventListener('ended', () => {
+    const list = $('customTrackList');
+    if (list) {
+      const rows = Array.prototype.slice.call(list.querySelectorAll('.track-row'));
+      const idx = rows.indexOf(row);
+      if (idx !== -1 && idx < rows.length - 1) {
+        play(rows[idx + 1]);
+        return;
+      }
+    }
+    stopCustomAudio();
+  });
   a.addEventListener('error', () => {
     if (audio !== a) return;
     stopCustomAudio();

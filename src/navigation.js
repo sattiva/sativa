@@ -1,4 +1,5 @@
 import { $, S, TITLES, PATH, VIEW, MOB, TOUCH, CK_V, cGet, cSet } from './config.js';
+import { triggerProjectsEntrance, startSolPricePolling, initProjectsScroller } from './projects.js';
 
 const $stage = typeof document !== 'undefined' ? document.querySelector('.stage') : null;
 
@@ -126,6 +127,10 @@ export function showView(t, push) {
   nxt.hidden = false;
   nxt.classList.remove('view-out');
   if (t === 'home') playReveal();
+  if (t === 'projects') {
+    triggerProjectsEntrance();
+    startSolPricePolling();
+  }
   setTimeout(scMax, 50);
 
   scTo(0, true);
@@ -150,6 +155,8 @@ export function initNavigation() {
       showView(b.dataset.view, true);
     });
   });
+
+  initProjectsScroller();
 
   const burger = $('burger');
   const drawer = $('ident');
