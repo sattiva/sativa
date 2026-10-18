@@ -288,7 +288,24 @@ export function initNavigation() {
   });
 }
 
+const GIF = 'images/328c881f1929b778adcc7d9c1c75adcd.gif';
+
+export function enableBgLive() {
+  const el = $('bgLive');
+  if (!el) return;
+  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const slow = c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ''));
+  if (slow) return;
+  const done = () => el.classList.add('on');
+  el.style.backgroundImage = `url("${GIF}")`;
+  if (el.complete || el.naturalWidth) return done();
+  const probe = new Image();
+  probe.onload = done;
+  probe.src = GIF;
+}
+
 export function initBg() {
+  enableBgLive();
   if (MOB) return;
   const cv = $('bgCanvas');
   if (!cv) return;
