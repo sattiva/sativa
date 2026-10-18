@@ -38,13 +38,14 @@
   --case-2:rgba(255,255,255,.085);
   --case-3:rgba(255,255,255,.12);
 
-  --glass:rgba(18,20,26,.42);
-  --glass-2:rgba(22,25,32,.5);
-  --glass-brd:rgba(255,255,255,.13);
-  --glass-hi:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.04);
+  --glass:rgba(255,255,255,.12);
+  --glass-2:rgba(255,255,255,.17);
+  --glass-brd:rgba(255,255,255,.3);
+  --glass-hi:inset 0 1px 1px rgba(255,255,255,.45),inset 0 -1px 1px rgba(255,255,255,.09),inset 0 0 26px rgba(255,255,255,.07);
   --glass-drop:0 18px 44px -12px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.28);
-  --blur:20px;
-  --sat:saturate(1.6);
+  --glass-lens:linear-gradient(150deg,rgba(255,255,255,.2),rgba(255,255,255,.05) 42%,rgba(255,255,255,.02) 58%,rgba(255,255,255,.12));
+  --blur:24px;
+  --sat:saturate(1.9);
 
   --paper:#f4f3f1;
   --mute:rgba(244,243,241,.7);
@@ -104,7 +105,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 @media print{html,body{display:none!important;height:0!important;overflow:hidden!important}}
 
 #bgLive,#bgCanvas,#bgArt,#bgArtShadow{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none}
-#bgLive{z-index:0;background:#08090b url('images/328c881f1929b778adcc7d9c1c75adcd.gif') center/cover no-repeat;background-attachment:scroll;opacity:0;transition:opacity 1.1s var(--e)}#bgLive::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 6%,rgba(8,9,11,.24),rgba(8,9,11,.66) 78%)}#bgLive.on{opacity:1}#bgCanvas{display:block;z-index:1;opacity:.66}
+#bgLive{z-index:0;background:#08090b url('images/328c881f1929b778adcc7d9c1c75adcd.gif') center/cover no-repeat;background-attachment:scroll;opacity:0;transition:opacity 1.1s var(--e)}#bgLive{filter:brightness(1.55) saturate(1.35)}#bgLive::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 6%,rgba(8,9,11,.1),rgba(8,9,11,.42) 80%)}#bgLive.on{opacity:1}#bgCanvas{display:block;z-index:1;opacity:.28;mix-blend-mode:screen}
 #bgArt{z-index:2;background-size:cover;background-position:center;background-color:#000;opacity:0;filter:saturate(.7) brightness(.48);transform:scale(1.03);transition:opacity .8s var(--e),filter .9s var(--e);will-change:opacity,filter,transform}
 #bgArt.show{opacity:.36}
 #bgArtShadow{z-index:3;opacity:0;transition:opacity .7s var(--e);background:radial-gradient(115% 85% at 50% 10%,rgba(8,9,11,.5),rgba(8,9,11,.84) 74%),linear-gradient(180deg,rgba(8,9,11,.66) 0,rgba(8,9,11,.46) 34%,rgba(8,9,11,.48) 66%,rgba(8,9,11,.76) 100%)}
@@ -150,8 +151,8 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 .burger.contact-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;flex-shrink:0;opacity:.85}
 .burger.contact-btn span{line-height:1}
 
-.tabs-inner{position:relative;display:flex;gap:2px;padding:4px;border-radius:17px;background:var(--glass);border:1px solid var(--glass-brd);box-shadow:var(--glass-drop),var(--glass-hi);backdrop-filter:blur(var(--blur)) var(--sat);-webkit-backdrop-filter:blur(var(--blur)) var(--sat)}
-.tabs-pill{position:absolute;top:0;left:0;border-radius:13px;background:rgba(255,255,255,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 18px -6px rgba(0,0,0,.45);pointer-events:none;z-index:1;transition:transform .32s cubic-bezier(.16,1,.3,1),width .32s cubic-bezier(.16,1,.3,1),height .32s cubic-bezier(.16,1,.3,1),opacity .2s ease;opacity:0}
+.tabs-inner{position:relative;display:flex;gap:2px;padding:4px;border-radius:22px;background-image:var(--glass-lens);background-color:var(--glass);border:1px solid var(--glass-brd);box-shadow:var(--glass-drop),var(--glass-hi);backdrop-filter:blur(26px) saturate(2);-webkit-backdrop-filter:blur(26px) saturate(2)}
+.tabs-pill{position:absolute;top:0;left:0;border-radius:18px;background-image:linear-gradient(145deg,rgba(255,255,255,.5),rgba(255,255,255,.16) 50%,rgba(255,255,255,.3));box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -6px 12px rgba(255,255,255,.13),0 6px 20px -6px rgba(0,0,0,.5);pointer-events:none;z-index:1;transition:transform .32s cubic-bezier(.16,1,.3,1),width .32s cubic-bezier(.16,1,.3,1),height .32s cubic-bezier(.16,1,.3,1),opacity .2s ease;opacity:0}
 .tabs .nav-btn{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:10px;font:500 12px var(--ff);letter-spacing:-.005em;color:var(--dim);background:none;border:none;cursor:pointer;transition:color .22s var(--e)}
 .tabs .nav-btn:hover{color:var(--paper)}
 .tabs .nav-btn.active{color:#fff;font-weight:600;text-shadow:0 0 14px rgba(255,255,255,.35)}
@@ -199,18 +200,18 @@ html.motion-off .ident{transition:none}
 .contact-wrap{width:100%;max-width:680px;margin:8px auto 0;display:flex;flex-direction:column;gap:18px;text-align:left}
 .contact-head-title{font-family:var(--fd);font-size:32px;font-weight:700;letter-spacing:-.025em;color:var(--paper);line-height:1.1}
 .contact-sub-lead{font-size:13.5px;color:var(--dim);line-height:1.55;max-width:580px;margin-top:4px}
-.contact-card{position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border-radius:14px;background:rgba(18,19,23,.78);border:1px solid rgba(255,255,255,.07);transition:background .2s,border-color .2s}
+.contact-card{position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border-radius:18px;background:var(--glass);border:1px solid var(--glass-brd);backdrop-filter:blur(18px) var(--sat);-webkit-backdrop-filter:blur(18px) var(--sat);box-shadow:var(--glass-drop),var(--glass-hi);transition:background .2s,border-color .2s}
 .contact-card:hover{background:rgba(24,25,31,.9);border-color:rgba(255,255,255,.14)}
 .contact-card-main{padding:18px 22px}
 .contact-card-top{display:flex;align-items:center;gap:13px;min-width:0}
 .contact-ava{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;background:var(--case-2)}
-.contact-icon{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:var(--paper);flex-shrink:0}
+.contact-icon{width:36px;height:36px;border-radius:11px;background-image:var(--glass-lens);background-color:rgba(255,255,255,.1);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 1px rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;color:var(--paper);flex-shrink:0}
 .contact-icon svg{width:17px;height:17px;fill:currentColor}
 .contact-info{display:flex;flex-direction:column;gap:2px;min-width:0}
 .contact-handle{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--paper);letter-spacing:-.01em;display:flex;align-items:center;gap:5px}
 .contact-sub{font-family:var(--fm);font-size:10.5px;color:var(--dim)}
 .contact-actions{display:flex;align-items:center;gap:8px}
-.contact-action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;gap:5px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:var(--fm);font-size:11px;font-weight:500;color:var(--paper);cursor:pointer;text-decoration:none;transition:all .18s}
+.contact-action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;gap:5px;padding:6px 12px;border-radius:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);font-family:var(--fm);font-size:11px;font-weight:500;color:var(--paper);cursor:pointer;text-decoration:none;transition:all .18s}
 .contact-action-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
 .contact-action-btn.icon-only{width:34px;height:34px;padding:0;border-radius:8px}
 .contact-action-btn.icon-only svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
@@ -218,6 +219,14 @@ html.motion-off .ident{transition:none}
 .contact-action-btn.copied{background:rgba(255,255,255,.2);color:#fff}
 .contact-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .contact-footer-note{font-family:var(--fm);font-size:11px;color:var(--faint);margin-top:14px}
+.contact-wrap-stack{max-width:440px;gap:12px;align-items:stretch}
+.contact-head{text-align:center;margin-bottom:6px}
+.contact-wrap-stack .contact-footer-note{text-align:center;margin-top:6px}
+.contact-head .contact-sub-lead{margin:2px auto 0;max-width:none}
+.contact-card-row{flex-direction:row;gap:12px;padding:14px 16px}
+.contact-card-row .contact-ava{width:40px;height:40px;border-radius:12px;flex-shrink:0}
+.contact-card-row .contact-sub{font-size:10px}
+.contact-card-row .contact-actions{flex-shrink:0}
 .contact-footer-note b{color:var(--paper);font-weight:600}
 
 .games-wrap{width:100%;max-width:680px;margin:8px auto 0;display:flex;flex-direction:column;gap:14px;text-align:left}
@@ -438,7 +447,7 @@ h1{font-family:var(--fd);font-weight:600;font-size:42px;letter-spacing:-.018em;l
 .proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:640px){.proj-grid{grid-template-columns:1fr}}
 
-.proj{position:relative;display:flex;flex-direction:column;border-radius:18px;background:rgba(20,22,28,.55);border:1px solid var(--glass-brd);backdrop-filter:blur(18px) var(--sat);-webkit-backdrop-filter:blur(18px) var(--sat);box-shadow:var(--glass-drop),var(--glass-hi);text-decoration:none;color:inherit;overflow:hidden;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
+.proj{position:relative;display:flex;flex-direction:column;border-radius:22px;background:var(--glass);border:1px solid var(--glass-brd);backdrop-filter:blur(18px) var(--sat);-webkit-backdrop-filter:blur(18px) var(--sat);box-shadow:var(--glass-drop),var(--glass-hi);text-decoration:none;color:inherit;overflow:hidden;transition:background .2s var(--e),border-color .2s,box-shadow .2s var(--e)}
 .proj.proj-wide{grid-column:1/-1}
 a.proj{cursor:pointer}
 a.proj:hover{background:rgba(24,25,31,.92);border-color:rgba(255,255,255,.18);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
@@ -1257,63 +1266,59 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 </section>
 
 <section class="view" data-view="contact" hidden="">
-  <div class="contact-wrap">
-    <div class="eyebrow">get in touch</div>
-    <h2 class="contact-head-title">contact</h2>
-    <p class="contact-sub-lead">open for collabs, questions, or just a hello - discord's fastest, but pick whatever works.</p>
+  <div class="contact-wrap contact-wrap-stack">
+    <div class="contact-head">
+      <h2 class="contact-head-title">let's talk</h2>
+      <p class="contact-sub-lead">discord is fastest. email if it's serious.</p>
+    </div>
 
-    <div class="contact-card contact-card-main" style="margin-top:14px">
+    <div class="contact-card contact-card-row">
       <div class="contact-card-top">
         <img class="contact-ava js-avatar" alt="Avatar" referrerpolicy="no-referrer" decoding="async" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%2312141a'/%3E%3C/svg%3E">
         <div class="contact-info">
           <span class="contact-handle">@sativasballs</span>
-          <span class="contact-sub">i'll prob respond quickest here</span>
+          <span class="contact-sub">fastest reply, i live here</span>
         </div>
       </div>
       <div class="contact-actions">
-        <button class="contact-action-btn" id="copyDiscordBtn" type="button">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          <span>copy user</span>
-        </button>
         <a class="contact-action-btn" href="https://discord.com/users/430766308662050817" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
           <span>open</span>
         </a>
+        <button class="contact-action-btn icon-only" id="copyDiscordBtn" type="button" aria-label="Copy discord handle"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
       </div>
     </div>
 
-    <div class="contact-grid-2">
-      <div class="contact-card">
-        <div class="contact-card-top">
-          <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div>
-          <div class="contact-info">
-            <span class="contact-handle">@sattiva</span>
-            <span class="contact-sub">repos & builds</span>
-          </div>
-        </div>
-        <div class="contact-actions">
-          <button class="contact-action-btn icon-only" id="copyGithubBtn" type="button" aria-label="Copy GitHub handle"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-          <a class="contact-action-btn icon-only" href="https://github.com/sattiva" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
+    <div class="contact-card contact-card-row">
+      <div class="contact-card-top">
+        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div>
+        <div class="contact-info">
+          <span class="contact-handle">@sattiva</span>
+          <span class="contact-sub">code, tools, releases</span>
         </div>
       </div>
+      <div class="contact-actions">
+        <a class="contact-action-btn icon-only" href="https://github.com/sattiva" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
+        <button class="contact-action-btn icon-only" id="copyGithubBtn" type="button" aria-label="Copy GitHub handle"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+      </div>
+    </div>
 
-      <div class="contact-card">
-        <div class="contact-card-top">
-          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div class="contact-info">
-            <span class="contact-handle">me@sativa.cfd</span>
-            <span class="contact-sub">for serious talks or deals</span>
-          </div>
+    <div class="contact-card contact-card-row">
+      <div class="contact-card-top">
+        <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div class="contact-info">
+          <span class="contact-handle">me@sativa.cfd</span>
+          <span class="contact-sub">deals, serious stuff</span>
         </div>
-        <div class="contact-actions">
-          <button class="contact-action-btn icon-only" id="copyEmailBtn" type="button" aria-label="Copy email"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-          <a class="contact-action-btn icon-only" href="mailto:me@sativa.cfd" aria-label="Send email"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
-        </div>
+      </div>
+      <div class="contact-actions">
+        <a class="contact-action-btn icon-only" href="mailto:me@sativa.cfd" aria-label="Send email"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
+        <button class="contact-action-btn icon-only" id="copyEmailBtn" type="button" aria-label="Copy email"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
       </div>
     </div>
 
     <div class="contact-footer-note">
-      <span>i'll get back to you. your <b id="visitorTime">--:--</b> is my <b id="myTime">--:--</b></span>
+      <span>your <b id="visitorTime">--:--</b> is my <b id="myTime">--:--</b></span>
     </div>
   </div>
 </section>
