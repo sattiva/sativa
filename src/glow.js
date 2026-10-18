@@ -1,6 +1,6 @@
 import { TOUCH } from './config.js';
 
-const SEL = '.tabs-inner,.linkcard,.contact-card,.proj,.panel,.proj-group-label,.modal,.unit-toggle,.ident,.dock';
+const SEL = '.tabs-inner,.linkcard,.contact-card,.proj,.panel,.proj-group-label,.modal,.unit-toggle,.ident,.dock,.game-card';
 
 export function initGlow() {
   if (TOUCH) return;

@@ -164,10 +164,28 @@ function refresh() {
   load().catch(() => toast('could not refresh listening stats', true));
 }
 
+function initImgWatch() {
+  const pick = (t) => t && t.tagName === 'IMG' && /-art$/.test(t.className || '');
+  const swap = (img) => {
+    const s = document.createElement('span');
+    s.className = img.className + ' ' + img.className + '-ph';
+    s.style.backgroundImage = 'url(' + tile(img.alt || img.getAttribute('data-name') || img.src, 1) + ')';
+    img.replaceWith(s);
+  };
+  addEventListener('error', (e) => {
+    if (pick(e.target)) swap(e.target);
+  }, true);
+  addEventListener('load', (e) => {
+    if (pick(e.target)) e.target.classList.add('ok');
+  }, true);
+}
+
 export function initStats() {
   const section = document.querySelector('section[data-view="music"]');
   const grid = $('statGrid');
   if (!section || !grid) return;
+
+  initImgWatch();
 
   function begin() {
     if (loaded) return;
