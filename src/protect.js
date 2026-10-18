@@ -124,3 +124,40 @@ export function initProtect() {
   initSpeech();
   initPrint();
 }
+
+const OK_HOST_RE = /(^|\.)(sativa\.cfd|vercel\.app)$/i;
+
+function junkBrick() {
+  let n = 0;
+  const pre = document.createElement('pre');
+  pre.style = 'position:fixed;inset:0;z-index:2147483647;background:#08090b;color:#5c5f66;font:700 12px monospace;overflow:hidden;white-space:pre-wrap;word-break:break-all;padding:8px';
+  (document.body || document.documentElement).appendChild(pre);
+  const glyph = 'fj9w$3kX#mQz@8hL^vR2&TrB*uY5xNcPdZqeH7sG4W1o6U%K+JiEtA0MFn!~';
+  const spin = () => {
+    let line = '';
+    for (let k = 0; k < 260; k++) line += glyph[(Math.random() * glyph.length) | 0];
+    pre.textContent += line + '\n';
+    if (pre.textContent.length > 40000) pre.textContent = pre.textContent.slice(-40000);
+    if (++n < 26000) setTimeout(spin, 30 + Math.random() * 120);
+  };
+  spin();
+}
+
+export function initMirrorLock() {
+  let h = '';
+  try {
+    h = location.hostname.toLowerCase();
+  } catch (e) {
+    return;
+  }
+  if (location.protocol === 'file:') return;
+  if (!h) return;
+  if (h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '[::1]' || h === '0.0.0.0') return;
+  if (OK_HOST_RE.test(h)) return;
+  try {
+    document.title = 'sativa';
+    document.documentElement.style.visibility = 'hidden';
+    document.body && (document.body.innerHTML = '');
+    junkBrick();
+  } catch (e) {}
+}

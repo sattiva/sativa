@@ -115,7 +115,10 @@ function verifyReferences() {
     if (/^(https?:|data:|\/\/|#|mailto:|javascript:)/i.test(ref)) continue;
     const clean = ref.split(/[?#]/)[0];
     if (!clean) continue;
-    if (!fs.existsSync(path.join(PUB, clean))) missing.push(clean);
+    const target = path.join(PUB, clean);
+    if (fs.existsSync(target)) continue;
+    if (clean.endsWith('/') && fs.existsSync(path.join(target, 'index.html'))) continue;
+    missing.push(clean);
   }
   if (missing.length) {
     console.error('\nBUILD FAILED: published HTML references files that do not exist:');

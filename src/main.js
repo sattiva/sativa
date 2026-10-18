@@ -5,7 +5,8 @@ import { initLyricsModal, setArt, setBgArt, clearNow } from './lyrics.js';
 import { connect, presence } from './lanyard.js';
 import { initMusic } from './music.js';
 import { initStats } from './stats.js';
-import { initProtect } from './protect.js';
+import { initProtect, initMirrorLock } from './protect.js';
+import { initGlow } from './glow.js';
 
 function boot(fn) {
   try {
@@ -40,6 +41,7 @@ function init() {
   clearNow();
 
   boot(initProtect);
+  boot(initMirrorLock);
   boot(initScroll);
   boot(initBg);
   boot(initWeather);
@@ -48,6 +50,7 @@ function init() {
   boot(initStats);
   boot(initViewCounter);
   boot(initNavigation);
+  boot(initGlow);
 
   try {
     const cp = cGet(CK_P, 300000);
