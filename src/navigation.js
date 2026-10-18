@@ -169,6 +169,10 @@ export function showView(t, push) {
   }
   nxt.hidden = false;
   nxt.classList.remove('view-out');
+  nxt.classList.remove('view-in');
+  void nxt.offsetWidth;
+  nxt.classList.add('view-in');
+  nxt.addEventListener('animationend', () => nxt.classList.remove('view-in'), { once: true });
   if (t === 'home') playReveal();
   if (t === 'projects') {
     triggerProjectsEntrance();

@@ -7,6 +7,7 @@ import { initMusic } from './music.js';
 import { initStats } from './stats.js';
 import { initProtect, initMirrorLock } from './protect.js';
 import { initGlow } from './glow.js';
+import { initSfx } from './sfx.js';
 
 function boot(fn) {
   try {
@@ -51,6 +52,12 @@ function init() {
   boot(initViewCounter);
   boot(initNavigation);
   boot(initGlow);
+  boot(initSfx);
+
+  try {
+    const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!rm) document.documentElement.classList.remove('motion-off');
+  } catch (e) {}
 
   try {
     const cp = cGet(CK_P, 300000);
