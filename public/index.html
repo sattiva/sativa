@@ -86,15 +86,26 @@
 
 .view-in{animation:viewIn .45s var(--e) both}
 @keyframes viewIn{from{opacity:0;transform:translateY(14px) scale(.988);filter:blur(9px) saturate(.9)}to{opacity:1;transform:none;filter:none}}
-.view-in>*{animation:childIn .5s var(--e) both}
+.view-in>*{animation:childIn .64s var(--e) both}
 .view-in>*:nth-child(1){animation-delay:.03s}
 .view-in>*:nth-child(2){animation-delay:.07s}
 .view-in>*:nth-child(3){animation-delay:.11s}
 .view-in>*:nth-child(4){animation-delay:.15s}
 .view-in>*:nth-child(5){animation-delay:.19s}
 .view-in>*:nth-child(6){animation-delay:.23s}
-@keyframes childIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-html.motion-off .view-in,html.motion-off .view-in>*{animation:none}
+@keyframes childIn{0%{opacity:0;transform:translateY(30px) scale(.96)}55%{opacity:1;transform:translateY(-9px) scale(1.016)}78%{transform:translateY(3px) scale(.998)}100%{opacity:1;transform:none}}
+.view-in .games-grid>*,.view-in .contact-wrap-stack .contact-card,.view-in .ident-links>.linkcard{animation:bubbleIn .58s cubic-bezier(.3,1.5,.42,.94) both;animation-delay:.16s}
+.view-in .games-grid>*:nth-child(2){animation-delay:.23s}
+.view-in .games-grid>*:nth-child(3){animation-delay:.3s}
+.view-in .games-grid>*:nth-child(4){animation-delay:.37s}
+.view-in .games-grid>*:nth-child(n+5){animation-delay:.44s}
+.view-in .contact-wrap-stack .contact-card:nth-child(2),.view-in .ident-links>.linkcard:nth-child(2){animation-delay:.23s}
+.view-in .contact-wrap-stack .contact-card:nth-child(3),.view-in .ident-links>.linkcard:nth-child(3){animation-delay:.3s}
+@keyframes bubbleIn{0%{opacity:0;transform:translateY(26px) scale(.94)}55%{opacity:1;transform:translateY(-7px) scale(1.02)}78%{transform:translateY(2px) scale(.999)}100%{opacity:1;transform:none}}
+.pop-ready{opacity:0;transform:translateY(26px) scale(.97)}
+.pop-ready.pop-in{animation:bubbleIn .6s cubic-bezier(.3,1.5,.42,.94) both}
+html.motion-off .pop-ready{opacity:1;transform:none}
+html.motion-off .view-in,html.motion-off .view-in>*,html.motion-off .view-in .games-grid>*,html.motion-off .view-in .contact-wrap-stack .contact-card,html.motion-off .view-in .ident-links>.linkcard{animation:none}
 html.motion-off .view-in{opacity:1}
 
 .num,.mono{font-family:var(--fm);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
@@ -130,6 +141,17 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-
 
 #bgLive,#bgCanvas,#bgArt,#bgArtShadow{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none}
 #bgLive{z-index:0;background:#08090b url('images/328c881f1929b778adcc7d9c1c75adcd.gif') center/cover no-repeat;background-attachment:scroll;opacity:0;transition:opacity 1.1s var(--e)}#bgLive{filter:brightness(1.55) saturate(1.35)}#bgLive::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 6%,rgba(8,9,11,.1),rgba(8,9,11,.42) 80%)}#bgLive.on{opacity:1}#bgCanvas{display:block;z-index:1;opacity:.28;mix-blend-mode:screen}
+#bgGlow{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+#bgGlow i{position:absolute;border-radius:50%;mix-blend-mode:screen;will-change:transform}
+#bgGlow .glow-a{left:8vw;top:6vh;width:46vw;height:46vw;background:radial-gradient(circle at 38% 34%,rgba(255,255,255,.085),rgba(255,255,255,.028) 42%,transparent 68%);animation:glowA 26s ease-in-out infinite alternate}
+#bgGlow .glow-b{right:-12vw;bottom:-8vh;width:52vw;height:52vw;background:radial-gradient(circle at 62% 60%,rgba(255,255,255,.07),rgba(255,255,255,.02) 46%,transparent 72%);animation:glowB 34s ease-in-out infinite alternate}
+#bgGlow .glow-c{left:34vw;top:44vh;width:30vw;height:30vw;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.05),transparent 62%);animation:glowC 21s ease-in-out infinite alternate}
+#bgGlow .glare{position:absolute;inset:-20%;border-radius:none;background:linear-gradient(112deg,transparent 18%,rgba(255,255,255,.05) 30%,rgba(255,255,255,.11) 34%,rgba(255,255,255,.05) 38%,transparent 52%,transparent 66%,rgba(255,255,255,.06) 74%,rgba(255,255,255,.02) 78%,transparent 86%);mix-blend-mode:screen;animation:glareDrift 19s var(--e) infinite alternate;will-change:transform}
+@keyframes glowA{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(9vw,7vh,0) scale(1.18)}}
+@keyframes glowB{0%{transform:translate3d(0,0,0) scale(1.1)}100%{transform:translate3d(-7vw,-9vh,0) scale(.92)}}
+@keyframes glowC{0%{transform:translate3d(0,0,0) scale(.9)}100%{transform:translate3d(6vw,-8vh,0) scale(1.22)}}
+@keyframes glareDrift{0%{transform:translate3d(-6%,-4%,0) skewX(-3deg)}55%{transform:translate3d(3%,2%,0) skewX(2deg)}100%{transform:translate3d(7%,5%,0) skewX(-2deg)}}
+html.motion-off #bgGlow i,html.motion-off #bgGlow .glare{animation:none}
 #bgArt{z-index:2;background-size:cover;background-position:center;background-color:#000;opacity:0;filter:saturate(.7) brightness(.48);transform:scale(1.03);transition:opacity .8s var(--e),filter .9s var(--e);will-change:opacity,filter,transform}
 #bgArt.show{opacity:.36}
 #bgArtShadow{z-index:3;opacity:0;transition:opacity .7s var(--e);background:radial-gradient(115% 85% at 50% 10%,rgba(8,9,11,.5),rgba(8,9,11,.84) 74%),linear-gradient(180deg,rgba(8,9,11,.66) 0,rgba(8,9,11,.46) 34%,rgba(8,9,11,.48) 66%,rgba(8,9,11,.76) 100%)}
@@ -776,6 +798,7 @@ a.proj:hover .proj-tag{border-color:rgba(255,255,255,.14);color:var(--paper)}
 <div id="bgLive" aria-hidden="true"></div>
 <a href="/html/" aria-hidden="true" tabindex="-1" style="position:fixed;width:1px;height:1px;opacity:.001;pointer-events:none;font-size:0;line-height:0;color:transparent;overflow:hidden;clip-path:inset(50%)">sativa source dump</a>
 <canvas id="bgCanvas" aria-hidden="true" width="1920" height="1080"></canvas>
+<div id="bgGlow" aria-hidden="true"><i class="glow-a"></i><i class="glow-b"></i><i class="glow-c"></i><i class="glare"></i></div>
 <div id="bgArt" aria-hidden="true"></div>
 <div id="bgArtShadow" aria-hidden="true"></div>
 

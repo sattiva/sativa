@@ -17,14 +17,10 @@ function ensure() {
     if (!AC) return null;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.16;
+    master.gain.value = 0.34;
     master.connect(ctx.destination);
   }
-  if (ctx.state === 'suspended' && !ctx._tried) {
-    ctx._tried = true;
-    ctx.resume().catch(() => {});
-  }
-  return ctx;
+  return ctx.state === 'running' ? ctx : ctx.resume().then(() => ctx).catch(() => null);
 }
 
 function env(g, t, a, d, peak) {
@@ -33,8 +29,10 @@ function env(g, t, a, d, peak) {
   g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
 }
 
+const at = (c) => (c && c.currentTime !== undefined ? c : null);
+
 export function tick() {
-  const c = ensure();
+  const c = at(ensure());
   if (!c) return;
   const now = c.currentTime;
   if (now - lastTick < 0.05) return;
@@ -56,7 +54,7 @@ export function tick() {
 }
 
 export function pluck() {
-  const c = ensure();
+  const c = at(ensure());
   if (!c) return;
   const now = c.currentTime;
   const o = c.createOscillator();
@@ -76,7 +74,7 @@ export function pluck() {
 }
 
 export function chime(up) {
-  const c = ensure();
+  const c = at(ensure());
   if (!c) return;
   const now = c.currentTime;
   const notes = up ? [660, 880] : [330, 220];
@@ -92,7 +90,6 @@ export function chime(up) {
     o.stop(now + i * 0.08 + 0.3);
   });
 }
-
 export function isMuted() {
   if (muted === null) {
     try {
